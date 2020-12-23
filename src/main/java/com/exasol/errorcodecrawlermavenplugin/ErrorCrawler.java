@@ -1,0 +1,231 @@
+package com.exasol.errorcodecrawlermavenplugin;
+
+import java.nio.file.Path;
+import java.util.*;
+
+import com.exasol.errorcodecrawlermavenplugin.model.ExasolError;
+import com.exasol.errorreporting.ErrorMessageBuilder;
+import com.exasol.errorreporting.ExaError;
+
+import spoon.Launcher;
+import spoon.SpoonAPI;
+import spoon.compiler.Environment;
+import spoon.reflect.code.*;
+import spoon.reflect.reference.CtExecutableReference;
+import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.filter.TypeFilter;
+
+/**
+ * Crawler that reads invocations of {@link com.exasol.errorreporting.ExaError#messageBuilder(String)}.
+ */
+public class ErrorCrawler {
+    private static final String POSITION = "position";
+    private static final String ERRORREPORTING_PACKAGE = "com.exasol.errorreporting";
+    private static final String ERROR_MESSAGE_BUILDER = "ErrorMessageBuilder";
+    private final Path projectDirectory;
+    private final String[] classPath;
+
+    /**
+     * Create a new instance of {@link ErrorCrawler}.
+     * 
+     * @param projectDirectory project directory to which all paths as relative for paths in messages
+     * @param classPath        classPath with the dependencies of the classes to crawl. In the unit-tests for some
+     *                         reason this can be empty. Probably Spoon then picks the class path of this project. When
+     *                         run from a jar the classpath is however required.
+     */
+    public ErrorCrawler(final Path projectDirectory, final String[] classPath) {
+        this.projectDirectory = projectDirectory;
+        this.classPath = classPath;
+    }
+
+    /**
+     * Crawl error codes for a file / folder.
+     * 
+     * @param pathToCrawl file / folder to crawl.
+     * @return {@link Result} with found error codes and findings
+     */
+    public Result crawl(final Path pathToCrawl) {
+        final List<Finding> findings = new LinkedList<>();
+        final List<ExasolError> exasolErrors = new ArrayList<>();
+        final SpoonAPI spoon = initSpoon(pathToCrawl);
+        for (final CtInvocation<?> methodInvocation : spoon.getModel().getRootPackage()
+                .getElements(new TypeFilter<>(CtInvocation.class))) {
+            crawl(methodInvocation, findings, exasolErrors);
+        }
+        return new Result(exasolErrors, findings);
+    }
+
+    private SpoonAPI initSpoon(final Path pathToCrawl) {
+        final SpoonAPI spoon = new Launcher();
+        final Environment environment = spoon.getEnvironment();
+        environment.setSourceClasspath(this.classPath);
+        environment.setNoClasspath(false);
+        spoon.addInputResource(pathToCrawl.toString());
+        spoon.buildModel();
+        spoon.getFactory();
+        return spoon;
+    }
+
+    /**
+     * Find calls to {@link ErrorMessageBuilder#toString()} and then run it's target chain.
+     * 
+     * @param methodInvocation method invocation to analyze
+     * @param findings         list of finding to append to
+     * @param exasolErrors     list of error codes to append to
+     */
+    private void crawl(final CtInvocation<?> methodInvocation, final List<Finding> findings,
+            final List<ExasolError> exasolErrors) {
+        final CtExecutableReference<?> method = methodInvocation.getExecutable();
+        final CtTypeReference<?> declaringType = method.getDeclaringType();
+        final String methodsClassName = declaringType.getSimpleName();
+        final String methodsPackageName = declaringType.getPackage().getQualifiedName();
+        if (methodsPackageName.equals(ERRORREPORTING_PACKAGE) && methodsClassName.equals(ERROR_MESSAGE_BUILDER)
+                && method.getSignature().equals("toString()")) {
+            try {
+                exasolErrors.add(readErrorCode(methodInvocation));
+            } catch (final CrawlFailedException exception) {
+                findings.add(exception.getFinding());
+            }
+        }
+    }
+
+    /**
+     * Read one ExasolError code from a builder call.
+     * <p>
+     * This method iterates the builder call from the {@link ErrorMessageBuilder#toString()} to the
+     * {@link ExaError#messageBuilder(String)}. So in the opposite order of invocation.During the iteration it collects
+     * information about the error code.
+     * </p>
+     * 
+     * @param methodInvocation invocation of {@link ErrorMessageBuilder#toString()}
+     * @return crawled ErrorCode
+     * @throws CrawlFailedException in case the call has an invalid syntax
+     */
+    private ExasolError readErrorCode(final CtInvocation<?> methodInvocation) throws CrawlFailedException {
+        CtExpression<?> target = methodInvocation.getTarget();
+        final ExasolError.Builder errorCodeBuilder = ExasolError.builder();
+        while (target instanceof CtInvocation) {
+            final CtInvocation<?> builderCall = (CtInvocation<?>) target;
+            addBuilderStep(builderCall, errorCodeBuilder);
+            target = builderCall.getTarget();
+        }
+        return errorCodeBuilder.build();
+    }
+
+    /**
+     * Read information from a call to a method of the {@link ErrorMessageBuilder}.
+     * 
+     * @param builderCall      call to one of the methods of {@link ErrorMessageBuilder} or {@link ExaError}
+     * @param errorCodeBuilder error code builder to add the error-code to.
+     * @throws CrawlFailedException if the invocation is invalid
+     */
+    private void addBuilderStep(final CtInvocation<?> builderCall, final ExasolError.Builder errorCodeBuilder)
+            throws CrawlFailedException {
+        final CtExecutableReference<?> executable = builderCall.getExecutable();
+        final CtTypeReference<?> declaringType = executable.getDeclaringType();
+        final String declaringTypeName = declaringType.getSimpleName();
+        if (declaringTypeName.equals("ExaError")
+                && executable.getSignature().equals("messageBuilder(java.lang.String)")) {
+            readMessageBuilderStep(builderCall, errorCodeBuilder);
+        }
+    }
+
+    /**
+     * Read the error-code and the source code position from a call to {@link ExaError#messageBuilder(String)}.
+     * 
+     * @param builderCall      invocation of {@link ExaError#messageBuilder(String)}
+     * @param errorCodeBuilder error code builder to add the error-code to.
+     * @throws CrawlFailedException if the invocation is invalid
+     */
+    private void readMessageBuilderStep(final CtInvocation<?> builderCall, final ExasolError.Builder errorCodeBuilder)
+            throws CrawlFailedException {
+        final List<CtExpression<?>> arguments = builderCall.getArguments();
+        checkMessageBuildersArgumentLength(builderCall, arguments);
+        final CtExpression<?> argument = arguments.get(0);
+        checkMessageBuildersArgumentIsLiteral(builderCall, argument);
+        final CtLiteral<?> argumentLiteralValue = (CtLiteral<?>) argument;
+        final Object argumentValue = argumentLiteralValue.getValue();
+        checkMessageBuildersArgumentValueIsString(builderCall, argumentValue);
+        final String errorCode = (String) argumentValue;
+        errorCodeBuilder.errorCode(errorCode);
+        errorCodeBuilder.setPosition(
+                this.projectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
+                builderCall.getPosition().getLine());
+    }
+
+    private void checkMessageBuildersArgumentValueIsString(final CtInvocation<?> builderCall,
+            final Object argumentValue) throws CrawlFailedException {
+        if (!(argumentValue instanceof String)) {
+            throw new CrawlFailedException(ExaError.messageBuilder("E-ECM-5")
+                    .message("ExaError#messageBuilder(String) must be a string literal.").message(" ({{position}})")
+                    .unquotedParameter(POSITION, getFormattedPosition(builderCall)).toString());
+        }
+    }
+
+    private void checkMessageBuildersArgumentIsLiteral(final CtInvocation<?> builderCall,
+            final CtExpression<?> argument) throws CrawlFailedException {
+        if (!(argument instanceof CtLiteral)) {
+            throw new CrawlFailedException(ExaError.messageBuilder("E-ECM-2")
+                    .message("ExaError#messageBuilder(String)'s parameter must be a literal.")
+                    .message(" ({{position}})").unquotedParameter(POSITION, getFormattedPosition(builderCall))
+                    .toString());
+        }
+    }
+
+    private void checkMessageBuildersArgumentLength(final CtInvocation<?> builderCall,
+            final List<CtExpression<?>> arguments) throws CrawlFailedException {
+        if (arguments.size() != 1) {
+            throw new CrawlFailedException(ExaError.messageBuilder("F-ECM-1")
+                    .message("ExaError#messageBuilder(String) should ony have one argument but had {{numArgs}}.")
+                    .parameter("numArgs", arguments.size()).message(" ({{position}})")
+                    .unquotedParameter(POSITION, getFormattedPosition(builderCall)).ticketMitigation().toString());
+        }
+    }
+
+    private String getFormattedPosition(final CtInvocation<?> invocation) {
+        return invocation.getPosition().getFile().getName() + ":" + invocation.getPosition().getLine();
+    }
+
+    private static class CrawlFailedException extends Exception {
+        private final transient Finding finding;
+
+        public CrawlFailedException(final String message) {
+            this.finding = new Finding(message);
+        }
+
+        public Finding getFinding() {
+            return this.finding;
+        }
+    }
+
+    /**
+     * Result of {@link ErrorCrawler#crawl(Path)}
+     */
+    public static class Result {
+        private final List<ExasolError> exasolErrors;
+        private final List<Finding> findings;
+
+        private Result(final List<ExasolError> exasolErrors, final List<Finding> findings) {
+            this.exasolErrors = exasolErrors;
+            this.findings = findings;
+        }
+
+        /**
+         * Get the crawled error codes.
+         * 
+         * @return crawled error codes
+         */
+        public List<ExasolError> getErrorCodes() {
+            return this.exasolErrors;
+        }
+
+        /**
+         * Get the findings that occurred during the crawling.
+         * 
+         * @return list of findings that occurred during the crawling
+         */
+        public List<Finding> getFindings() {
+            return this.findings;
+        }
+    }
+}
