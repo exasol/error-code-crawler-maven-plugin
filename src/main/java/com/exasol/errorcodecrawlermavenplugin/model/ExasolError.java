@@ -27,7 +27,7 @@ public class ExasolError {
     }
 
     /**
-     * Get the file in which this error code is declared.
+     * Get the file in which this error message is declared.
      * 
      * @return path of the file relative to the project's directory
      */
@@ -65,7 +65,7 @@ public class ExasolError {
         }
 
         /**
-         * Set the position where the error code was found.
+         * Set the position where the error message is declared.
          * 
          * @param sourceFile name of the source file relative to the project's root directory
          * @param line       linux number

@@ -1,6 +1,6 @@
 # Error Code Crawler
 
-This maven plugin invocation of the [Exasol error code builder](https://github.com/exasol/error-reporting-java/) from Java source code. It runs some validations on these definitions, for example, that no error code is defined twice.
+This maven plugin analyzes invocations of the [Exasol error code builder](https://github.com/exasol/error-reporting-java/) from Java source code. It runs some validations on these definitions, for example, that no error code is defined twice.
 
 **This plugin is still under development.** It can not write a report yet, but only run the validations.
 

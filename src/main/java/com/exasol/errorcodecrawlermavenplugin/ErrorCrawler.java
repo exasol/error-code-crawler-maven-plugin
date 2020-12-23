@@ -113,7 +113,7 @@ public class ErrorCrawler {
     }
 
     /**
-     * Read information from a call to a method of the {@link ErrorMessageBuilder}.
+     * Read information from a call to a method of the {@link ErrorMessageBuilder} and add it to the passed errorCodeBuilder.
      * 
      * @param builderCall      call to one of the methods of {@link ErrorMessageBuilder} or {@link ExaError}
      * @param errorCodeBuilder error code builder to add the error-code to.
@@ -131,7 +131,7 @@ public class ErrorCrawler {
     }
 
     /**
-     * Read the error-code and the source code position from a call to {@link ExaError#messageBuilder(String)}.
+     * Read the error-code and the source code position from a call to {@link ExaError#messageBuilder(String)} and add them to the passed errorCodeBuilder.
      * 
      * @param builderCall      invocation of {@link ExaError#messageBuilder(String)}
      * @param errorCodeBuilder error code builder to add the error-code to.
