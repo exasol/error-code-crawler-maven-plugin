@@ -1,12 +1,12 @@
 package com.exasol.errorcodecrawlermavenplugin.model;
 
-public class ExasolError {
+public class ErrorMessageDeclaration {
     private final String errorCode;
     private final String message;
     private final String sourceFile;
     private final int line;
 
-    private ExasolError(final Builder builder) {
+    private ErrorMessageDeclaration(final Builder builder) {
         this.errorCode = builder.errorCode;
         this.message = builder.messageBuilder.toString();
         this.sourceFile = builder.sourceFile;
@@ -88,8 +88,8 @@ public class ExasolError {
             return this;
         }
 
-        public ExasolError build() {
-            return new ExasolError(this);
+        public ErrorMessageDeclaration build() {
+            return new ErrorMessageDeclaration(this);
         }
     }
 }

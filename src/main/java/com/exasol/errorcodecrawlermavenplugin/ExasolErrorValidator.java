@@ -3,34 +3,34 @@ package com.exasol.errorcodecrawlermavenplugin;
 import java.io.File;
 import java.util.*;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ExasolError;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * Validator for {@link ExasolError}s.
+ * Validator for {@link ErrorMessageDeclaration}s.
  */
-public class ErrorValidator {
+public class ExasolErrorValidator {
 
     /**
      * Validate the crawled error codes.
      * 
-     * @param exasolErrors error codes to validate
+     * @param errorMessageDeclarations error codes to validate
      * @return list of findings
      */
-    public List<Finding> validate(final Collection<ExasolError> exasolErrors) {
+    public List<Finding> validate(final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
         final List<Finding> findings = new LinkedList<>();
-        findings.addAll(findDuplicates(exasolErrors));
+        findings.addAll(findDuplicates(errorMessageDeclarations));
         return findings;
     }
 
-    private List<Finding> findDuplicates(final Collection<ExasolError> exasolErrors) {
+    private List<Finding> findDuplicates(final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
         final Map<String, List<String>> positionsPerCode = new HashMap<>();
-        for (final ExasolError exasolError : exasolErrors) {
-            final String errorCode = exasolError.getErrorCode();
+        for (final ErrorMessageDeclaration errorMessageDeclaration : errorMessageDeclarations) {
+            final String errorCode = errorMessageDeclaration.getErrorCode();
             if (positionsPerCode.containsKey(errorCode)) {
-                positionsPerCode.get(errorCode).add(getSourceReference(exasolError));
+                positionsPerCode.get(errorCode).add(getSourceReference(errorMessageDeclaration));
             } else {
-                positionsPerCode.put(errorCode, new LinkedList<>(List.of(getSourceReference(exasolError))));
+                positionsPerCode.put(errorCode, new LinkedList<>(List.of(getSourceReference(errorMessageDeclaration))));
             }
         }
         final List<Finding> findings = new ArrayList<>();
@@ -45,7 +45,7 @@ public class ErrorValidator {
         return findings;
     }
 
-    private String getSourceReference(final ExasolError exasolError) {
-        return new File(exasolError.getSourceFile()).getName() + ":" + exasolError.getLine();
+    private String getSourceReference(final ErrorMessageDeclaration errorMessageDeclaration) {
+        return new File(errorMessageDeclaration.getSourceFile()).getName() + ":" + errorMessageDeclaration.getLine();
     }
 }

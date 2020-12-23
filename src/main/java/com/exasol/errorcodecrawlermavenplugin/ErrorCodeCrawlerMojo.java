@@ -29,7 +29,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         final ErrorCrawler.Result crawlResult = new ErrorCrawler(this.project.getBasedir().toPath(), getClasspath())
                 .crawl(this.project.getBasedir().toPath().resolve(Path.of("src", "main")));
         findings.addAll(crawlResult.getFindings());
-        findings.addAll(new ErrorValidator().validate(crawlResult.getErrorCodes()));
+        findings.addAll(new ExasolErrorValidator().validate(crawlResult.getErrorCodes()));
         if (!findings.isEmpty()) {
             final Log log = getLog();
             findings.forEach(finding -> log.error(finding.getMessage()));

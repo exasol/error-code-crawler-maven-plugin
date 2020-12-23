@@ -3,7 +3,7 @@ package com.exasol.errorcodecrawlermavenplugin;
 import java.nio.file.Path;
 import java.util.*;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ExasolError;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ErrorMessageBuilder;
 import com.exasol.errorreporting.ExaError;
 
@@ -46,13 +46,13 @@ public class ErrorCrawler {
      */
     public Result crawl(final Path pathToCrawl) {
         final List<Finding> findings = new LinkedList<>();
-        final List<ExasolError> exasolErrors = new ArrayList<>();
+        final List<ErrorMessageDeclaration> errorMessageDeclarations = new ArrayList<>();
         final SpoonAPI spoon = initSpoon(pathToCrawl);
         for (final CtInvocation<?> methodInvocation : spoon.getModel().getRootPackage()
                 .getElements(new TypeFilter<>(CtInvocation.class))) {
-            crawl(methodInvocation, findings, exasolErrors);
+            crawl(methodInvocation, findings, errorMessageDeclarations);
         }
-        return new Result(exasolErrors, findings);
+        return new Result(errorMessageDeclarations, findings);
     }
 
     private SpoonAPI initSpoon(final Path pathToCrawl) {
@@ -69,12 +69,12 @@ public class ErrorCrawler {
     /**
      * Find calls to {@link ErrorMessageBuilder#toString()} and then run it's target chain.
      * 
-     * @param methodInvocation method invocation to analyze
-     * @param findings         list of finding to append to
-     * @param exasolErrors     list of error codes to append to
+     * @param methodInvocation         method invocation to analyze
+     * @param findings                 list of finding to append to
+     * @param errorMessageDeclarations list of error codes to append to
      */
     private void crawl(final CtInvocation<?> methodInvocation, final List<Finding> findings,
-            final List<ExasolError> exasolErrors) {
+            final List<ErrorMessageDeclaration> errorMessageDeclarations) {
         final CtExecutableReference<?> method = methodInvocation.getExecutable();
         final CtTypeReference<?> declaringType = method.getDeclaringType();
         final String methodsClassName = declaringType.getSimpleName();
@@ -82,7 +82,7 @@ public class ErrorCrawler {
         if (methodsPackageName.equals(ERRORREPORTING_PACKAGE) && methodsClassName.equals(ERROR_MESSAGE_BUILDER)
                 && method.getSignature().equals("toString()")) {
             try {
-                exasolErrors.add(readErrorCode(methodInvocation));
+                errorMessageDeclarations.add(readErrorCode(methodInvocation));
             } catch (final CrawlFailedException exception) {
                 findings.add(exception.getFinding());
             }
@@ -90,7 +90,7 @@ public class ErrorCrawler {
     }
 
     /**
-     * Read one ExasolError code from a builder call.
+     * Read one ErrorMessageDeclaration code from a builder call.
      * <p>
      * This method iterates the builder call from the {@link ErrorMessageBuilder#toString()} to the
      * {@link ExaError#messageBuilder(String)}. So in the opposite order of invocation.During the iteration it collects
@@ -101,9 +101,9 @@ public class ErrorCrawler {
      * @return crawled ErrorCode
      * @throws CrawlFailedException in case the call has an invalid syntax
      */
-    private ExasolError readErrorCode(final CtInvocation<?> methodInvocation) throws CrawlFailedException {
+    private ErrorMessageDeclaration readErrorCode(final CtInvocation<?> methodInvocation) throws CrawlFailedException {
         CtExpression<?> target = methodInvocation.getTarget();
-        final ExasolError.Builder errorCodeBuilder = ExasolError.builder();
+        final ErrorMessageDeclaration.Builder errorCodeBuilder = ErrorMessageDeclaration.builder();
         while (target instanceof CtInvocation) {
             final CtInvocation<?> builderCall = (CtInvocation<?>) target;
             addBuilderStep(builderCall, errorCodeBuilder);
@@ -113,14 +113,15 @@ public class ErrorCrawler {
     }
 
     /**
-     * Read information from a call to a method of the {@link ErrorMessageBuilder} and add it to the passed errorCodeBuilder.
+     * Read information from a call to a method of the {@link ErrorMessageBuilder} and add it to the passed
+     * errorCodeBuilder.
      * 
      * @param builderCall      call to one of the methods of {@link ErrorMessageBuilder} or {@link ExaError}
      * @param errorCodeBuilder error code builder to add the error-code to.
      * @throws CrawlFailedException if the invocation is invalid
      */
-    private void addBuilderStep(final CtInvocation<?> builderCall, final ExasolError.Builder errorCodeBuilder)
-            throws CrawlFailedException {
+    private void addBuilderStep(final CtInvocation<?> builderCall,
+            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws CrawlFailedException {
         final CtExecutableReference<?> executable = builderCall.getExecutable();
         final CtTypeReference<?> declaringType = executable.getDeclaringType();
         final String declaringTypeName = declaringType.getSimpleName();
@@ -131,14 +132,15 @@ public class ErrorCrawler {
     }
 
     /**
-     * Read the error-code and the source code position from a call to {@link ExaError#messageBuilder(String)} and add them to the passed errorCodeBuilder.
+     * Read the error-code and the source code position from a call to {@link ExaError#messageBuilder(String)} and add
+     * them to the passed errorCodeBuilder.
      * 
      * @param builderCall      invocation of {@link ExaError#messageBuilder(String)}
      * @param errorCodeBuilder error code builder to add the error-code to.
      * @throws CrawlFailedException if the invocation is invalid
      */
-    private void readMessageBuilderStep(final CtInvocation<?> builderCall, final ExasolError.Builder errorCodeBuilder)
-            throws CrawlFailedException {
+    private void readMessageBuilderStep(final CtInvocation<?> builderCall,
+            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws CrawlFailedException {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         checkMessageBuildersArgumentLength(builderCall, arguments);
         final CtExpression<?> argument = arguments.get(0);
@@ -202,11 +204,11 @@ public class ErrorCrawler {
      * Result of {@link ErrorCrawler#crawl(Path)}
      */
     public static class Result {
-        private final List<ExasolError> exasolErrors;
+        private final List<ErrorMessageDeclaration> errorMessageDeclarations;
         private final List<Finding> findings;
 
-        private Result(final List<ExasolError> exasolErrors, final List<Finding> findings) {
-            this.exasolErrors = exasolErrors;
+        private Result(final List<ErrorMessageDeclaration> errorMessageDeclarations, final List<Finding> findings) {
+            this.errorMessageDeclarations = errorMessageDeclarations;
             this.findings = findings;
         }
 
@@ -215,8 +217,8 @@ public class ErrorCrawler {
          * 
          * @return crawled error codes
          */
-        public List<ExasolError> getErrorCodes() {
-            return this.exasolErrors;
+        public List<ErrorMessageDeclaration> getErrorCodes() {
+            return this.errorMessageDeclarations;
         }
 
         /**

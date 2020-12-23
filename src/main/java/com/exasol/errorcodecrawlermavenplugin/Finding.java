@@ -23,4 +23,9 @@ public class Finding {
     public String getMessage() {
         return this.message;
     }
+
+    @Override
+    public String toString() {
+        return "Finding{" + "message='" + this.message + '\'' + '}';
+    }
 }

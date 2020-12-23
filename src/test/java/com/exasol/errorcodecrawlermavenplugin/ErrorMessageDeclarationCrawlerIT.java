@@ -17,7 +17,8 @@ import org.apache.maven.it.util.ResourceExtractor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
-class ExasolErrorCrawlerIT {
+@Tag("integration")
+class ErrorMessageDeclarationCrawlerIT {
     private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.1.0.jar");
     private static final Path ERROR_CODE_CRAWLER_POM = Path.of("pom.xml");
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
@@ -35,7 +36,8 @@ class ExasolErrorCrawlerIT {
 
     @BeforeAll
     static void beforeAll() throws VerificationException, IOException {
-        final File testDir = ResourceExtractor.simpleExtractResources(ExasolErrorCrawlerIT.class, "/testProject");
+        final File testDir = ResourceExtractor.simpleExtractResources(ErrorMessageDeclarationCrawlerIT.class,
+                "/testProject");
         final Verifier verifier = new Verifier(testDir.getAbsolutePath());
         verifier.setCliOptions(List.of(//
                 "-Dfile=" + PLUGIN_JAR.toAbsolutePath().toString(), //
@@ -79,7 +81,7 @@ class ExasolErrorCrawlerIT {
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-4: Found duplicate error code: 'E-TEST-1' was declared multiple times: DuplicateErrorCode.java:8, DuplicateErrorCode.java:12."));
+                "[ERROR] E-ECM-4: Found duplicate error code: 'E-TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
     }
 
     private Verifier getVerifier() throws VerificationException {

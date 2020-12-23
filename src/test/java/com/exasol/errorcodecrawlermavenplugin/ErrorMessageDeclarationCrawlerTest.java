@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ExasolError;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
-class ExasolErrorCrawlerTest {
+class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
     private static final ErrorCrawler ERROR_CRAWLER = new ErrorCrawler(PROJECT_DIRECTORY, new String[] {});
 
@@ -21,14 +21,14 @@ class ExasolErrorCrawlerTest {
     void test() {
         final ErrorCrawler.Result result = ERROR_CRAWLER.crawl(
                 Path.of("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java").toAbsolutePath());
-        final List<ExasolError> errorCodes = result.getErrorCodes();
-        final ExasolError first = errorCodes.get(0);
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorCodes();
+        final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
                 () -> assertThat(errorCodes.size(), equalTo(1)),
                 () -> assertThat(first.getErrorCode(), equalTo("E-TEST-1")),
                 () -> assertThat(first.getSourceFile(),
                         equalTo("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")),
-                () -> assertThat(first.getLine(), equalTo(8))//
+                () -> assertThat(first.getLine(), equalTo(10))//
         );
     }
 
@@ -39,6 +39,6 @@ class ExasolErrorCrawlerTest {
         final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
                 .collect(Collectors.toList());
         assertThat(messages, containsInAnyOrder(
-                "E-ECM-2: ExaError#messageBuilder(String)'s parameter must be a literal. (IllegalErrorCodeFromFunction.java:8)"));
+                "E-ECM-2: ExaError#messageBuilder(String)'s parameter must be a literal. (IllegalErrorCodeFromFunction.java:10)"));
     }
 }
