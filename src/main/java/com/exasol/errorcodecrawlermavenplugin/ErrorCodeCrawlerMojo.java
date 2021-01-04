@@ -26,10 +26,14 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final List<Finding> findings = new LinkedList<>();
-        final ErrorCrawler.Result crawlResult = new ErrorCrawler(this.project.getBasedir().toPath(), getClasspath())
-                .crawl(this.project.getBasedir().toPath().resolve(Path.of("src", "main")));
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(
+                this.project.getBasedir().toPath(), getClasspath());
+        final Path srcMainPath = this.project.getBasedir().toPath().resolve(Path.of("src", "main"));
+        final Path srcTestPath = this.project.getBasedir().toPath().resolve(Path.of("src", "test"));
+        final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath)
+                .union(crawler.crawl(srcTestPath));
         findings.addAll(crawlResult.getFindings());
-        findings.addAll(new ExasolErrorValidator().validate(crawlResult.getErrorCodes()));
+        findings.addAll(new ErrorMessageDeclarationValidator().validate(crawlResult.getErrorMessageDeclarations()));
         if (!findings.isEmpty()) {
             final Log log = getLog();
             findings.forEach(finding -> log.error(finding.getMessage()));

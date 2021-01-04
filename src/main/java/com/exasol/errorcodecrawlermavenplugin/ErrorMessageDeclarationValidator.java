@@ -9,7 +9,7 @@ import com.exasol.errorreporting.ExaError;
 /**
  * Validator for {@link ErrorMessageDeclaration}s.
  */
-public class ExasolErrorValidator {
+public class ErrorMessageDeclarationValidator {
 
     /**
      * Validate the crawled error codes.
@@ -24,6 +24,12 @@ public class ExasolErrorValidator {
     }
 
     private List<Finding> findDuplicates(final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
+        final Map<String, List<String>> positionsPerCode = groupDeclarationsByErrorCode(errorMessageDeclarations);
+        return generateFindingsForDublicates(positionsPerCode);
+    }
+
+    private Map<String, List<String>> groupDeclarationsByErrorCode(
+            final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
         final Map<String, List<String>> positionsPerCode = new HashMap<>();
         for (final ErrorMessageDeclaration errorMessageDeclaration : errorMessageDeclarations) {
             final String errorCode = errorMessageDeclaration.getErrorCode();
@@ -33,12 +39,16 @@ public class ExasolErrorValidator {
                 positionsPerCode.put(errorCode, new LinkedList<>(List.of(getSourceReference(errorMessageDeclaration))));
             }
         }
+        return positionsPerCode;
+    }
+
+    private List<Finding> generateFindingsForDublicates(final Map<String, List<String>> positionsPerCode) {
         final List<Finding> findings = new ArrayList<>();
         for (final Map.Entry<String, List<String>> errorCode : positionsPerCode.entrySet()) {
             if (errorCode.getValue().size() > 1) {
                 findings.add(new Finding(ExaError.messageBuilder("E-ECM-4").message(
-                        "Found duplicate error code: {{exasolError}} was declared multiple times: {{declarations}}.")
-                        .parameter("exasolError", errorCode.getKey())
+                        "Found duplicate error code: {{errorCode}} was declared multiple times: {{declarations}}.")
+                        .parameter("errorCode", errorCode.getKey())
                         .unquotedParameter("declarations", String.join(", ", errorCode.getValue())).toString()));
             }
         }

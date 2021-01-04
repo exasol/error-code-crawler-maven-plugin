@@ -1,5 +1,8 @@
 package com.exasol.errorcodecrawlermavenplugin.model;
 
+/**
+ * This class represents declaration
+ */
 public class ErrorMessageDeclaration {
     private final String errorCode;
     private final String message;

@@ -18,7 +18,7 @@ import spoon.reflect.visitor.filter.TypeFilter;
 /**
  * Crawler that reads invocations of {@link com.exasol.errorreporting.ExaError#messageBuilder(String)}.
  */
-public class ErrorCrawler {
+public class ErrorMessageDeclarationCrawler {
     private static final String POSITION = "position";
     private static final String ERRORREPORTING_PACKAGE = "com.exasol.errorreporting";
     private static final String ERROR_MESSAGE_BUILDER = "ErrorMessageBuilder";
@@ -26,14 +26,14 @@ public class ErrorCrawler {
     private final String[] classPath;
 
     /**
-     * Create a new instance of {@link ErrorCrawler}.
+     * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
      * 
      * @param projectDirectory project directory to which all paths as relative for paths in messages
      * @param classPath        classPath with the dependencies of the classes to crawl. In the unit-tests for some
      *                         reason this can be empty. Probably Spoon then picks the class path of this project. When
      *                         run from a jar the classpath is however required.
      */
-    public ErrorCrawler(final Path projectDirectory, final String[] classPath) {
+    public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath) {
         this.projectDirectory = projectDirectory;
         this.classPath = classPath;
     }
@@ -201,7 +201,7 @@ public class ErrorCrawler {
     }
 
     /**
-     * Result of {@link ErrorCrawler#crawl(Path)}
+     * Result of {@link ErrorMessageDeclarationCrawler#crawl(Path)}
      */
     public static class Result {
         private final List<ErrorMessageDeclaration> errorMessageDeclarations;
@@ -217,7 +217,7 @@ public class ErrorCrawler {
          * 
          * @return crawled error codes
          */
-        public List<ErrorMessageDeclaration> getErrorCodes() {
+        public List<ErrorMessageDeclaration> getErrorMessageDeclarations() {
             return this.errorMessageDeclarations;
         }
 
@@ -228,6 +228,24 @@ public class ErrorCrawler {
          */
         public List<Finding> getFindings() {
             return this.findings;
+        }
+
+        /**
+         * Build the union of this result and another one.
+         * <p>
+         * This method does not modify this result but returns a new one.
+         * </p>
+         *
+         * @param other other result
+         * @return union of this result and the other
+         */
+        public Result union(final Result other) {
+            final List<ErrorMessageDeclaration> errorMessageDeclarationsUnion = new ArrayList<>(
+                    this.errorMessageDeclarations);
+            final List<Finding> findingsUnion = new ArrayList<>(this.findings);
+            errorMessageDeclarationsUnion.addAll(other.getErrorMessageDeclarations());
+            findingsUnion.addAll(other.getFindings());
+            return new Result(errorMessageDeclarationsUnion, findingsUnion);
         }
     }
 }

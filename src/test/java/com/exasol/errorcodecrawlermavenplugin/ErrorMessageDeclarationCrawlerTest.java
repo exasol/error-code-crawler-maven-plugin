@@ -15,13 +15,14 @@ import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
-    private static final ErrorCrawler ERROR_CRAWLER = new ErrorCrawler(PROJECT_DIRECTORY, new String[] {});
+    private static final ErrorMessageDeclarationCrawler ERROR_CRAWLER = new ErrorMessageDeclarationCrawler(
+            PROJECT_DIRECTORY, new String[] {});
 
     @Test
     void test() {
-        final ErrorCrawler.Result result = ERROR_CRAWLER.crawl(
+        final ErrorMessageDeclarationCrawler.Result result = ERROR_CRAWLER.crawl(
                 Path.of("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java").toAbsolutePath());
-        final List<ErrorMessageDeclaration> errorCodes = result.getErrorCodes();
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
                 () -> assertThat(errorCodes.size(), equalTo(1)),
@@ -34,7 +35,7 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testIllegalErrorCodeFromFunction() {
-        final ErrorCrawler.Result result = ERROR_CRAWLER.crawl(Path
+        final ErrorMessageDeclarationCrawler.Result result = ERROR_CRAWLER.crawl(Path
                 .of("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/IllegalErrorCodeFromFunction.java"));
         final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
                 .collect(Collectors.toList());

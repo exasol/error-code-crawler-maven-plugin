@@ -6,13 +6,13 @@ jdk:
 addons:
   sonarcloud:
     organization: exasol
-
+    token:
+      secure: jdwBv9BtuMFoL9Ya5To1cTEZ5K9k52Z/cNp4vopFafJGFB4NKUDSNCQ9AsIdWP3kGCdmXilN6fz9df7lKGBw8TYwlRAxUwst3kDgkH9wI0XuJDT3HjMGL2SrKXA6vQZ7zqhQBxZHjKvvYLj67L5dXwCH0AKSTyuTdco8L6VkQ1nz8mnL+hDjT2+zRqb4DqGareao2/CCfRXa8bkUZyZ4H0xfQMTJjRlME9DwQ/3QnXc7ZCbQ6Oy47G48twelUznwslnpgp1941mhDx+cTHbIVAXvcGmAiP7HptDxJ7BlAChvtUa4q/ljkq7O+2gI3N3bJFVXoQLQfwPq0o1yqfWu7qDP7yVPtsHJ/nml054mvI1EFejTTlsFTuaO9FLOZ4KJ35in+0RYi4bbxJgMFDQqqZjwl19aeWKqx6QJCykxtnUs7xDrx/GKJttHwSJZPwWPt+H8+v34XvV4x4bU7MJj61FnXBk2Qh8VypxygFpvdG8X/esBQ6K4IGrb+DXGsEu7U/sjmVBQ6Ial9I4uN58RvIvl2GS9vs09P/bzATgSIdKNI2+aeLJvFvLtsn6BCFzNNRj4Ej9XEZE0FsuEI6I8fKBsdbyZjosz65y3nSGysW8lU6UOqeFOH1X5gmdTimzfd0KE38Iq864ytFEy8UtZa+cuweurbJfK5LwEcbIFqYw=
 install:
   - travis_retry mvn dependency:resolve
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
-
 cache:
   directories:
     - "$HOME/.m2"

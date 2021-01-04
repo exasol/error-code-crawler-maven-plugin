@@ -17,6 +17,11 @@ import org.apache.maven.it.util.ResourceExtractor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 
+/**
+ * This integration test tests the maven plugin in a save environment. Since we don't want to install the plugin to the
+ * user's maven repository, it creates a temporary maven home, and installs the plugin there. Then the test creates a
+ * temporary project, runs the plugin on that project and checks the output.
+ */
 @Tag("integration")
 class ErrorMessageDeclarationCrawlerIT {
     private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.1.0.jar");
@@ -33,6 +38,12 @@ class ErrorMessageDeclarationCrawlerIT {
      */
     private Path projectDir;
     private Path projectsSrc;
+    /**
+     * When you enable debugging here, connect with a debugger to localhost:8000 during the test run. Since zhe test
+     * wait for the debugger, this should be disabled on commits so that CI runs through.
+     */
+    private static final boolean DEBUG = false;
+    private Path projectsTestSrc;
 
     @BeforeAll
     static void beforeAll() throws VerificationException, IOException {
@@ -52,7 +63,9 @@ class ErrorMessageDeclarationCrawlerIT {
         this.projectDir = Files.createTempDirectory("mavenRepo");
         this.projectsSrc = this.projectDir
                 .resolve(Path.of("src", "main", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
-        if (!this.projectsSrc.toFile().mkdirs()) {
+        this.projectsTestSrc = this.projectDir
+                .resolve(Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+        if (!(this.projectsSrc.toFile().mkdirs() && this.projectsTestSrc.toFile().mkdirs())) {
             throw new IllegalStateException("Failed to create test projects src folder.");
         }
         Files.copy(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("testProject/pom.xml")),
@@ -84,11 +97,24 @@ class ErrorMessageDeclarationCrawlerIT {
                 "[ERROR] E-ECM-4: Found duplicate error code: 'E-TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
     }
 
+    @Test
+    void testDuplicateErrorCodeInTest() throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve("DuplicateErrorCode.java"),
+                this.projectsTestSrc.resolve("DuplicateErrorCode.java"), StandardCopyOption.REPLACE_EXISTING);
+        final Verifier verifier = getVerifier();
+        final VerificationException exception = assertThrows(VerificationException.class,
+                () -> verifier.executeGoal("error-code-crawler:verify"));
+        assertThat(exception.getMessage(), containsString(
+                "[ERROR] E-ECM-4: Found duplicate error code: 'E-TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
+    }
+
     private Verifier getVerifier() throws VerificationException {
         final Verifier verifier = new Verifier(this.projectDir.toFile().getAbsolutePath());
         verifier.setLocalRepo(mavenRepo.toAbsolutePath().toString());
-        // verifier.setDebug(true);
-        // verifier.setDebugJvm(true);
+        if (DEBUG) {
+            verifier.setDebug(true);
+            verifier.setDebugJvm(true);
+        }
         return verifier;
     }
 }

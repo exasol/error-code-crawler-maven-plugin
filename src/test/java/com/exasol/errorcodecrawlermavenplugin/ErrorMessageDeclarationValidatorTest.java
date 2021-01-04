@@ -23,7 +23,7 @@ class ErrorMessageDeclarationValidatorTest {
 
     private void assertValidationHasFindingsWithMessage(final List<ErrorMessageDeclaration> errors,
             final String... expectedMessages) {
-        final List<Finding> findings = new ExasolErrorValidator().validate(errors);
+        final List<Finding> findings = new ErrorMessageDeclarationValidator().validate(errors);
         assertThat(findings.stream().map(Finding::getMessage).collect(Collectors.toList()),
                 containsInAnyOrder(expectedMessages));
     }
