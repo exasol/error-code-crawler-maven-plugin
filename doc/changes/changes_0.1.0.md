@@ -5,3 +5,7 @@ Code name: Initial release
 ## Features / Enhancements
 
 * #6: Added the initial implementation
+
+## Bug Fixes
+
+* #8: Fixed CVE-2020-8908 by excluding guava dependency
