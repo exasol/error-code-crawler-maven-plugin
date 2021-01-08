@@ -1,4 +1,4 @@
-#error-code-crawler-maven-plugin 0.1.0, released 2020-12-08
+#error-code-crawler-maven-plugin 0.1.0, released 2021-01-08
 
 Code name: Initial release
 
