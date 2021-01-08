@@ -55,12 +55,12 @@ public class ErrorMessageDeclarationCrawler {
         return new Result(errorMessageDeclarations, findings);
     }
 
-    private SpoonAPI initSpoon(final Path... pathToCrawl) {
+    private SpoonAPI initSpoon(final Path... pathsToCrawl) {
         final SpoonAPI spoon = new Launcher();
         final Environment environment = spoon.getEnvironment();
         environment.setSourceClasspath(this.classPath);
         environment.setNoClasspath(false);
-        for (final Path path : pathToCrawl) {
+        for (final Path path : pathsToCrawl) {
             spoon.addInputResource(path.toString());
         }
         spoon.buildModel();
