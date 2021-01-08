@@ -1,4 +1,4 @@
-#error-code-crawler-maven-plugin 0.1.0, released 2020-??-??
+#error-code-crawler-maven-plugin 0.1.0, released 2020-12-08
 
 Code name: Initial release
 
@@ -9,3 +9,4 @@ Code name: Initial release
 ## Bug Fixes
 
 * #8: Fixed CVE-2020-8908 by excluding guava dependency
+* #11: Fixed NullPointerException when running in cloudwatch-adapter project
