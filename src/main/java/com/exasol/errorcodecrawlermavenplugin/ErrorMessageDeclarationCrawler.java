@@ -41,13 +41,13 @@ public class ErrorMessageDeclarationCrawler {
     /**
      * Crawl error codes for a file / folder.
      * 
-     * @param pathToCrawl file / folder to crawl.
+     * @param pathsToCrawl file(s) / folder(s) to crawl.
      * @return {@link Result} with found error codes and findings
      */
-    public Result crawl(final Path pathToCrawl) {
+    public Result crawl(final Path... pathsToCrawl) {
         final List<Finding> findings = new LinkedList<>();
         final List<ErrorMessageDeclaration> errorMessageDeclarations = new ArrayList<>();
-        final SpoonAPI spoon = initSpoon(pathToCrawl);
+        final SpoonAPI spoon = initSpoon(pathsToCrawl);
         for (final CtInvocation<?> methodInvocation : spoon.getModel().getRootPackage()
                 .getElements(new TypeFilter<>(CtInvocation.class))) {
             crawl(methodInvocation, findings, errorMessageDeclarations);
@@ -55,12 +55,14 @@ public class ErrorMessageDeclarationCrawler {
         return new Result(errorMessageDeclarations, findings);
     }
 
-    private SpoonAPI initSpoon(final Path pathToCrawl) {
+    private SpoonAPI initSpoon(final Path... pathsToCrawl) {
         final SpoonAPI spoon = new Launcher();
         final Environment environment = spoon.getEnvironment();
         environment.setSourceClasspath(this.classPath);
         environment.setNoClasspath(false);
-        spoon.addInputResource(pathToCrawl.toString());
+        for (final Path path : pathsToCrawl) {
+            spoon.addInputResource(path.toString());
+        }
         spoon.buildModel();
         spoon.getFactory();
         return spoon;
@@ -77,7 +79,13 @@ public class ErrorMessageDeclarationCrawler {
             final List<ErrorMessageDeclaration> errorMessageDeclarations) {
         final CtExecutableReference<?> method = methodInvocation.getExecutable();
         final CtTypeReference<?> declaringType = method.getDeclaringType();
+        if (declaringType == null) {
+            return;
+        }
         final String methodsClassName = declaringType.getSimpleName();
+        if (declaringType.getPackage() == null) {
+            return;
+        }
         final String methodsPackageName = declaringType.getPackage().getQualifiedName();
         if (methodsPackageName.equals(ERRORREPORTING_PACKAGE) && methodsClassName.equals(ERROR_MESSAGE_BUILDER)
                 && method.getSignature().equals("toString()")) {
@@ -201,7 +209,7 @@ public class ErrorMessageDeclarationCrawler {
     }
 
     /**
-     * Result of {@link ErrorMessageDeclarationCrawler#crawl(Path)}
+     * Result of {@link ErrorMessageDeclarationCrawler#crawl(Path...)}
      */
     public static class Result {
         private final List<ErrorMessageDeclaration> errorMessageDeclarations;
@@ -228,24 +236,6 @@ public class ErrorMessageDeclarationCrawler {
          */
         public List<Finding> getFindings() {
             return this.findings;
-        }
-
-        /**
-         * Build the union of this result and another one.
-         * <p>
-         * This method does not modify this result but returns a new one.
-         * </p>
-         *
-         * @param other other result
-         * @return union of this result and the other
-         */
-        public Result union(final Result other) {
-            final List<ErrorMessageDeclaration> errorMessageDeclarationsUnion = new ArrayList<>(
-                    this.errorMessageDeclarations);
-            final List<Finding> findingsUnion = new ArrayList<>(this.findings);
-            errorMessageDeclarationsUnion.addAll(other.getErrorMessageDeclarations());
-            findingsUnion.addAll(other.getFindings());
-            return new Result(errorMessageDeclarationsUnion, findingsUnion);
         }
     }
 }

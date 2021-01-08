@@ -30,22 +30,22 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
                 this.project.getBasedir().toPath(), getClasspath());
         final Path srcMainPath = this.project.getBasedir().toPath().resolve(Path.of("src", "main"));
         final Path srcTestPath = this.project.getBasedir().toPath().resolve(Path.of("src", "test"));
-        final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath)
-                .union(crawler.crawl(srcTestPath));
+        final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath, srcTestPath);
         findings.addAll(crawlResult.getFindings());
         findings.addAll(new ErrorMessageDeclarationValidator().validate(crawlResult.getErrorMessageDeclarations()));
+        final Log log = getLog();
         if (!findings.isEmpty()) {
-            final Log log = getLog();
             findings.forEach(finding -> log.error(finding.getMessage()));
             throw new MojoFailureException(ExaError.messageBuilder("E-ECM-3")
                     .message("Error code validation had errors (see previous errors).").toString());
         }
+        log.info("Found " + crawlResult.getErrorMessageDeclarations().size() + " valid error message declarations.");
     }
 
     /**
      * Get the class path of project under test.
      * 
-     * @implNote We skip tge first entry of the compile classpath and the first two of the test class path since these
+     * @implNote We skip the first entry of the compile classpath and the first two of the test class path since these
      *           are the built classes and test-classes.
      * 
      * @return the class path
