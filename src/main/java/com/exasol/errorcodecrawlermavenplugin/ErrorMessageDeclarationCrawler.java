@@ -209,7 +209,7 @@ public class ErrorMessageDeclarationCrawler {
     }
 
     /**
-     * Result of {@link ErrorMessageDeclarationCrawler#crawl(Path)}
+     * Result of {@link ErrorMessageDeclarationCrawler#crawl(Path...)}
      */
     public static class Result {
         private final List<ErrorMessageDeclaration> errorMessageDeclarations;
