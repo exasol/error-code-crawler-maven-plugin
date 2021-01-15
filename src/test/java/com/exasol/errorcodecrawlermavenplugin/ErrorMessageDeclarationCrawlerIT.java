@@ -24,7 +24,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @Tag("integration")
 class ErrorMessageDeclarationCrawlerIT {
-    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.1.0.jar");
+    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.1.1.jar");
     private static final Path ERROR_CODE_CRAWLER_POM = Path.of("pom.xml");
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
@@ -80,6 +80,15 @@ class ErrorMessageDeclarationCrawlerIT {
     @Test
     void testValidCrawling() throws VerificationException, IOException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
+                StandardCopyOption.REPLACE_EXISTING);
+        final Verifier verifier = getVerifier();
+        verifier.executeGoal("error-code-crawler:verify");
+        verifier.verifyErrorFreeLog();
+    }
+
+    @Test
+    void testCrawlingWithHigherLanguageLevel() throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectsSrc.resolve("Java10.java"),
                 StandardCopyOption.REPLACE_EXISTING);
         final Verifier verifier = getVerifier();
         verifier.executeGoal("error-code-crawler:verify");

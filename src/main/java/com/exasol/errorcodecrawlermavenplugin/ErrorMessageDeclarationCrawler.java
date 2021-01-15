@@ -24,6 +24,7 @@ public class ErrorMessageDeclarationCrawler {
     private static final String ERROR_MESSAGE_BUILDER = "ErrorMessageBuilder";
     private final Path projectDirectory;
     private final String[] classPath;
+    private final int javaLanguageLevel;
 
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
@@ -33,9 +34,11 @@ public class ErrorMessageDeclarationCrawler {
      *                         reason this can be empty. Probably Spoon then picks the class path of this project. When
      *                         run from a jar the classpath is however required.
      */
-    public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath) {
+    public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath,
+            final int javaLanguageLevel) {
         this.projectDirectory = projectDirectory;
         this.classPath = classPath;
+        this.javaLanguageLevel = javaLanguageLevel;
     }
 
     /**
@@ -60,6 +63,7 @@ public class ErrorMessageDeclarationCrawler {
         final Environment environment = spoon.getEnvironment();
         environment.setSourceClasspath(this.classPath);
         environment.setNoClasspath(false);
+        environment.setComplianceLevel(this.javaLanguageLevel);
         for (final Path path : pathsToCrawl) {
             spoon.addInputResource(path.toString());
         }
