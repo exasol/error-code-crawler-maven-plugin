@@ -29,10 +29,11 @@ public class ErrorMessageDeclarationCrawler {
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
      * 
-     * @param projectDirectory project directory to which all paths as relative for paths in messages
-     * @param classPath        classPath with the dependencies of the classes to crawl. In the unit-tests for some
-     *                         reason this can be empty. Probably Spoon then picks the class path of this project. When
-     *                         run from a jar the classpath is however required.
+     * @param projectDirectory  project directory to which all paths as relative for paths in messages
+     * @param classPath         classPath with the dependencies of the classes to crawl. In the unit-tests for some
+     *                          reason this can be empty. Probably Spoon then picks the class path of this project. When
+     *                          run from a jar the classpath is however required.
+     * @param javaLanguageLevel java language level of the project
      */
     public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath,
             final int javaLanguageLevel) {
