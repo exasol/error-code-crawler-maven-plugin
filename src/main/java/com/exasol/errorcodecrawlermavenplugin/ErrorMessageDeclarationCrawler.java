@@ -24,7 +24,7 @@ public class ErrorMessageDeclarationCrawler {
     private static final String ERROR_MESSAGE_BUILDER = "ErrorMessageBuilder";
     private final Path projectDirectory;
     private final String[] classPath;
-    private final int javaLanguageLevel;
+    private final int javaSourceVersion;
 
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
@@ -33,13 +33,13 @@ public class ErrorMessageDeclarationCrawler {
      * @param classPath         classPath with the dependencies of the classes to crawl. In the unit-tests for some
      *                          reason this can be empty. Probably Spoon then picks the class path of this project. When
      *                          run from a jar the classpath is however required.
-     * @param javaLanguageLevel java language level of the project
+     * @param javaSourceVersion java source version / language level of the project
      */
     public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath,
-            final int javaLanguageLevel) {
+            final int javaSourceVersion) {
         this.projectDirectory = projectDirectory;
         this.classPath = classPath;
-        this.javaLanguageLevel = javaLanguageLevel;
+        this.javaSourceVersion = javaSourceVersion;
     }
 
     /**
@@ -64,7 +64,7 @@ public class ErrorMessageDeclarationCrawler {
         final Environment environment = spoon.getEnvironment();
         environment.setSourceClasspath(this.classPath);
         environment.setNoClasspath(false);
-        environment.setComplianceLevel(this.javaLanguageLevel);
+        environment.setComplianceLevel(this.javaSourceVersion);
         for (final Path path : pathsToCrawl) {
             spoon.addInputResource(path.toString());
         }

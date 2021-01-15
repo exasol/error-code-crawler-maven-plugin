@@ -29,7 +29,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         final List<Finding> findings = new LinkedList<>();
         final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(
-                this.project.getBasedir().toPath(), getClasspath(), getJavaLanguageLevel());
+                this.project.getBasedir().toPath(), getClasspath(), getJavaSourceVersion());
         final Path srcMainPath = this.project.getBasedir().toPath().resolve(Path.of("src", "main"));
         final Path srcTestPath = this.project.getBasedir().toPath().resolve(Path.of("src", "test"));
         final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath, srcTestPath);
@@ -44,20 +44,20 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         log.info("Found " + crawlResult.getErrorMessageDeclarations().size() + " valid error message declarations.");
     }
 
-    private int getJavaLanguageLevel() {
+    private int getJavaSourceVersion() {
         try {
             final Plugin compilerPlugin = this.project.getPlugin("org.apache.maven.plugins:maven-compiler-plugin");
             final Xpp3Dom configuration = (Xpp3Dom) compilerPlugin.getConfiguration();
             final String value = configuration.getChild("source").getValue();
             return Integer.parseInt(value);
         } catch (final Exception exception) {
-            final int defaultLevel = 5;
+            final int sourceVersion = 5;
             getLog().warn(ExaError.messageBuilder("W-ECM-5")
-                    .message("Failed to read java language level from POM file. Falling back to {{level}}.")
+                    .message("Failed to read java source version from POM file. Falling back to {{version}}.")
                     .mitigation(
-                            "This plugin reads the language level from the configuration of the maven-compiler-plugin. Check that the version is defined there correctly.")
-                    .parameter("level", defaultLevel).toString());
-            return defaultLevel;
+                            "This plugin reads the java source version from the configuration of the maven-compiler-plugin. Check that the version is defined there correctly.")
+                    .parameter("version", sourceVersion).toString());
+            return sourceVersion;
         }
     }
 

@@ -87,7 +87,7 @@ class ErrorMessageDeclarationCrawlerIT {
     }
 
     @Test
-    void testCrawlingWithHigherLanguageLevel() throws VerificationException, IOException {
+    void testCrawlingWithHigherJavaSourceVersion() throws VerificationException, IOException {
         Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectsSrc.resolve("Java10.java"),
                 StandardCopyOption.REPLACE_EXISTING);
         final Verifier verifier = getVerifier();
