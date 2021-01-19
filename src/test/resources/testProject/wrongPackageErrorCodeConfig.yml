@@ -1,0 +1,5 @@
+error-tags:
+  TEST:
+    packages:
+      - com.other
+    highest-index: 100

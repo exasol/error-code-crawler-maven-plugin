@@ -4,15 +4,17 @@ package com.exasol.errorcodecrawlermavenplugin.model;
  * This class represents declaration
  */
 public class ErrorMessageDeclaration {
-    private final String errorCode;
+    private final ErrorCode errorCode;
     private final String message;
     private final String sourceFile;
     private final int line;
+    private final String declaringPackage;
 
     private ErrorMessageDeclaration(final Builder builder) {
         this.errorCode = builder.errorCode;
         this.message = builder.messageBuilder.toString();
         this.sourceFile = builder.sourceFile;
+        this.declaringPackage = builder.declaringPackage;
         this.line = builder.line;
     }
 
@@ -25,7 +27,7 @@ public class ErrorMessageDeclaration {
      *
      * @return error code
      */
-    public String getErrorCode() {
+    public ErrorCode getErrorCode() {
         return this.errorCode;
     }
 
@@ -47,11 +49,21 @@ public class ErrorMessageDeclaration {
         return this.line;
     }
 
+    /**
+     * Get the declaring java package.
+     * 
+     * @return declaring java package
+     */
+    public String getDeclaringPackage() {
+        return this.declaringPackage;
+    }
+
     public static class Builder {
         private final StringBuilder messageBuilder = new StringBuilder();
-        private String errorCode;
+        private ErrorCode errorCode;
         private String sourceFile;
         private int line = -1;
+        private String declaringPackage;
 
         private Builder() {
         }
@@ -62,7 +74,7 @@ public class ErrorMessageDeclaration {
          * @param errorCode error code to add
          * @return self for fluent programming
          */
-        public Builder errorCode(final String errorCode) {
+        public Builder errorCode(final ErrorCode errorCode) {
             this.errorCode = errorCode;
             return this;
         }
@@ -77,6 +89,17 @@ public class ErrorMessageDeclaration {
         public Builder setPosition(final String sourceFile, final int line) {
             this.sourceFile = sourceFile;
             this.line = line;
+            return this;
+        }
+
+        /**
+         * Set the declaring java-package.
+         * 
+         * @param declaringPackage declaring java package
+         * @return self for fluent programming
+         */
+        public Builder declaringPackage(final String declaringPackage) {
+            this.declaringPackage = declaringPackage;
             return this;
         }
 

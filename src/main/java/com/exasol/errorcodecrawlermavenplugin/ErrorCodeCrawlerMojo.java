@@ -14,6 +14,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
+import com.exasol.errorcodecrawlermavenplugin.config.*;
 import com.exasol.errorreporting.ExaError;
 
 /**
@@ -27,14 +28,17 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        final Path projectDir = this.project.getBasedir().toPath();
+        final ErrorCodeConfig config = readConfig(projectDir);
         final List<Finding> findings = new LinkedList<>();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(
-                this.project.getBasedir().toPath(), getClasspath(), getJavaSourceVersion());
-        final Path srcMainPath = this.project.getBasedir().toPath().resolve(Path.of("src", "main"));
-        final Path srcTestPath = this.project.getBasedir().toPath().resolve(Path.of("src", "test"));
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(),
+                getJavaSourceVersion());
+        final Path srcMainPath = projectDir.resolve(Path.of("src", "main"));
+        final Path srcTestPath = projectDir.resolve(Path.of("src", "test"));
         final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath, srcTestPath);
         findings.addAll(crawlResult.getFindings());
-        findings.addAll(new ErrorMessageDeclarationValidator().validate(crawlResult.getErrorMessageDeclarations()));
+        findings.addAll(
+                new ErrorMessageDeclarationValidator(config).validate(crawlResult.getErrorMessageDeclarations()));
         final Log log = getLog();
         if (!findings.isEmpty()) {
             findings.forEach(finding -> log.error(finding.getMessage()));
@@ -42,6 +46,14 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
                     .message("Error code validation had errors (see previous errors).").toString());
         }
         log.info("Found " + crawlResult.getErrorMessageDeclarations().size() + " valid error message declarations.");
+    }
+
+    private ErrorCodeConfig readConfig(final Path projectDir) throws MojoFailureException {
+        try {
+            return new ErrorCodeConfigReader(projectDir).read();
+        } catch (final ErrorCodeConfigException exception) {
+            throw new MojoFailureException(exception.getMessage(), exception.getCause());
+        }
     }
 
     private int getJavaSourceVersion() {

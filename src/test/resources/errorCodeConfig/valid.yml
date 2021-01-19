@@ -1,0 +1,5 @@
+error-tags:
+  EXM:
+    packages:
+      - com.exasol.example
+    highest-index: 6

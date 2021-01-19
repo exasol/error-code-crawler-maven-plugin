@@ -11,6 +11,8 @@ import spoon.Launcher;
 import spoon.SpoonAPI;
 import spoon.compiler.Environment;
 import spoon.reflect.code.*;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtPackage;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
@@ -25,6 +27,7 @@ public class ErrorMessageDeclarationCrawler {
     private final Path projectDirectory;
     private final String[] classPath;
     private final int javaSourceVersion;
+    private static final ErrorCodeReader ERROR_CODE_READER = new ErrorCodeReader();;
 
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
@@ -56,6 +59,7 @@ public class ErrorMessageDeclarationCrawler {
                 .getElements(new TypeFilter<>(CtInvocation.class))) {
             crawl(methodInvocation, findings, errorMessageDeclarations);
         }
+
         return new Result(errorMessageDeclarations, findings);
     }
 
@@ -82,6 +86,7 @@ public class ErrorMessageDeclarationCrawler {
      */
     private void crawl(final CtInvocation<?> methodInvocation, final List<Finding> findings,
             final List<ErrorMessageDeclaration> errorMessageDeclarations) {
+
         final CtExecutableReference<?> method = methodInvocation.getExecutable();
         final CtTypeReference<?> declaringType = method.getDeclaringType();
         if (declaringType == null) {
@@ -100,6 +105,15 @@ public class ErrorMessageDeclarationCrawler {
                 findings.add(exception.getFinding());
             }
         }
+    }
+
+    private String getMethodsPackageName(final CtInvocation<?> methodInvocation) {
+        CtElement parent = methodInvocation.getParent();
+        while (!(parent instanceof CtPackage)) {
+            parent = parent.getParent();
+        }
+        final CtPackage methodsPackage = (CtPackage) parent;
+        return methodsPackage.getQualifiedName();
     }
 
     /**
@@ -122,6 +136,7 @@ public class ErrorMessageDeclarationCrawler {
             addBuilderStep(builderCall, errorCodeBuilder);
             target = builderCall.getTarget();
         }
+        errorCodeBuilder.declaringPackage(getMethodsPackageName(methodInvocation));
         return errorCodeBuilder.build();
     }
 
@@ -162,7 +177,7 @@ public class ErrorMessageDeclarationCrawler {
         final Object argumentValue = argumentLiteralValue.getValue();
         checkMessageBuildersArgumentValueIsString(builderCall, argumentValue);
         final String errorCode = (String) argumentValue;
-        errorCodeBuilder.errorCode(errorCode);
+        errorCodeBuilder.errorCode(ERROR_CODE_READER.read(errorCode, getFormattedPosition(builderCall)));
         errorCodeBuilder.setPosition(
                 this.projectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
                 builderCall.getPosition().getLine());
@@ -199,18 +214,6 @@ public class ErrorMessageDeclarationCrawler {
 
     private String getFormattedPosition(final CtInvocation<?> invocation) {
         return invocation.getPosition().getFile().getName() + ":" + invocation.getPosition().getLine();
-    }
-
-    private static class CrawlFailedException extends Exception {
-        private final transient Finding finding;
-
-        public CrawlFailedException(final String message) {
-            this.finding = new Finding(message);
-        }
-
-        public Finding getFinding() {
-            return this.finding;
-        }
     }
 
     /**
