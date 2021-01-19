@@ -10,4 +10,8 @@ Code name:
 
 * #19: Duplicates not detected with different error types
 
+## Dependency Updates:
 
+* Added `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.1`
+* Added `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.1`
+* Added `nl.jqno.equalsverifier:equalsverifier:3.5.1`
