@@ -10,7 +10,7 @@ import com.exasol.errorreporting.ExaError;
  * This class reads {@link ErrorCode}s from their string representation.
  */
 public class ErrorCodeReader {
-    private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("([^-]+)-([^-]+(?:-[^-]+)*)-(\\d+)");
+    private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("([^-]+)-([^-]+(?:-[^\\d][^-]+)*+)-(\\d+)");
 
     /**
      * Read an {@link ErrorCode}s from it's string representation.
