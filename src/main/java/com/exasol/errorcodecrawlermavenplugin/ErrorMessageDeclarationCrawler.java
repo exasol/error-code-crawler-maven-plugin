@@ -27,7 +27,7 @@ public class ErrorMessageDeclarationCrawler {
     private final Path projectDirectory;
     private final String[] classPath;
     private final int javaSourceVersion;
-    private static final ErrorCodeReader ERROR_CODE_READER = new ErrorCodeReader();;
+    private static final ErrorCodeReader ERROR_CODE_READER = new ErrorCodeReader();
 
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
