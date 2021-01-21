@@ -3,15 +3,15 @@ package com.exasol.errorcodecrawlermavenplugin;
 /**
  * Exception that is thrown if the error declaration crawling found an syntax error.
  */
-class CrawlFailedException extends Exception {
+class InvalidSyntaxException extends Exception {
     private final transient Finding finding;
 
     /**
-     * Create a new instance of {@link CrawlFailedException}.
+     * Create a new instance of {@link InvalidSyntaxException}.
      * 
      * @param message message for the {@link Finding}.
      */
-    public CrawlFailedException(final String message) {
+    public InvalidSyntaxException(final String message) {
         this.finding = new Finding(message);
     }
 

@@ -58,7 +58,7 @@ class ErrorMessageDeclarationValidatorTest {
                 .of(ErrorMessageDeclaration.builder().errorCode(new ErrorCode(ErrorCode.Type.E, "UNKNOWN", 1))
                         .declaringPackage(EXAMPLE_PACKAGE).setPosition("src/test/Test.java", 1).build());
         assertValidationHasFindingsWithMessage(errors,
-                "E-ECM-12: The error tag 'UNKNOWN' was not declared in the errorCodeConfig.yml. Check if it is just a type and if not add an entry for 'UNKNOWN' and package 'com.example'.");
+                "E-ECM-12: The error tag 'UNKNOWN' was not declared in the errorCodeConfig.yml. Check if it is just a typo and if not add an entry for 'UNKNOWN' and package 'com.example'.");
     }
 
     @Test

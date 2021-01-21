@@ -27,7 +27,7 @@ public class ErrorMessageDeclarationCrawler {
     private final Path projectDirectory;
     private final String[] classPath;
     private final int javaSourceVersion;
-    private static final ErrorCodeReader ERROR_CODE_READER = new ErrorCodeReader();
+    private static final ErrorCodeParser ERROR_CODE_READER = new ErrorCodeParser();
 
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
@@ -99,7 +99,7 @@ public class ErrorMessageDeclarationCrawler {
                 && method.getSignature().equals("toString()")) {
             try {
                 errorMessageDeclarations.add(readErrorCode(methodInvocation));
-            } catch (final CrawlFailedException exception) {
+            } catch (final InvalidSyntaxException exception) {
                 findings.add(exception.getFinding());
             }
         }
@@ -124,9 +124,10 @@ public class ErrorMessageDeclarationCrawler {
      * 
      * @param methodInvocation invocation of {@link ErrorMessageBuilder#toString()}
      * @return crawled ErrorCode
-     * @throws CrawlFailedException in case the call has an invalid syntax
+     * @throws InvalidSyntaxException in case the call has an invalid syntax
      */
-    private ErrorMessageDeclaration readErrorCode(final CtInvocation<?> methodInvocation) throws CrawlFailedException {
+    private ErrorMessageDeclaration readErrorCode(final CtInvocation<?> methodInvocation)
+            throws InvalidSyntaxException {
         CtExpression<?> target = methodInvocation.getTarget();
         final ErrorMessageDeclaration.Builder errorCodeBuilder = ErrorMessageDeclaration.builder();
         while (target instanceof CtInvocation) {
@@ -134,8 +135,8 @@ public class ErrorMessageDeclarationCrawler {
             addBuilderStep(builderCall, errorCodeBuilder);
             target = builderCall.getTarget();
         }
-        errorCodeBuilder.declaringPackage(getMethodsPackageName(methodInvocation));
-        return errorCodeBuilder.build();
+        return errorCodeBuilder.declaringPackage(getMethodsPackageName(methodInvocation))//
+                .build();
     }
 
     /**
@@ -144,10 +145,10 @@ public class ErrorMessageDeclarationCrawler {
      * 
      * @param builderCall      call to one of the methods of {@link ErrorMessageBuilder} or {@link ExaError}
      * @param errorCodeBuilder error code builder to add the error-code to.
-     * @throws CrawlFailedException if the invocation is invalid
+     * @throws InvalidSyntaxException if the invocation is invalid
      */
     private void addBuilderStep(final CtInvocation<?> builderCall,
-            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws CrawlFailedException {
+            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws InvalidSyntaxException {
         final CtExecutableReference<?> executable = builderCall.getExecutable();
         final CtTypeReference<?> declaringType = executable.getDeclaringType();
         final String declaringTypeName = declaringType.getSimpleName();
@@ -163,10 +164,10 @@ public class ErrorMessageDeclarationCrawler {
      * 
      * @param builderCall      invocation of {@link ExaError#messageBuilder(String)}
      * @param errorCodeBuilder error code builder to add the error-code to.
-     * @throws CrawlFailedException if the invocation is invalid
+     * @throws InvalidSyntaxException if the invocation is invalid
      */
     private void readMessageBuilderStep(final CtInvocation<?> builderCall,
-            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws CrawlFailedException {
+            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws InvalidSyntaxException {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         checkMessageBuildersArgumentLength(builderCall, arguments);
         final CtExpression<?> argument = arguments.get(0);
@@ -175,25 +176,25 @@ public class ErrorMessageDeclarationCrawler {
         final Object argumentValue = argumentLiteralValue.getValue();
         checkMessageBuildersArgumentValueIsString(builderCall, argumentValue);
         final String errorCode = (String) argumentValue;
-        errorCodeBuilder.errorCode(ERROR_CODE_READER.read(errorCode, getFormattedPosition(builderCall)));
+        errorCodeBuilder.errorCode(ERROR_CODE_READER.parse(errorCode, getFormattedPosition(builderCall)));
         errorCodeBuilder.setPosition(
                 this.projectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
                 builderCall.getPosition().getLine());
     }
 
     private void checkMessageBuildersArgumentValueIsString(final CtInvocation<?> builderCall,
-            final Object argumentValue) throws CrawlFailedException {
+            final Object argumentValue) throws InvalidSyntaxException {
         if (!(argumentValue instanceof String)) {
-            throw new CrawlFailedException(ExaError.messageBuilder("E-ECM-5")
+            throw new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-5")
                     .message("ExaError#messageBuilder(String) must be a string literal.").message(" ({{position}})")
                     .unquotedParameter(POSITION, getFormattedPosition(builderCall)).toString());
         }
     }
 
     private void checkMessageBuildersArgumentIsLiteral(final CtInvocation<?> builderCall,
-            final CtExpression<?> argument) throws CrawlFailedException {
+            final CtExpression<?> argument) throws InvalidSyntaxException {
         if (!(argument instanceof CtLiteral)) {
-            throw new CrawlFailedException(ExaError.messageBuilder("E-ECM-2")
+            throw new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-2")
                     .message("ExaError#messageBuilder(String)'s parameter must be a literal.")
                     .message(" ({{position}})").unquotedParameter(POSITION, getFormattedPosition(builderCall))
                     .toString());
@@ -201,9 +202,9 @@ public class ErrorMessageDeclarationCrawler {
     }
 
     private void checkMessageBuildersArgumentLength(final CtInvocation<?> builderCall,
-            final List<CtExpression<?>> arguments) throws CrawlFailedException {
+            final List<CtExpression<?>> arguments) throws InvalidSyntaxException {
         if (arguments.size() != 1) {
-            throw new CrawlFailedException(ExaError.messageBuilder("F-ECM-1")
+            throw new InvalidSyntaxException(ExaError.messageBuilder("F-ECM-1")
                     .message("ExaError#messageBuilder(String) should ony have one argument but had {{numArgs}}.")
                     .parameter("numArgs", arguments.size()).message(" ({{position}})")
                     .unquotedParameter(POSITION, getFormattedPosition(builderCall)).ticketMitigation().toString());

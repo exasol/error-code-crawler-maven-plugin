@@ -9,10 +9,19 @@ import java.nio.file.Path;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+/**
+ * This class reads the errorCodeConfig.yml into a {@link ErrorCodeConfig}.
+ */
 public class ErrorCodeConfigReader {
     public static final String CONFIG_NAME = "errorCodeConfig.yml";
     private final File errorConfigFile;
 
+    /**
+     * Create a new instance of {@link ErrorCodeConfigReader}.
+     * 
+     * @param projectDir projects directory
+     * @throws ErrorCodeConfigException if the config does not exist
+     */
     public ErrorCodeConfigReader(final Path projectDir) throws ErrorCodeConfigException {
         this.errorConfigFile = projectDir.resolve(CONFIG_NAME).toFile();
         if (!this.errorConfigFile.exists()) {
@@ -24,6 +33,12 @@ public class ErrorCodeConfigReader {
         }
     }
 
+    /**
+     * Read the configuration.
+     * 
+     * @return java representation of the config: {@link ErrorCodeConfig}
+     * @throws ErrorCodeConfigException if the config has an invalid syntax
+     */
     public ErrorCodeConfig read() throws ErrorCodeConfigException {
         try {
             final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());

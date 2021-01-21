@@ -13,6 +13,12 @@ public class SingleErrorCodeConfig {
     private final List<String> packages;
     private final int highestIndex;
 
+    /**
+     * Create a new instance of {@link SingleErrorCodeConfig}.
+     * 
+     * @param packages     packages belonging to this error tag
+     * @param highestIndex highest index of this error tag
+     */
     @JsonCreator
     public SingleErrorCodeConfig(@JsonProperty("packages") final List<String> packages,
             @JsonProperty("highest-index") final int highestIndex) {
@@ -20,10 +26,20 @@ public class SingleErrorCodeConfig {
         this.highestIndex = highestIndex;
     }
 
+    /**
+     * Get the packages that belong to this error tag.
+     * 
+     * @return packages that belong to this error tag
+     */
     List<String> getPackages() {
         return this.packages;
     }
 
+    /**
+     * Get the highest index of this error tag.
+     * 
+     * @return highest index
+     */
     int getHighestIndex() {
         return this.highestIndex;
     }

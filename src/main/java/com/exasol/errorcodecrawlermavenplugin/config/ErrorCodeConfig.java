@@ -13,6 +13,11 @@ public class ErrorCodeConfig {
     private final Map<String, SingleErrorCodeConfig> errorTags;
     private final Map<String, String> packageToErrorCodeMapping;
 
+    /**
+     * Create a new instance of {@link ErrorCodeConfig}.
+     * 
+     * @param errorTags error tag entries
+     */
     @JsonCreator
     public ErrorCodeConfig(@JsonProperty("error-tags") final Map<String, SingleErrorCodeConfig> errorTags) {
         this.errorTags = errorTags;
@@ -40,6 +45,12 @@ public class ErrorCodeConfig {
         }
     }
 
+    /**
+     * Get the error tag configured for a specific java package.
+     * 
+     * @param packageName name of the package
+     * @return corresponding error tag
+     */
     public Optional<String> getErrorTagForPackage(final String packageName) {
         final Optional<String> longestFittingPackageName = this.packageToErrorCodeMapping.keySet().stream()
                 .filter(packageName::startsWith).max(Comparator.comparing(String::length));
@@ -64,6 +75,12 @@ public class ErrorCodeConfig {
         return this.errorTags.containsKey(errorTag);
     }
 
+    /**
+     * Get the highest index of an error code.
+     * 
+     * @param errorTag error code
+     * @return highest index (according to the config file)
+     */
     public int getHighestIndexForErrorTag(final String errorTag) {
         return this.errorTags.get(errorTag).getHighestIndex();
     }

@@ -9,7 +9,7 @@ import com.exasol.errorreporting.ExaError;
 /**
  * This class parses {@link ErrorCode}s from their string representation.
  */
-public class ErrorCodeReader {
+public class ErrorCodeParser {
     private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("([^-]+)-([^-]+(?:-[^\\d][^-]+)*+)-(\\d+)");
 
     /**
@@ -18,12 +18,12 @@ public class ErrorCodeReader {
      * @param errorCodeString error code's string representation (e.g. E-EX-1)
      * @param sourcePosition  pointer to the source code position, used in error messages
      * @return built {@link ErrorCode}
-     * @throws CrawlFailedException on syntax errors
+     * @throws InvalidSyntaxException on syntax errors
      */
-    public ErrorCode read(final String errorCodeString, final String sourcePosition) throws CrawlFailedException {
+    public ErrorCode parse(final String errorCodeString, final String sourcePosition) throws InvalidSyntaxException {
         final Matcher matcher = ERROR_CODE_PATTERN.matcher(errorCodeString);
         if (!matcher.matches()) {
-            throw new CrawlFailedException(ExaError.messageBuilder("E-ECM-10")
+            throw new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-10")
                     .message("The error code {{error code}} has an invalid format. ({{source position}})")
                     .parameter("error code", errorCodeString).unquotedParameter("source position", sourcePosition)
                     .toString());
@@ -35,11 +35,11 @@ public class ErrorCodeReader {
     }
 
     private ErrorCode.Type parseErrorType(final String errorTypeString, final String errorCode,
-            final String sourcePosition) throws CrawlFailedException {
+            final String sourcePosition) throws InvalidSyntaxException {
         try {
             return ErrorCode.Type.valueOf(errorTypeString);
         } catch (final IllegalArgumentException exception) {
-            throw new CrawlFailedException(
+            throw new InvalidSyntaxException(
                     ExaError.messageBuilder("E-ECM-11").message("Illegal error code {{error code}}.")
                             .mitigation("The codes must start with 'W-', 'E-' or 'F-'. ({{source position}})")
                             .parameter("error code", errorCode).unquotedParameter("source position", sourcePosition)
