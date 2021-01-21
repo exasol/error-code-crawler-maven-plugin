@@ -12,7 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class ErrorCodeConfigTest {
-
     private static final ErrorCodeConfig VALID_ERROR_CODE_CONFIG = new ErrorCodeConfig(
             Map.of("EX", new SingleErrorCodeConfig(List.of("com.exasol.example"), 1), //
                     "EX-S1", new SingleErrorCodeConfig(List.of("com.exasol.example.example1"), 2)));

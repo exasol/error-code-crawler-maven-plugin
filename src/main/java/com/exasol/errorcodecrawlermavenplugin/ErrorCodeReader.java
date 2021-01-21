@@ -7,7 +7,7 @@ import com.exasol.errorcodecrawlermavenplugin.model.ErrorCode;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This class reads {@link ErrorCode}s from their string representation.
+ * This class parses {@link ErrorCode}s from their string representation.
  */
 public class ErrorCodeReader {
     private static final Pattern ERROR_CODE_PATTERN = Pattern.compile("([^-]+)-([^-]+(?:-[^\\d][^-]+)*+)-(\\d+)");

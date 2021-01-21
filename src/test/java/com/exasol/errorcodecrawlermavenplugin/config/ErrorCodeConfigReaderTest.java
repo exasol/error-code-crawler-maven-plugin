@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ErrorCodeConfigReaderTest {
-
     @TempDir
     Path tempDir;
 
@@ -25,7 +24,7 @@ class ErrorCodeConfigReaderTest {
     }
 
     @Test
-    void testConfigMissing() {
+    void testConfigFileMissing() {
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class,
                 () -> new ErrorCodeConfigReader(this.tempDir));
         assertThat(exception.getMessage(), equalTo(

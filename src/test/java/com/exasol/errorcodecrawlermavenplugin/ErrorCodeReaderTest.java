@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorCode;
 
 class ErrorCodeReaderTest {
-
     private static final ErrorCodeReader ERROR_CODE_READER = new ErrorCodeReader();
 
     @Test

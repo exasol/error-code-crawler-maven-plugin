@@ -59,7 +59,6 @@ public class ErrorMessageDeclarationCrawler {
                 .getElements(new TypeFilter<>(CtInvocation.class))) {
             crawl(methodInvocation, findings, errorMessageDeclarations);
         }
-
         return new Result(errorMessageDeclarations, findings);
     }
 
@@ -86,7 +85,6 @@ public class ErrorMessageDeclarationCrawler {
      */
     private void crawl(final CtInvocation<?> methodInvocation, final List<Finding> findings,
             final List<ErrorMessageDeclaration> errorMessageDeclarations) {
-
         final CtExecutableReference<?> method = methodInvocation.getExecutable();
         final CtTypeReference<?> declaringType = method.getDeclaringType();
         if (declaringType == null) {

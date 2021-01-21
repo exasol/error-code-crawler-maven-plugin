@@ -86,7 +86,7 @@ public class ErrorMessageDeclarationValidator {
                     .message("The error tag {{tag}} was not declared in the " + ErrorCodeConfigReader.CONFIG_NAME + ".")
                     .parameter("tag", tag)
                     .mitigation(
-                            "Check if it is just a type and if not add an entry for {{tag}} and package {{package}}.")
+                            "Check if it is just a typo and if not add an entry for {{tag}} and package {{package}}.")
                     .parameter("package", errorMessageDeclaration.getDeclaringPackage()).toString()));
         }
         final List<String> tagsPackages = this.config.getPackagesForErrorTag(tag);
