@@ -1,7 +1,9 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
-import java.nio.file.Path;
+import java.io.File;
+import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ErrorMessageBuilder;
@@ -28,6 +30,7 @@ public class ErrorMessageDeclarationCrawler {
     private final String[] classPath;
     private final int javaSourceVersion;
     private static final ErrorCodeParser ERROR_CODE_READER = new ErrorCodeParser();
+    private final List<PathMatcher> excludedFilesMatchers;
 
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
@@ -39,10 +42,13 @@ public class ErrorMessageDeclarationCrawler {
      * @param javaSourceVersion java source version / language level of the project
      */
     public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath,
-            final int javaSourceVersion) {
+            final int javaSourceVersion, final List<String> excludedFiles) {
         this.projectDirectory = projectDirectory;
         this.classPath = classPath;
         this.javaSourceVersion = javaSourceVersion;
+        this.excludedFilesMatchers = excludedFiles.stream()
+                .map(filePattern -> FileSystems.getDefault().getPathMatcher("glob:" + filePattern))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -85,6 +91,10 @@ public class ErrorMessageDeclarationCrawler {
      */
     private void crawl(final CtInvocation<?> methodInvocation, final List<Finding> findings,
             final List<ErrorMessageDeclaration> errorMessageDeclarations) {
+        final File sourceFile = methodInvocation.getPosition().getFile();
+        if (sourceFile == null || isFileExcluded(sourceFile)) {
+            return;
+        }
         final CtExecutableReference<?> method = methodInvocation.getExecutable();
         final CtTypeReference<?> declaringType = method.getDeclaringType();
         if (declaringType == null) {
@@ -103,6 +113,11 @@ public class ErrorMessageDeclarationCrawler {
                 findings.add(exception.getFinding());
             }
         }
+    }
+
+    private boolean isFileExcluded(final File sourceFile) {
+        final Path relativePath = this.projectDirectory.relativize(sourceFile.toPath());
+        return this.excludedFilesMatchers.stream().anyMatch(matcher -> matcher.matches(relativePath));
     }
 
     private String getMethodsPackageName(final CtInvocation<?> methodInvocation) {

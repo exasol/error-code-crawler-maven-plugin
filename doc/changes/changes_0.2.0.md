@@ -5,6 +5,7 @@ Code name:
 ## Features / Enhancements:
 
 * #14: Added validation that error tags correspond to package
+* #13: Validate this project's error codes
 
 ## Bug Fixes
 
