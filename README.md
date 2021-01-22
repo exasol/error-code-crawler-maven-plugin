@@ -69,6 +69,8 @@ For example the class `com.exasol.example.model.Test` belongs to a sub package o
 
 The `highest-index` property contains the index of the last error code declaration. So in the example the highest error code could be `E-EXM-3`. This plugin validates that value of this property is higher or equal than the actual highest. You can safely use this property to determine the next error code.
 
+For the moment the value of this property needs to be updated manually
+
 ## Usage
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
