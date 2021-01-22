@@ -40,6 +40,7 @@ public class ErrorMessageDeclarationCrawler {
      *                          reason this can be empty. Probably Spoon then picks the class path of this project. When
      *                          run from a jar the classpath is however required.
      * @param javaSourceVersion java source version / language level of the project
+     * @param excludedFiles     list of glob expressions for files to exclude from validation
      */
     public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath,
             final int javaSourceVersion, final List<String> excludedFiles) {
