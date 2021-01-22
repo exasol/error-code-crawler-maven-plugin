@@ -1,0 +1,5 @@
+error-tags:
+  TEST:
+    packages:
+      - com.exasol.errorcodecrawlermavenplugin.examples
+    highest-index: 100

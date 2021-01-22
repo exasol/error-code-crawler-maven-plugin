@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorCode;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
 class ErrorMessageDeclarationCrawlerTest {
@@ -20,17 +21,19 @@ class ErrorMessageDeclarationCrawlerTest {
             PROJECT_DIRECTORY, new String[] {}, 11);
 
     @Test
-    void test() {
+    void testCrawlValidCode() {
         final ErrorMessageDeclarationCrawler.Result result = ERROR_CRAWLER.crawl(
                 Path.of("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java").toAbsolutePath());
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
                 () -> assertThat(errorCodes.size(), equalTo(1)),
-                () -> assertThat(first.getErrorCode(), equalTo("E-TEST-1")),
+                () -> assertThat(first.getErrorCode(), equalTo(new ErrorCode(ErrorCode.Type.E, "TEST", 1))),
                 () -> assertThat(first.getSourceFile(),
                         equalTo("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")),
-                () -> assertThat(first.getLine(), equalTo(10))//
+                () -> assertThat(first.getLine(), equalTo(10)), //
+                () -> assertThat(first.getDeclaringPackage(),
+                        equalTo("com.exasol.errorcodecrawlermavenplugin.examples"))//
         );
     }
 
@@ -42,6 +45,16 @@ class ErrorMessageDeclarationCrawlerTest {
                 .collect(Collectors.toList());
         assertThat(messages, containsInAnyOrder(
                 "E-ECM-2: ExaError#messageBuilder(String)'s parameter must be a literal. (IllegalErrorCodeFromFunction.java:10)"));
+    }
+
+    @Test
+    void testInvalidErrorCodeSyntax() {
+        final ErrorMessageDeclarationCrawler.Result result = ERROR_CRAWLER.crawl(
+                Path.of("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/InvalidErrorCodeSyntax.java"));
+        final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
+                .collect(Collectors.toList());
+        assertThat(messages, containsInAnyOrder(
+                "E-ECM-10: The error code 'E-TEST-X' has an invalid format. (InvalidErrorCodeSyntax.java:10)"));
     }
 
     @Test

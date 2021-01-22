@@ -23,8 +23,8 @@ import org.junit.jupiter.api.io.TempDir;
  * temporary project, runs the plugin on that project and checks the output.
  */
 @Tag("integration")
-class ErrorMessageDeclarationCrawlerIT {
-    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.1.1.jar");
+class ErrorCodeCrawlerMojoIT {
+    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.2.0.jar");
     private static final Path ERROR_CODE_CRAWLER_POM = Path.of("pom.xml");
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
@@ -47,8 +47,7 @@ class ErrorMessageDeclarationCrawlerIT {
 
     @BeforeAll
     static void beforeAll() throws VerificationException, IOException {
-        final File testDir = ResourceExtractor.simpleExtractResources(ErrorMessageDeclarationCrawlerIT.class,
-                "/testProject");
+        final File testDir = ResourceExtractor.simpleExtractResources(ErrorCodeCrawlerMojoIT.class, "/testProject");
         final Verifier verifier = new Verifier(testDir.getAbsolutePath());
         verifier.setCliOptions(List.of(//
                 "-Dfile=" + PLUGIN_JAR.toAbsolutePath().toString(), //
@@ -60,7 +59,7 @@ class ErrorMessageDeclarationCrawlerIT {
 
     @BeforeEach
     void beforeEach() throws IOException {
-        this.projectDir = Files.createTempDirectory("mavenRepo");
+        this.projectDir = Files.createTempDirectory("testProject");
         this.projectsSrc = this.projectDir
                 .resolve(Path.of("src", "main", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
         this.projectsTestSrc = this.projectDir
@@ -70,6 +69,10 @@ class ErrorMessageDeclarationCrawlerIT {
         }
         Files.copy(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("testProject/pom.xml")),
                 this.projectDir.resolve("pom.xml"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                Objects.requireNonNull(
+                        getClass().getClassLoader().getResourceAsStream("testProject/errorCodeConfig.yml")),
+                this.projectDir.resolve("errorCodeConfig.yml"), StandardCopyOption.REPLACE_EXISTING);
     }
 
     @AfterEach
@@ -103,7 +106,34 @@ class ErrorMessageDeclarationCrawlerIT {
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-4: Found duplicate error code: 'E-TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
+                "[ERROR] E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
+    }
+
+    @Test
+    void testMissingErrorConfig() throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
+                StandardCopyOption.REPLACE_EXISTING);
+        Files.delete(this.projectDir.resolve("errorCodeConfig.yml"));
+        final Verifier verifier = getVerifier();
+        final VerificationException exception = assertThrows(VerificationException.class,
+                () -> verifier.executeGoal("error-code-crawler:verify"));
+        assertThat(exception.getMessage(), containsString(
+                "[ERROR] Failed to execute goal com.exasol:error-code-crawler-maven-plugin:0.2.0:verify (default-cli) on project project-to-test: E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+    }
+
+    @Test
+    void testWrongPackageErrorConfig() throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
+                StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(
+                Objects.requireNonNull(
+                        getClass().getClassLoader().getResourceAsStream("testProject/wrongPackageErrorCodeConfig.yml")),
+                this.projectDir.resolve("errorCodeConfig.yml"), StandardCopyOption.REPLACE_EXISTING);
+        final Verifier verifier = getVerifier();
+        final VerificationException exception = assertThrows(VerificationException.class,
+                () -> verifier.executeGoal("error-code-crawler:verify"));
+        assertThat(exception.getMessage(), containsString(
+                "[ERROR] E-ECM-13: According to this project's errorCodeConfig.yml, the error tag 'TEST' is not allowed for the package 'com.exasol.errorcodecrawlermavenplugin.examples'. The config allows the tag 'TEST' for the following packages: ['com.other']."));
     }
 
     @Test
@@ -114,7 +144,7 @@ class ErrorMessageDeclarationCrawlerIT {
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-4: Found duplicate error code: 'E-TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
+                "[ERROR] E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
     }
 
     private Verifier getVerifier() throws VerificationException {

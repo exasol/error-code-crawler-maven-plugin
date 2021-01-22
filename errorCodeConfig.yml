@@ -1,0 +1,5 @@
+error-tags:
+  ECM:
+    packages:
+      - com.exasol.errorcodecrawlermavenplugin
+    highest-index: 6
