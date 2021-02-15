@@ -29,14 +29,14 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
      * Glob patterns for files that should be excluded from validation.
      */
     @Parameter(name = "excludes")
-    private List<String> excludedFiles;
+    private List<String> excludes;// this variable must have the same name as the parameter
 
     @Override
     public void execute() throws MojoFailureException {
         final Path projectDir = this.project.getBasedir().toPath();
         final ErrorCodeConfig config = readConfig(projectDir);
         final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(),
-                getJavaSourceVersion(), Objects.requireNonNullElse(this.excludedFiles, Collections.emptyList()));
+                getJavaSourceVersion(), Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
         final Path srcMainPath = projectDir.resolve(Path.of("src", "main"));
         final Path srcTestPath = projectDir.resolve(Path.of("src", "test"));
         final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath, srcTestPath);
