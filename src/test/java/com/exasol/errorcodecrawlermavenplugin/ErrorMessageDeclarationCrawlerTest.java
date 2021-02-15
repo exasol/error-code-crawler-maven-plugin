@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
     private static final ErrorMessageDeclarationCrawler DECLARATION_CRAWLER = new ErrorMessageDeclarationCrawler(
-            PROJECT_DIRECTORY, new String[] {}, 11, List.of());
+            PROJECT_DIRECTORY, new String[] {}, 11, Collections.emptyList());
 
     @Test
     void testCrawlValidCode() {
@@ -74,6 +75,6 @@ class ErrorMessageDeclarationCrawlerTest {
                 new String[] {}, 11, List.of(excludeGlob));
         final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(Path
                 .of("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/IllegalErrorCodeFromFunction.java"));
-        assertTrue(result.getFindings().stream().findAny().isEmpty());
+        assertTrue(result.getFindings().isEmpty());
     }
 }
