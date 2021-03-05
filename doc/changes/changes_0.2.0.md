@@ -28,4 +28,4 @@ Code name: Validation that error tags correspond to package
 ### Plugin Dependency Updates
 
 * Added `com.exasol:error-code-crawler-maven-plugin:0.1.1`
-* Updated `com.exasol:project-keeper-maven-plugin:0.3.0` to 0.5.0
+* Updated `com.exasol:project-keeper-maven-plugin:0.3.0` to 0.4.2
