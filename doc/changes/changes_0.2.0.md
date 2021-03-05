@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.2.0, released 2021-03-08
+# error-code-crawler-maven-plugin 0.2.0, released 2021-03-05
 
 Code name: Validation that error tags correspond to package
 
