@@ -81,16 +81,17 @@ public class ErrorMessageDeclarationValidator {
 
     private Optional<Finding> verifyErrorCodeBelongsToPackage(final ErrorMessageDeclaration errorMessageDeclaration) {
         final String tag = errorMessageDeclaration.getErrorCode().getTag();
+        final String declaringPackage = errorMessageDeclaration.getDeclaringPackage();
         if (!this.config.hasErrorTag(tag)) {
             return Optional.of(new Finding(ExaError.messageBuilder("E-ECM-12")
                     .message("The error tag {{tag}} was not declared in the " + ErrorCodeConfigReader.CONFIG_NAME + ".")
                     .parameter("tag", tag)
                     .mitigation(
                             "Check if it is just a typo and if not add an entry for {{tag}} and package {{package}}.")
-                    .parameter("package", errorMessageDeclaration.getDeclaringPackage()).toString()));
+                    .parameter("package", declaringPackage).toString()));
         }
-        final List<String> tagsPackages = this.config.getPackagesForErrorTag(tag);
-        if (!tagsPackages.contains(errorMessageDeclaration.getDeclaringPackage())) {
+        final Optional<String> requiredTag = this.config.getErrorTagForPackage(declaringPackage);
+        if (requiredTag.isEmpty() || !tag.equalsIgnoreCase(requiredTag.get())) {
             final String tagSuggestion = getTagSuggestion(errorMessageDeclaration);
             return Optional.of(new Finding(ExaError.messageBuilder("E-ECM-13")
                     .message("According to this project's " + ErrorCodeConfigReader.CONFIG_NAME
@@ -98,8 +99,8 @@ public class ErrorMessageDeclarationValidator {
                     .mitigation(
                             "The config allows the tag {{tag}} for the following packages: {{tags packages}}. {{optional tag suggestion}}")
                     .parameter("tag", tag)//
-                    .parameter("package", errorMessageDeclaration.getDeclaringPackage())//
-                    .parameter("tags packages", tagsPackages)//
+                    .parameter("package", declaringPackage)//
+                    .parameter("tags packages", this.config.getPackagesForErrorTag(tag))//
                     .unquotedParameter("optional tag suggestion", tagSuggestion)//
                     .toString()));
         }
