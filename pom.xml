@@ -14,7 +14,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <maven.version>3.6.3</maven.version>
-        <junit.version>5.7.0</junit.version>
+        <junit.version>5.7.1</junit.version>
         <jacoco.version>0.8.5</jacoco.version>
         <vscommon.version>11.0.0</vscommon.version>
         <gpg.skip>true</gpg.skip>
@@ -118,12 +118,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.12.1</version>
+            <version>2.12.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.12.1</version>
+            <version>2.12.2</version>
         </dependency>
         <!-- test dependencies -->
         <dependency>
@@ -135,14 +135,14 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.5.1</version>
+            <version>3.5.5</version>
             <scope>test</scope>
         </dependency>
         <!-- Overrides Junit 4.12 which is used in test containers but contains a security issue: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -329,13 +329,6 @@
                     <serialwarn>true</serialwarn>
                     <failOnError>true</failOnError>
                     <failOnWarnings>true</failOnWarnings>
-                    <tags>
-                        <tag>
-                            <name>implNote</name>
-                            <head>Implementation Note:</head>
-                            <placement>a</placement>
-                        </tag>
-                    </tags>
                 </configuration>
             </plugin>
             <plugin>
@@ -394,7 +387,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>0.3.0</version>
+                <version>0.4.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -428,7 +421,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>-->
+            </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
