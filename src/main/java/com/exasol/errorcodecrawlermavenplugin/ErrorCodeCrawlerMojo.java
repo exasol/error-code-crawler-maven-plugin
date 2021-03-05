@@ -1,16 +1,15 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
 import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.*;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -26,12 +25,18 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
+    /**
+     * Glob patterns for files that should be excluded from validation.
+     */
+    @Parameter(name = "excludes")
+    private List<String> excludes;// this variable must have the same name as the parameter
+
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoFailureException {
         final Path projectDir = this.project.getBasedir().toPath();
         final ErrorCodeConfig config = readConfig(projectDir);
         final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(),
-                getJavaSourceVersion());
+                getJavaSourceVersion(), Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
         final Path srcMainPath = projectDir.resolve(Path.of("src", "main"));
         final Path srcTestPath = projectDir.resolve(Path.of("src", "test"));
         final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath, srcTestPath);
@@ -74,7 +79,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             return Integer.parseInt(value);
         } catch (final Exception exception) {
             final int sourceVersion = 5;
-            getLog().warn(ExaError.messageBuilder("W-ECM-5")
+            getLog().warn(ExaError.messageBuilder("W-ECM-14")
                     .message("Failed to read java source version from POM file. Falling back to {{version}}.")
                     .mitigation(
                             "This plugin reads the java source version from the configuration of the maven-compiler-plugin. Check that the version is defined there correctly.")

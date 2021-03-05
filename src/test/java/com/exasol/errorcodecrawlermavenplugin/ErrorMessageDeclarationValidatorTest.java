@@ -2,6 +2,7 @@ package com.exasol.errorcodecrawlermavenplugin;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,26 @@ class ErrorMessageDeclarationValidatorTest {
     private static final ErrorCodeConfig CONFIG = new ErrorCodeConfig(
             Map.of("TEST", new SingleErrorCodeConfig(List.of(EXAMPLE_PACKAGE), 1), "OTHER",
                     new SingleErrorCodeConfig(List.of(OTHER_PACKAGE), 1)));
+
+    @Test
+    void testValid() {
+        final List<ErrorMessageDeclaration> errors = List.of(
+                ErrorMessageDeclaration.builder().errorCode(E_TEST_1).declaringPackage(EXAMPLE_PACKAGE)
+                        .setPosition("src/test/Test.java", 1).build(),
+                ErrorMessageDeclaration.builder().errorCode(new ErrorCode(ErrorCode.Type.E, "TEST", 2))
+                        .declaringPackage(EXAMPLE_PACKAGE).setPosition("src/test/Test.java", 5).build());
+        assertThat(new ErrorMessageDeclarationValidator(CONFIG).validate(errors), empty());
+    }
+
+    @Test
+    void testNestedPackage() {
+        final List<ErrorMessageDeclaration> errors = List.of(
+                ErrorMessageDeclaration.builder().errorCode(E_TEST_1).declaringPackage("com.example.my")
+                        .setPosition("src/test/Test.java", 1).build(),
+                ErrorMessageDeclaration.builder().errorCode(new ErrorCode(ErrorCode.Type.E, "TEST", 2))
+                        .declaringPackage(EXAMPLE_PACKAGE).setPosition("src/test/Test.java", 5).build());
+        assertThat(new ErrorMessageDeclarationValidator(CONFIG).validate(errors), empty());
+    }
 
     @Test
     void testDuplicates() {

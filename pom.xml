@@ -452,14 +452,13 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>error-code-crawler-maven-plugin</artifactId>
-                <version>0.1.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <version>${project.version}</version>
+                <!-- no execution configured since this version is not yet released; invoked in CI manually -->
+                <configuration>
+                    <excludes>
+                        <exclude>src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
         <testResources>
