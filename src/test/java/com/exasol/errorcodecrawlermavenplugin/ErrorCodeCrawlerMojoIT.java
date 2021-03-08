@@ -154,8 +154,8 @@ class ErrorCodeCrawlerMojoIT {
         final Verifier verifier = getVerifier();
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-17: The parameter 'missing parameter' was used but not declared. (TestWithUndeclaredParameter.java:12) Declare the parameter using parameter(\"missing parameter\", value) or unquotedParameter(\"missing parameter\", value)."));
+        assertThat(exception.getMessage(),
+                containsString("[ERROR] E-ECM-17: The parameter 'missing parameter' was used but not declared."));
     }
 
     private Verifier getVerifier() throws VerificationException {

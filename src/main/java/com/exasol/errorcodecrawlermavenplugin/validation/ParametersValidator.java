@@ -16,7 +16,7 @@ import com.exasol.errorreporting.ExaError;
  * This {@link ErrorMessageDeclarationValidator} validates that all parameters used in message and mitigation are
  * declared.
  */
-class ParametersAreDeclaredValidator implements ErrorMessageDeclarationValidator {
+class ParametersValidator implements ErrorMessageDeclarationValidator {
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{\\{([^\\}]*)\\}\\}");
 
     @Override

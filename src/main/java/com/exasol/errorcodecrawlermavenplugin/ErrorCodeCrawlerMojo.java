@@ -14,6 +14,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import com.exasol.errorcodecrawlermavenplugin.config.*;
+import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
 import com.exasol.errorreporting.ExaError;

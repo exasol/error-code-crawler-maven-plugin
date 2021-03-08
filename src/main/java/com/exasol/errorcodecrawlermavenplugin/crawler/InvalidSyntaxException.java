@@ -1,4 +1,6 @@
-package com.exasol.errorcodecrawlermavenplugin;
+package com.exasol.errorcodecrawlermavenplugin.crawler;
+
+import com.exasol.errorcodecrawlermavenplugin.Finding;
 
 /**
  * Exception that is thrown if the error declaration crawling found an syntax error.

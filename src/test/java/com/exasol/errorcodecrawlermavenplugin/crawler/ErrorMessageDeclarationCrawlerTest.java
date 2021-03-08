@@ -1,4 +1,4 @@
-package com.exasol.errorcodecrawlermavenplugin;
+package com.exasol.errorcodecrawlermavenplugin.crawler;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.model.*;
 
 class ErrorMessageDeclarationCrawlerTest {
@@ -135,7 +136,7 @@ class ErrorMessageDeclarationCrawlerTest {
         final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
                 .collect(Collectors.toList());
         assertThat(messages, containsInAnyOrder(
-                "E-ECM-2: ExaError#messageBuilder(String)'s parameter must be a literal. (IllegalErrorCodeFromFunction.java:10)"));
+                "E-ECM-16: Invalid parameter for messageBuilder(java.lang.String) call. (IllegalErrorCodeFromFunction.java:10) Only literals, string-constants and concatenation of these two are supported."));
     }
 
     @Test
