@@ -35,7 +35,7 @@ public class NamedParameter {
     }
 
     /**
-     * Get the description for this parameter (3. parameter of parameterCall).
+     * Get the description for this parameter (3rd parameter of parameterCall).
      * 
      * @return description of the parameter
      */

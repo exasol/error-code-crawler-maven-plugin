@@ -11,7 +11,7 @@ import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
  */
 public interface ErrorMessageDeclarationValidator {
     /**
-     * Validate the crawled error codes.
+     * Validate the passed error message declarations.
      *
      * @param errorMessageDeclarations error codes to validate
      * @return list of findings

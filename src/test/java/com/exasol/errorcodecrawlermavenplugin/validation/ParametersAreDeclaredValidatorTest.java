@@ -12,7 +12,6 @@ import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
 class ParametersAreDeclaredValidatorTest {
-
     @Test
     void testValid() {
         final ErrorMessageDeclaration validErrorDeclaration = ErrorMessageDeclaration.builder()

@@ -4,4 +4,4 @@ Code name: Parameter validation
 
 ## Features:
 
-* #22: Added validation that build parameters are declared
+* #22: Added validation to check that build parameters are declared

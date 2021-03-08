@@ -12,7 +12,6 @@ import com.exasol.errorreporting.ExaError;
  * This {@link ErrorMessageDeclarationValidator} validates that no error code is declared twice.
  */
 class DuplicatesValidator implements ErrorMessageDeclarationValidator {
-
     @Override
     public List<Finding> validate(final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
         final Map<String, List<String>> positionsPerCode = groupDeclarationsByErrorCode(errorMessageDeclarations);

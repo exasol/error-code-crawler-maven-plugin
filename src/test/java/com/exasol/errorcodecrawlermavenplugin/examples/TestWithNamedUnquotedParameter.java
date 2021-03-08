@@ -6,7 +6,6 @@ import com.exasol.errorreporting.ExaError;
  * Valid example that is crawled in the tests.
  */
 public class TestWithNamedUnquotedParameter {
-
     public void run() {
         throw new IllegalStateException(ExaError.messageBuilder("E-TEST-1").message("my message {{test}}")
                 .unquotedParameter("test", 1).toString());
