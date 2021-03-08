@@ -1,5 +1,8 @@
 package com.exasol.errorcodecrawlermavenplugin.model;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * This class represents declaration
  */
@@ -9,6 +12,8 @@ public class ErrorMessageDeclaration {
     private final String sourceFile;
     private final int line;
     private final String declaringPackage;
+    private final List<String> mitigations;
+    private final List<NamedParameter> namedParameters;
 
     private ErrorMessageDeclaration(final Builder builder) {
         this.errorCode = builder.errorCode;
@@ -16,6 +21,8 @@ public class ErrorMessageDeclaration {
         this.sourceFile = builder.sourceFile;
         this.declaringPackage = builder.declaringPackage;
         this.line = builder.line;
+        this.mitigations = builder.mitigations;
+        this.namedParameters = builder.namedParameters;
     }
 
     public static Builder builder() {
@@ -58,12 +65,41 @@ public class ErrorMessageDeclaration {
         return this.declaringPackage;
     }
 
+    /**
+     * Get the message (including placeholders).
+     * 
+     * @return message
+     */
+    public String getMessage() {
+        return this.message;
+    }
+
+    /**
+     * Get a list of mitigations.
+     * 
+     * @return mitigations
+     */
+    public List<String> getMitigations() {
+        return this.mitigations;
+    }
+
+    /**
+     * Get the named parameters.
+     * 
+     * @return list of named parameters
+     */
+    public List<NamedParameter> getNamedParameters() {
+        return this.namedParameters;
+    }
+
     public static class Builder {
         private final StringBuilder messageBuilder = new StringBuilder();
         private ErrorCode errorCode;
         private String sourceFile;
         private int line = -1;
         private String declaringPackage;
+        private final List<String> mitigations = new LinkedList<>();
+        private final List<NamedParameter> namedParameters = new LinkedList<>();
 
         private Builder() {
         }
@@ -111,6 +147,30 @@ public class ErrorMessageDeclaration {
          */
         public Builder prependMessage(final String message) {
             this.messageBuilder.insert(0, message);
+            return this;
+        }
+
+        /**
+         * Prepend a mitigation.
+         *
+         * @param mitigation mitigation to prepend.
+         * @return self for fluent programming
+         */
+        public Builder prependMitigation(final String mitigation) {
+            this.mitigations.add(0, mitigation);
+            return this;
+        }
+
+        /**
+         * Add a parameter.
+         * 
+         * @param name        parameter name
+         * @param description description
+         * @param quoted      if the parameter is qouted
+         * @return self for fluent programming
+         */
+        public Builder addParameter(final String name, final String description, final boolean quoted) {
+            this.namedParameters.add(new NamedParameter(name, description, quoted));
             return this;
         }
 

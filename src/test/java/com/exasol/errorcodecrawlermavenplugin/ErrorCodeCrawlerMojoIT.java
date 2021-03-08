@@ -24,7 +24,7 @@ import org.junit.jupiter.api.io.TempDir;
  */
 @Tag("integration")
 class ErrorCodeCrawlerMojoIT {
-    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.2.0.jar");
+    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.3.0.jar");
     private static final Path ERROR_CODE_CRAWLER_POM = Path.of("pom.xml");
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
@@ -118,7 +118,7 @@ class ErrorCodeCrawlerMojoIT {
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "[ERROR] Failed to execute goal com.exasol:error-code-crawler-maven-plugin:0.2.0:verify (default-cli) on project project-to-test: E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+                "[ERROR] Failed to execute goal com.exasol:error-code-crawler-maven-plugin:0.3.0:verify (default-cli) on project project-to-test: E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
     }
 
     @Test
@@ -145,6 +145,17 @@ class ErrorCodeCrawlerMojoIT {
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
                 "[ERROR] E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
+    }
+
+    @Test
+    void testUndeclaredParameter() throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve("TestWithUndeclaredParameter.java"),
+                this.projectsTestSrc.resolve("TestWithUndeclaredParameter.java"), StandardCopyOption.REPLACE_EXISTING);
+        final Verifier verifier = getVerifier();
+        final VerificationException exception = assertThrows(VerificationException.class,
+                () -> verifier.executeGoal("error-code-crawler:verify"));
+        assertThat(exception.getMessage(), containsString(
+                "[ERROR] E-ECM-17: The parameter 'missing parameter' was used but not declared. (TestWithUndeclaredParameter.java:12) Declare the parameter using parameter(\"missing parameter\", value) or unquotedParameter(\"missing parameter\", value)."));
     }
 
     private Verifier getVerifier() throws VerificationException {

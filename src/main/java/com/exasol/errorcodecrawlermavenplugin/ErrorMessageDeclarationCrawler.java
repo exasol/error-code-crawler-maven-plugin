@@ -13,8 +13,7 @@ import spoon.Launcher;
 import spoon.SpoonAPI;
 import spoon.compiler.Environment;
 import spoon.reflect.code.*;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtPackage;
+import spoon.reflect.declaration.*;
 import spoon.reflect.reference.CtExecutableReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
@@ -59,14 +58,22 @@ public class ErrorMessageDeclarationCrawler {
      * @return {@link Result} with found error codes and findings
      */
     public Result crawl(final Path... pathsToCrawl) {
-        final List<Finding> findings = new LinkedList<>();
-        final List<ErrorMessageDeclaration> errorMessageDeclarations = new ArrayList<>();
-        final SpoonAPI spoon = initSpoon(pathsToCrawl);
-        for (final CtInvocation<?> methodInvocation : spoon.getModel().getRootPackage()
-                .getElements(new TypeFilter<>(CtInvocation.class))) {
-            crawl(methodInvocation, findings, errorMessageDeclarations);
+        try {
+            final List<Finding> findings = new LinkedList<>();
+            final List<ErrorMessageDeclaration> errorMessageDeclarations = new ArrayList<>();
+            final SpoonAPI spoon = initSpoon(pathsToCrawl);
+            for (final CtInvocation<?> methodInvocation : spoon.getModel().getRootPackage()
+                    .getElements(new TypeFilter<>(CtInvocation.class))) {
+                crawl(methodInvocation, findings, errorMessageDeclarations);
+            }
+            return new Result(errorMessageDeclarations, findings);
+        } catch (final AssertionError exception) {
+            throw new IllegalStateException(ExaError.messageBuilder("F-ECM-15")
+                    .message("The error code builder call had an unexpected syntax.")
+                    .mitigation(
+                            "Make sure that this version of the crawler is compatible with the version of your error-reporting library.")
+                    .toString(), exception);
         }
-        return new Result(errorMessageDeclarations, findings);
     }
 
     private SpoonAPI initSpoon(final Path... pathsToCrawl) {
@@ -168,9 +175,27 @@ public class ErrorMessageDeclarationCrawler {
         final CtExecutableReference<?> executable = builderCall.getExecutable();
         final CtTypeReference<?> declaringType = executable.getDeclaringType();
         final String declaringTypeName = declaringType.getSimpleName();
-        if (declaringTypeName.equals("ExaError")
-                && executable.getSignature().equals("messageBuilder(java.lang.String)")) {
+        final String methodSignature = executable.getSignature();
+        if (declaringTypeName.equals("ExaError") && methodSignature.equals("messageBuilder(java.lang.String)")) {
             readMessageBuilderStep(builderCall, errorCodeBuilder);
+        } else if (declaringTypeName.equals(ERROR_MESSAGE_BUILDER)
+                && methodSignature.equals("message(java.lang.String)")) {
+            readMessageStep(builderCall, errorCodeBuilder);
+        } else if (declaringTypeName.equals(ERROR_MESSAGE_BUILDER)
+                && methodSignature.equals("mitigation(java.lang.String)")) {
+            readMitigationStep(builderCall, errorCodeBuilder);
+        } else if (declaringTypeName.equals(ERROR_MESSAGE_BUILDER)
+                && methodSignature.equals("parameter(java.lang.String,java.lang.Object)")) {
+            readParameterStepWithoutDescription(builderCall, errorCodeBuilder, true);
+        } else if (declaringTypeName.equals(ERROR_MESSAGE_BUILDER)
+                && methodSignature.equals("unquotedParameter(java.lang.String,java.lang.Object)")) {
+            readParameterStepWithoutDescription(builderCall, errorCodeBuilder, false);
+        } else if (declaringTypeName.equals(ERROR_MESSAGE_BUILDER)
+                && methodSignature.equals("parameter(java.lang.String,java.lang.Object,java.lang.String)")) {
+            readParameterStepWithDescription(builderCall, errorCodeBuilder, true);
+        } else if (declaringTypeName.equals(ERROR_MESSAGE_BUILDER)
+                && methodSignature.equals("unquotedParameter(java.lang.String,java.lang.Object,java.lang.String)")) {
+            readParameterStepWithDescription(builderCall, errorCodeBuilder, false);
         }
     }
 
@@ -229,6 +254,64 @@ public class ErrorMessageDeclarationCrawler {
 
     private String getFormattedPosition(final CtInvocation<?> invocation) {
         return invocation.getPosition().getFile().getName() + ":" + invocation.getPosition().getLine();
+    }
+
+    private void readMessageStep(final CtInvocation<?> builderCall,
+            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws InvalidSyntaxException {
+        final List<CtExpression<?>> arguments = builderCall.getArguments();
+        assert arguments.size() == 1;
+        final CtExpression<?> messageArgument = arguments.get(0);
+        errorCodeBuilder.prependMessage(getArgumentValue(messageArgument));
+    }
+
+    private void readMitigationStep(final CtInvocation<?> builderCall,
+            final ErrorMessageDeclaration.Builder errorCodeBuilder) throws InvalidSyntaxException {
+        final List<CtExpression<?>> arguments = builderCall.getArguments();
+        assert arguments.size() == 1;
+        final CtExpression<?> messageArgument = arguments.get(0);
+        errorCodeBuilder.prependMitigation(getArgumentValue(messageArgument));
+    }
+
+    private void readParameterStepWithoutDescription(final CtInvocation<?> builderCall,
+            final ErrorMessageDeclaration.Builder errorCodeBuilder, final boolean quoted)
+            throws InvalidSyntaxException {
+        final List<CtExpression<?>> arguments = builderCall.getArguments();
+        assert arguments.size() == 2;
+        final String parameterName = getArgumentValue(arguments.get(0));
+        errorCodeBuilder.addParameter(parameterName, null, quoted);
+    }
+
+    private void readParameterStepWithDescription(final CtInvocation<?> builderCall,
+            final ErrorMessageDeclaration.Builder errorCodeBuilder, final boolean quoted)
+            throws InvalidSyntaxException {
+        final List<CtExpression<?>> arguments = builderCall.getArguments();
+        assert arguments.size() == 3;
+        final String parameterName = getArgumentValue(arguments.get(0));
+        final String description = getArgumentValue(arguments.get(2));
+        errorCodeBuilder.addParameter(parameterName, description, quoted);
+    }
+
+    private String getArgumentValue(final CtExpression<?> messageArgument) throws InvalidSyntaxException {
+        if (messageArgument instanceof CtLiteral) {
+            final Object literalValue = ((CtLiteral<?>) messageArgument).getValue();
+            return literalValue.toString();
+        } else if (messageArgument instanceof CtBinaryOperator
+                && ((CtBinaryOperator<?>) messageArgument).getKind().equals(BinaryOperatorKind.PLUS)) {
+            final CtBinaryOperator<?> binaryOperator = (CtBinaryOperator<?>) messageArgument;
+            return getArgumentValue(binaryOperator.getLeftHandOperand())
+                    + getArgumentValue(binaryOperator.getRightHandOperand());
+        } else if (messageArgument instanceof CtFieldRead) {
+            final CtFieldRead<?> fieldRead = (CtFieldRead<?>) messageArgument;
+            final CtField<?> field = fieldRead.getVariable().getDeclaration();
+            if (field.isStatic() && field.isFinal()) {
+                return getArgumentValue(field.getDefaultExpression());
+            }
+        }
+        throw new InvalidSyntaxException(
+                ExaError.messageBuilder("E-ECM-16").message("Invalid parameter for message() call.")
+                        .mitigation("Only literals, String constants and concatenation of these two are supported.")
+                        .toString());
+
     }
 
     /**

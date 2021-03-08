@@ -14,6 +14,8 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import com.exasol.errorcodecrawlermavenplugin.config.*;
+import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
+import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
 import com.exasol.errorreporting.ExaError;
 
 /**
@@ -58,8 +60,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             final ErrorMessageDeclarationCrawler.Result crawlResult) {
         final List<Finding> findings = new LinkedList<>();
         findings.addAll(crawlResult.getFindings());
-        findings.addAll(
-                new ErrorMessageDeclarationValidator(config).validate(crawlResult.getErrorMessageDeclarations()));
+        final ErrorMessageDeclarationValidator validator = new ErrorMessageDeclarationValidatorFactory()
+                .getValidator(config);
+        findings.addAll(validator.validate(crawlResult.getErrorMessageDeclarations()));
         return findings;
     }
 
