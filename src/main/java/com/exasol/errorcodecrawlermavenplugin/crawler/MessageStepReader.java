@@ -21,7 +21,7 @@ class MessageStepReader implements MessageBuilderStepReader {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert arguments.size() == 1;
         final CtExpression<?> messageArgument = arguments.get(0);
-        errorCodeBuilder.prependMessage(new ArgumentReader().readStringArgumentValue(messageArgument, SIGNATURE));
+        errorCodeBuilder.prependMessage(new ArgumentReader(SIGNATURE).readStringArgumentValue(messageArgument));
     }
 
     @Override

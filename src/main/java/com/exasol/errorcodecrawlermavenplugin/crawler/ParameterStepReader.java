@@ -28,7 +28,7 @@ class ParameterStepReader implements MessageBuilderStepReader {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert arguments.size() > 1;
         final String signature = builderCall.getExecutable().getSignature();
-        final String parameterName = new ArgumentReader().readStringArgumentValue(arguments.get(0), signature);
+        final String parameterName = new ArgumentReader(signature).readStringArgumentValue(arguments.get(0));
         final String description = readDescription(arguments, signature);
         final boolean quoted = !signature.startsWith("unquoted");
         errorCodeBuilder.addParameter(parameterName, description, quoted);
@@ -37,7 +37,7 @@ class ParameterStepReader implements MessageBuilderStepReader {
     private String readDescription(final List<CtExpression<?>> arguments, final String signature)
             throws InvalidSyntaxException {
         if (arguments.size() == 3) {
-            return new ArgumentReader().readStringArgumentValue(arguments.get(2), signature);
+            return new ArgumentReader(signature).readStringArgumentValue(arguments.get(2));
         } else {
             return null;
         }

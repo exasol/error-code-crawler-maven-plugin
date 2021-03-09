@@ -21,7 +21,7 @@ class MitigationStepReader implements MessageBuilderStepReader {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert arguments.size() == 1;
         final CtExpression<?> messageArgument = arguments.get(0);
-        errorCodeBuilder.prependMitigation(new ArgumentReader().readStringArgumentValue(messageArgument, SIGNATURE));
+        errorCodeBuilder.prependMitigation(new ArgumentReader(SIGNATURE).readStringArgumentValue(messageArgument));
     }
 
     @Override

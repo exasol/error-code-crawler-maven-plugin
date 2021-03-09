@@ -24,7 +24,7 @@ public class ExaErrorStepReader implements MessageBuilderStepReader {
             final Path projectDirectory) throws InvalidSyntaxException {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert arguments.size() == 1;
-        final String errorCode = new ArgumentReader().readStringArgumentValue(arguments.get(0), SIGNATURE);
+        final String errorCode = new ArgumentReader(SIGNATURE).readStringArgumentValue(arguments.get(0));
         errorCodeBuilder.errorCode(ERROR_CODE_READER.parse(errorCode, formatPosition(builderCall.getPosition())));
         errorCodeBuilder.setPosition(
                 projectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
