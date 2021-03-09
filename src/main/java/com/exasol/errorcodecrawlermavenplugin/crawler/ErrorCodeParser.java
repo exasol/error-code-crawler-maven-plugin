@@ -1,4 +1,4 @@
-package com.exasol.errorcodecrawlermavenplugin;
+package com.exasol.errorcodecrawlermavenplugin.crawler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
