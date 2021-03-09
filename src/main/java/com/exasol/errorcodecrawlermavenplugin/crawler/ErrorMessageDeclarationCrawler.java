@@ -25,7 +25,6 @@ import spoon.reflect.visitor.filter.TypeFilter;
  * Crawler that reads invocations of {@link com.exasol.errorreporting.ExaError#messageBuilder(String)}.
  */
 public class ErrorMessageDeclarationCrawler {
-    private static final String POSITION = "position";
     private static final String ERRORREPORTING_PACKAGE = "com.exasol.errorreporting";
     private static final String ERROR_MESSAGE_BUILDER = "ErrorMessageBuilder";
     private static final List<MessageBuilderStepReader> STEP_READERS = List.of(new ExaErrorStepReader(),
@@ -118,7 +117,8 @@ public class ErrorMessageDeclarationCrawler {
             return;
         }
         final String methodsPackageName = declaringType.getPackage().getQualifiedName();
-        if (methodsPackageName.equals(ERRORREPORTING_PACKAGE) && methodsClassName.equals(ERROR_MESSAGE_BUILDER)
+        if (methodsPackageName.equals(ERRORREPORTING_PACKAGE)
+                && methodsClassName.equals(ErrorMessageBuilder.class.getSimpleName())
                 && method.getSignature().equals("toString()")) {
             try {
                 errorMessageDeclarations.add(readErrorCode(methodInvocation));
