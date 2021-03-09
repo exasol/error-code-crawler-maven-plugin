@@ -26,7 +26,6 @@ import spoon.reflect.visitor.filter.TypeFilter;
  */
 public class ErrorMessageDeclarationCrawler {
     private static final String ERRORREPORTING_PACKAGE = "com.exasol.errorreporting";
-    private static final String ERROR_MESSAGE_BUILDER = "ErrorMessageBuilder";
     private static final List<MessageBuilderStepReader> STEP_READERS = List.of(new ExaErrorStepReader(),
             new ParameterStepReader(), new MessageStepReader(), new MitigationStepReader());
     private final Path projectDirectory;
