@@ -48,12 +48,11 @@ class ArgumentReader {
     }
 
     private InvalidSyntaxException getInvalidSyntaxException(final CtExpression<?> messageArgument) {
-        return new InvalidSyntaxException(
-                ExaError.messageBuilder("E-ECM-16").message("Invalid parameter for {{method}} call. ({{position}})")
-                        .unquotedParameter("method", this.methodSignature)
-                        .unquotedParameter("position", formatPosition(messageArgument.getPosition()))
-                        .mitigation("Only literals, string-constants and concatenation of these two are supported.")
-                        .toString());
+        return new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-16")
+                .message("Invalid parameter for {{method|uq}} call. ({{position|uq}})", this.methodSignature,
+                        formatPosition(messageArgument.getPosition()))
+                .mitigation("Only literals, string-constants and concatenation of these two are supported.")
+                .toString());
     }
 
     private boolean isFieldAccess(final CtExpression<?> messageArgument) {

@@ -10,18 +10,20 @@ import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
 
 /**
- * Reader for invocations of {@link ErrorMessageBuilder#message(String)}.
+ * Reader for invocations of {@link ErrorMessageBuilder#message(String, Object...)}.
  */
 class MessageStepReader implements MessageBuilderStepReader {
-    private static final String SIGNATURE = "message(java.lang.String)";
+    private static final String SIGNATURE = "message(java.lang.String,java.lang.Object[])";
 
     @Override
     public void read(final CtInvocation<?> builderCall, final ErrorMessageDeclaration.Builder errorCodeBuilder,
             final Path projectDirectory) throws InvalidSyntaxException {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
-        assert arguments.size() == 1;
+        assert !arguments.isEmpty();
         final CtExpression<?> messageArgument = arguments.get(0);
-        errorCodeBuilder.prependMessage(new ArgumentReader(SIGNATURE).readStringArgumentValue(messageArgument));
+        final String message = new ArgumentReader(SIGNATURE).readStringArgumentValue(messageArgument);
+        errorCodeBuilder.prependMessage(message);
+        new DirectParameterReader().readInlineParameters(arguments.size() - 1, message, errorCodeBuilder);
     }
 
     @Override

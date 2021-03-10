@@ -47,12 +47,26 @@ class ErrorMessageDeclarationCrawlerTest {
             "TestWithConcatenatedMessage.java, concatenated message", //
             "TestWithMultiplePartConcatenatedMessage.java, concatenated message 2", //
             "TestWithMessageFromConstant.java, message from constant" })
-    void testCrawlTwoMessages(final String testFile, final String expectedMessage) {
+    void testCrawlMessage(final String testFile, final String expectedMessage) {
         final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
                 .crawl(Path.of(TEST_DIR, testFile).toAbsolutePath());
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertThat(first.getMessage(), equalTo(expectedMessage));
+    }
+
+    @Test
+    void testCrawlMessageWithDirectParameters() {
+        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
+                .crawl(Path.of(TEST_DIR, "TestWithMessageAndDirectParameter.java").toAbsolutePath());
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
+        final ErrorMessageDeclaration first = errorCodes.get(0);
+        assertAll(//
+                () -> assertThat(first.getMessage(),
+                        equalTo("message with parameters {{param1}} {{param2|uq}} {{param3}}")),
+                () -> assertThat(first.getNamedParameters(), containsInAnyOrder(
+                        new NamedParameter("param1", null, true), new NamedParameter("param2", null, false)))//
+        );
     }
 
     @Test
@@ -62,6 +76,18 @@ class ErrorMessageDeclarationCrawlerTest {
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertThat(first.getMitigations(), contains("That's how to fix it.", "One more hint."));
+    }
+
+    @Test
+    void testCrawlMitigationWithDirectParameters() {
+        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
+                .crawl(Path.of(TEST_DIR, "TestWithMitigationAndDirectParameter.java").toAbsolutePath());
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
+        final ErrorMessageDeclaration first = errorCodes.get(0);
+        assertAll(//
+                () -> assertThat(first.getMitigations(), contains("That's how to fix it: {{hint}}")),
+                () -> assertThat(first.getNamedParameters(), contains(new NamedParameter("hint", null, true)))//
+        );
     }
 
     @ParameterizedTest

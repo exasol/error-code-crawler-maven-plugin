@@ -52,11 +52,11 @@ class ErrorCodesBelongToPackageValidator implements ErrorMessageDeclarationValid
                     .message("According to this project's " + ErrorCodeConfigReader.CONFIG_NAME
                             + ", the error tag {{tag}} is not allowed for the package {{package}}.")
                     .mitigation(
-                            "The config allows the tag {{tag}} for the following packages: {{tags packages}}. {{optional tag suggestion}}")
+                            "The config allows the tag {{tag}} for the following packages: {{tags packages}}. {{optional tag suggestion|uq}}")
                     .parameter("tag", tag)//
                     .parameter("package", declaringPackage)//
                     .parameter("tags packages", this.config.getPackagesForErrorTag(tag))//
-                    .unquotedParameter("optional tag suggestion", tagSuggestion)//
+                    .parameter("optional tag suggestion", tagSuggestion)//
                     .toString()));
         }
         return Optional.empty();

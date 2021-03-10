@@ -107,7 +107,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>error-reporting-java</artifactId>
-            <version>0.2.2</version>
+            <version>0.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -387,7 +387,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>0.4.2</version>
+                <version>0.5.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -459,6 +459,13 @@
                         <exclude>src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/**</exclude>
                     </excludes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <testResources>
