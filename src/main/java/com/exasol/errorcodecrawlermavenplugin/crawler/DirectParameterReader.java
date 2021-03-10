@@ -19,7 +19,7 @@ class DirectParameterReader {
     public void readInlineParameters(final int numInlineParameterArguments, final String text,
             final ErrorMessageDeclaration.Builder errorCodeBuilder) {
         if (numInlineParameterArguments > 0) {
-            final PlaceholderMatcher placeholders = PlaceholderMatcher.findPlaceholders(text);
+            final Iterable<Placeholder> placeholders = PlaceholderMatcher.findPlaceholders(text);
             int placeholderCounter = 0;
             for (final Placeholder placeholder : placeholders) {
                 if (placeholderCounter >= numInlineParameterArguments) {
