@@ -24,9 +24,8 @@ public class ErrorCodeParser {
         final Matcher matcher = ERROR_CODE_PATTERN.matcher(errorCodeString);
         if (!matcher.matches()) {
             throw new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-10")
-                    .message("The error code {{error code}} has an invalid format. ({{source position}})")
-                    .parameter("error code", errorCodeString).unquotedParameter("source position", sourcePosition)
-                    .toString());
+                    .message("The error code {{error code}} has an invalid format. ({{source position|uq}})")
+                    .parameter("error code", errorCodeString).parameter("source position", sourcePosition).toString());
         }
         final ErrorCode.Type errorType = parseErrorType(matcher.group(1), errorCodeString, sourcePosition);
         final String errorTag = matcher.group(2);
@@ -39,11 +38,10 @@ public class ErrorCodeParser {
         try {
             return ErrorCode.Type.valueOf(errorTypeString);
         } catch (final IllegalArgumentException exception) {
-            throw new InvalidSyntaxException(
-                    ExaError.messageBuilder("E-ECM-11").message("Illegal error code {{error code}}.")
-                            .mitigation("The codes must start with 'W-', 'E-' or 'F-'. ({{source position}})")
-                            .parameter("error code", errorCode).unquotedParameter("source position", sourcePosition)
-                            .toString());
+            throw new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-11")
+                    .message("Illegal error code {{error code}}.")
+                    .mitigation("The codes must start with 'W-', 'E-' or 'F-'. ({{source position|uq}})")
+                    .parameter("error code", errorCode).parameter("source position", sourcePosition).toString());
         }
     }
 }

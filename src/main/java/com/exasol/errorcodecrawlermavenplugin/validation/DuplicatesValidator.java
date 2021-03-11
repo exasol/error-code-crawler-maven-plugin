@@ -38,9 +38,9 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
         for (final Map.Entry<String, List<String>> errorCode : positionsPerCode.entrySet()) {
             if (errorCode.getValue().size() > 1) {
                 findings.add(new Finding(ExaError.messageBuilder("E-ECM-4").message(
-                        "Found duplicate error code: {{errorCode}} was declared multiple times: {{declarations}}.")
+                        "Found duplicate error code: {{errorCode}} was declared multiple times: {{declarations|uq}}.")
                         .parameter("errorCode", errorCode.getKey())
-                        .unquotedParameter("declarations", String.join(", ", errorCode.getValue())).toString()));
+                        .parameter("declarations", String.join(", ", errorCode.getValue())).toString()));
             }
         }
         return findings;
