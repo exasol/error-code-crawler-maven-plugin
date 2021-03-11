@@ -52,7 +52,10 @@ class ErrorMessageDeclarationCrawlerTest {
                 .crawl(Path.of(TEST_DIR, testFile).toAbsolutePath());
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
-        assertThat(first.getMessage(), equalTo(expectedMessage));
+        assertAll(//
+                () -> assertThat(first.getMessage(), equalTo(expectedMessage)),
+                () -> assertThat(first.getNamedParameters(), empty())//
+        );
     }
 
     @Test
