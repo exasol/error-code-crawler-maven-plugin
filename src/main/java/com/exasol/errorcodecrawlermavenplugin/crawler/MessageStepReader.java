@@ -1,37 +1,26 @@
 package com.exasol.errorcodecrawlermavenplugin.crawler;
 
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Set;
 
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ErrorMessageBuilder;
 
-import spoon.reflect.code.CtExpression;
-import spoon.reflect.code.CtInvocation;
-
 /**
  * Reader for invocations of {@link ErrorMessageBuilder#message(String, Object...)}.
  */
-class MessageStepReader implements MessageBuilderStepReader {
+class MessageStepReader extends AbstractTextWithParametersStepReader {
     private static final Set<String> SUPPORTED_SIGNATURES = Set.of("message(java.lang.String,java.lang.Object[])",
             "message(java.lang.String)");
 
-    @Override
-    public void read(final CtInvocation<?> builderCall, final ErrorMessageDeclaration.Builder errorCodeBuilder,
-            final Path projectDirectory) throws InvalidSyntaxException {
-        final List<CtExpression<?>> arguments = builderCall.getArguments();
-        assert !arguments.isEmpty();
-        final CtExpression<?> messageArgument = arguments.get(0);
-        final String message = new ArgumentReader(builderCall.getExecutable().getSignature())
-                .readStringArgumentValue(messageArgument);
-        errorCodeBuilder.prependMessage(message);
-        new DirectParameterReader().readInlineParameters(arguments.size() - 1, message, errorCodeBuilder);
+    /**
+     * Create a new instance of {@link MessageStepReader}.
+     */
+    MessageStepReader() {
+        super(SUPPORTED_SIGNATURES);
     }
 
     @Override
-    public boolean canRead(final String className, final String methodSignature) {
-        return className.equals(ErrorMessageBuilder.class.getSimpleName())
-                && SUPPORTED_SIGNATURES.contains(methodSignature);
+    void addTextToBuilder(final String text, final ErrorMessageDeclaration.Builder errorCodeBuilder) {
+        errorCodeBuilder.prependMessage(text);
     }
 }
