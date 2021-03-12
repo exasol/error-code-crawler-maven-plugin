@@ -6,6 +6,7 @@ Code name: Parameter validation
 
 * #22: Added validation to check that build parameters are declared
 * #24: Added support for new API of error-reporting-java 0.4.0
+* #28: Added validation that there are no unnamed parameters
 
 ## Dependency Updates
 

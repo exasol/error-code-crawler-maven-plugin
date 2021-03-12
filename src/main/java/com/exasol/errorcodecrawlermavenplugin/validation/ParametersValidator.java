@@ -1,6 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin.validation;
 
-import java.io.File;
+import static com.exasol.errorcodecrawlermavenplugin.validation.PositionFormatter.getFormattedPosition;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,9 +58,5 @@ class ParametersValidator implements ErrorMessageDeclarationValidator {
         } else {
             return Optional.empty();
         }
-    }
-
-    private String getFormattedPosition(final ErrorMessageDeclaration errorMessageDeclaration) {
-        return new File(errorMessageDeclaration.getSourceFile()).getName() + ":" + errorMessageDeclaration.getLine();
     }
 }
