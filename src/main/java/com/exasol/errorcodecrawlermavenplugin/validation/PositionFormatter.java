@@ -8,6 +8,11 @@ import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
  * Format a error code positions for error messages.
  */
 class PositionFormatter {
+
+    private PositionFormatter() {
+        // empty on purpose
+    }
+
     /**
      * Format error code position.
      * 
