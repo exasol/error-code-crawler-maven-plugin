@@ -12,7 +12,6 @@ import com.exasol.errorreporting.ExaError;
  * This {@link ErrorMessageDeclarationValidator} validates, that there are no parameters with no name.
  */
 class EmptyParameterNameValidator extends AbstractIndependentErrorMessageDeclarationValidator {
-
     @Override
     protected Stream<Finding> validateSingleErrorMessageDeclaration(
             final ErrorMessageDeclaration errorMessageDeclaration) {

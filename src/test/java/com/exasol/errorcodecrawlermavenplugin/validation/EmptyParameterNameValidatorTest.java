@@ -13,7 +13,6 @@ import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
 class EmptyParameterNameValidatorTest {
-
     @Test
     void testValid() {
         final ErrorMessageDeclaration messageDeclaration = ErrorMessageDeclaration.builder()
