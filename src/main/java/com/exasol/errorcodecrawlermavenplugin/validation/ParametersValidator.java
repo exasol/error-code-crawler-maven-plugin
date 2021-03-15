@@ -1,7 +1,9 @@
 package com.exasol.errorcodecrawlermavenplugin.validation;
 
-import java.io.File;
-import java.util.*;
+import static com.exasol.errorcodecrawlermavenplugin.validation.PositionFormatter.getFormattedPosition;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,19 +16,13 @@ import com.exasol.errorreporting.*;
  * This {@link ErrorMessageDeclarationValidator} validates that all parameters used in message and mitigation are
  * declared.
  */
-class ParametersValidator implements ErrorMessageDeclarationValidator {
+class ParametersValidator extends AbstractIndependentErrorMessageDeclarationValidator {
 
     @Override
-    public List<Finding> validate(final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
-        return errorMessageDeclarations.stream().flatMap(errorMessageDeclaration -> {
-            final String declarationsText = errorMessageDeclaration.getMessage()
-                    + String.join(" ", errorMessageDeclaration.getMitigations());
-            return validateParametersAreDeclared(errorMessageDeclaration, declarationsText);
-        }).collect(Collectors.toList());
-    }
-
-    private Stream<Finding> validateParametersAreDeclared(final ErrorMessageDeclaration errorMessageDeclaration,
-            final String textWithPlaceholders) {
+    protected Stream<Finding> validateSingleErrorMessageDeclaration(
+            final ErrorMessageDeclaration errorMessageDeclaration) {
+        final String textWithPlaceholders = errorMessageDeclaration.getMessage()
+                + String.join(" ", errorMessageDeclaration.getMitigations());
         final Stream.Builder<Finding> findings = Stream.builder();
         final Iterable<Placeholder> placeholders = PlaceholderMatcher.findPlaceholders(textWithPlaceholders);
         placeholders.forEach(placeholder -> validatePlaceholder(errorMessageDeclaration, placeholder.getName())
@@ -57,9 +53,5 @@ class ParametersValidator implements ErrorMessageDeclarationValidator {
         } else {
             return Optional.empty();
         }
-    }
-
-    private String getFormattedPosition(final ErrorMessageDeclaration errorMessageDeclaration) {
-        return new File(errorMessageDeclaration.getSourceFile()).getName() + ":" + errorMessageDeclaration.getLine();
     }
 }

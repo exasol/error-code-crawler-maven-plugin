@@ -16,6 +16,8 @@ import org.apache.maven.it.Verifier;
 import org.apache.maven.it.util.ResourceExtractor;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * This integration test tests the maven plugin in a save environment. Since we don't want to install the plugin to the
@@ -99,17 +101,6 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
-    void testDuplicateErrorCode() throws VerificationException, IOException {
-        Files.copy(EXAMPLES_PATH.resolve("DuplicateErrorCode.java"),
-                this.projectsSrc.resolve("DuplicateErrorCode.java"), StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        final VerificationException exception = assertThrows(VerificationException.class,
-                () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
-    }
-
-    @Test
     void testMissingErrorConfig() throws VerificationException, IOException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);
@@ -136,26 +127,19 @@ class ErrorCodeCrawlerMojoIT {
                 "[ERROR] E-ECM-13: According to this project's errorCodeConfig.yml, the error tag 'TEST' is not allowed for the package 'com.exasol.errorcodecrawlermavenplugin.examples'. The config allows the tag 'TEST' for the following packages: ['com.other']."));
     }
 
-    @Test
-    void testDuplicateErrorCodeInTest() throws VerificationException, IOException {
-        Files.copy(EXAMPLES_PATH.resolve("DuplicateErrorCode.java"),
-                this.projectsTestSrc.resolve("DuplicateErrorCode.java"), StandardCopyOption.REPLACE_EXISTING);
+    @ParameterizedTest
+    @CsvSource({ //
+            "DuplicateErrorCode.java, E-ECM-4", //
+            "TestWithUndeclaredParameter.java, E-ECM-17", //
+            "IllegalUnnamedParameter.java, E-ECM-19",//
+    })
+    void testValidations(final String testFile, final String expectedString) throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectsTestSrc.resolve(testFile),
+                StandardCopyOption.REPLACE_EXISTING);
         final Verifier verifier = getVerifier();
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: DuplicateErrorCode.java:10, DuplicateErrorCode.java:14."));
-    }
-
-    @Test
-    void testUndeclaredParameter() throws VerificationException, IOException {
-        Files.copy(EXAMPLES_PATH.resolve("TestWithUndeclaredParameter.java"),
-                this.projectsTestSrc.resolve("TestWithUndeclaredParameter.java"), StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        final VerificationException exception = assertThrows(VerificationException.class,
-                () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(),
-                containsString("[ERROR] E-ECM-17: The parameter 'missing parameter' was used but not declared."));
+        assertThat(exception.getMessage(), containsString(expectedString));
     }
 
     private Verifier getVerifier() throws VerificationException {
