@@ -59,7 +59,7 @@ public class ErrorCode {
         if (!(other instanceof ErrorCode)) {
             return false;
         }
-        final ErrorCode errorCode = (ErrorCode) other;
+        final var errorCode = (ErrorCode) other;
         return this.index == errorCode.index && this.type == errorCode.type && Objects.equals(this.tag, errorCode.tag);
     }
 

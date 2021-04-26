@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.*;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorCode;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
 
@@ -22,7 +21,7 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
             final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
         final Map<String, List<String>> positionsPerCode = new HashMap<>();
         for (final ErrorMessageDeclaration errorMessageDeclaration : errorMessageDeclarations) {
-            final ErrorCode errorCode = errorMessageDeclaration.getErrorCode();
+            final var errorCode = errorMessageDeclaration.getErrorCode();
             final String errorId = errorCode.getTag() + "-" + errorCode.getIndex();
             if (positionsPerCode.containsKey(errorId)) {
                 positionsPerCode.get(errorId).add(getSourceReference(errorMessageDeclaration));

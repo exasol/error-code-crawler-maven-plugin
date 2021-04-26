@@ -41,7 +41,7 @@ public class ErrorCodeConfigReader {
      */
     public ErrorCodeConfig read() throws ErrorCodeConfigException {
         try {
-            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            final var mapper = new ObjectMapper(new YAMLFactory());
             mapper.findAndRegisterModules();
             return mapper.readValue(this.errorConfigFile, ErrorCodeConfig.class);
         } catch (final IOException exception) {

@@ -20,7 +20,7 @@ class DirectParameterReader {
             final ErrorMessageDeclaration.Builder errorCodeBuilder) {
         if (inlineParameterArgumentsCount > 0) {
             final Iterable<Placeholder> placeholders = PlaceholderMatcher.findPlaceholders(text);
-            int placeholderCounter = 0;
+            var placeholderCounter = 0;
             for (final Placeholder placeholder : placeholders) {
                 if (placeholderCounter >= inlineParameterArgumentsCount) {
                     break; // there is not argument for this placeholder
