@@ -407,6 +407,9 @@
                         <linkReplacement>
                             https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/
                         </linkReplacement>
+                        <linkReplacement>
+                            http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt|http://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+                        </linkReplacement>
                     </linkReplacements>
                 </configuration>
             </plugin>
