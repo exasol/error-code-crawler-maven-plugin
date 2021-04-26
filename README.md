@@ -79,4 +79,4 @@ You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
 
 * [Changelog](doc/changes/changelog.md)
 * [License](LICENSE)
-* [Dependencies](NOTICE)
+* [Dependencies](dependencies.md)

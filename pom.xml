@@ -387,7 +387,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>0.5.0</version>
+                <version>0.7.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -400,29 +400,11 @@
                         <module>maven_central</module>
                         <module>integration_tests</module>
                     </modules>
+                    <excludedPlugins>
+                        <excludedPlugin>com.exasol:error-code-crawler-maven-plugin</excludedPlugin>
+                    </excludedPlugins>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                <groupId>org.jasig.maven</groupId>
-                <artifactId>maven-notice-plugin</artifactId>
-                <version>1.1.1</version>
-                <configuration>
-                    <noticeTemplate>NOTICE.template</noticeTemplate>
-
-                    <licenseMapping>
-                        <param>https://source.jasig.org/licenses/license-mappings.xml</param>
-                    </licenseMapping>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -463,6 +445,20 @@
                     <execution>
                         <goals>
                             <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.github.zlika</groupId>
+                <artifactId>reproducible-build-maven-plugin</artifactId>
+                <version>0.13</version>
+                <executions>
+                    <execution>
+                        <id>strip-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>strip-jar</goal>
                         </goals>
                     </execution>
                 </executions>
