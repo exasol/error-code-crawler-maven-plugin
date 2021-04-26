@@ -88,7 +88,6 @@
 [26]: https://junit.org/junit5/
 [52]: https://sonatype.github.io/ossindex-maven/maven-plugin/
 [46]: https://maven.apache.org/plugin-tools/maven-plugin-plugin
-[9]: http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [8]: http://spoon.gforge.inria.fr/
 [22]: http://www.jqno.nl/equalsverifier
 [44]: https://maven.apache.org/plugins/maven-source-plugin/
@@ -100,3 +99,4 @@
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [48]: https://maven.apache.org/plugins/maven-javadoc-plugin/
 [62]: https://github.com/exasol/error-code-crawler-maven-plugin
+[9]: http://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
