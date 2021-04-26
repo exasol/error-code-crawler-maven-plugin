@@ -5,10 +5,8 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -36,19 +34,19 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoFailureException {
-        final Path projectDir = this.project.getBasedir().toPath();
+        final var projectDir = this.project.getBasedir().toPath();
         final ErrorCodeConfig config = readConfig(projectDir);
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(),
-                getJavaSourceVersion(), Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-        final Path srcMainPath = projectDir.resolve(Path.of("src", "main"));
-        final Path srcTestPath = projectDir.resolve(Path.of("src", "test"));
-        final ErrorMessageDeclarationCrawler.Result crawlResult = crawler.crawl(srcMainPath, srcTestPath);
+        final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
+                Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
+        final var srcMainPath = projectDir.resolve(Path.of("src", "main"));
+        final var srcTestPath = projectDir.resolve(Path.of("src", "test"));
+        final var crawlResult = crawler.crawl(srcMainPath, srcTestPath);
         final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
         reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {
-        final Log log = getLog();
+        final var log = getLog();
         if (!findings.isEmpty()) {
             findings.forEach(finding -> log.error(finding.getMessage()));
             throw new MojoFailureException(ExaError.messageBuilder("E-ECM-3")
@@ -77,12 +75,12 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     private int getJavaSourceVersion() {
         try {
-            final Plugin compilerPlugin = this.project.getPlugin("org.apache.maven.plugins:maven-compiler-plugin");
+            final var compilerPlugin = this.project.getPlugin("org.apache.maven.plugins:maven-compiler-plugin");
             final Xpp3Dom configuration = (Xpp3Dom) compilerPlugin.getConfiguration();
             final String value = configuration.getChild("source").getValue();
             return Integer.parseInt(value);
         } catch (final Exception exception) {
-            final int sourceVersion = 5;
+            final var sourceVersion = 5;
             getLog().warn(ExaError.messageBuilder("W-ECM-14")
                     .message("Failed to read java source version from POM file. Falling back to {{version}}.")
                     .mitigation(

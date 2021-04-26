@@ -40,7 +40,7 @@ abstract class AbstractTextWithParametersStepReader implements MessageBuilderSte
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert !arguments.isEmpty();
         final CtExpression<?> messageArgument = arguments.get(0);
-        final String text = new ArgumentReader(builderCall.getExecutable().getSignature())
+        final var text = new ArgumentReader(builderCall.getExecutable().getSignature())
                 .readStringArgumentValue(messageArgument);
         addTextToBuilder(text, errorCodeBuilder);
         new DirectParameterReader().readInlineParameters(arguments.size() - 1, text, errorCodeBuilder);

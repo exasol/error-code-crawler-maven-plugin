@@ -12,7 +12,6 @@ import com.exasol.errorreporting.ExaError;
 
 import spoon.Launcher;
 import spoon.SpoonAPI;
-import spoon.compiler.Environment;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.declaration.CtElement;
@@ -81,7 +80,7 @@ public class ErrorMessageDeclarationCrawler {
 
     private SpoonAPI initSpoon(final Path... pathsToCrawl) {
         final SpoonAPI spoon = new Launcher();
-        final Environment environment = spoon.getEnvironment();
+        final var environment = spoon.getEnvironment();
         environment.setSourceClasspath(this.classPath);
         environment.setNoClasspath(false);
         environment.setComplianceLevel(this.javaSourceVersion);
@@ -102,7 +101,7 @@ public class ErrorMessageDeclarationCrawler {
      */
     private void crawl(final CtInvocation<?> methodInvocation, final List<Finding> findings,
             final List<ErrorMessageDeclaration> errorMessageDeclarations) {
-        final File sourceFile = methodInvocation.getPosition().getFile();
+        final var sourceFile = methodInvocation.getPosition().getFile();
         if (sourceFile == null || isFileExcluded(sourceFile)) {
             return;
         }
@@ -128,7 +127,7 @@ public class ErrorMessageDeclarationCrawler {
     }
 
     private boolean isFileExcluded(final File sourceFile) {
-        final Path relativePath = this.projectDirectory.relativize(sourceFile.toPath());
+        final var relativePath = this.projectDirectory.relativize(sourceFile.toPath());
         return this.excludedFilesMatchers.stream().anyMatch(matcher -> matcher.matches(relativePath));
     }
 
@@ -156,7 +155,7 @@ public class ErrorMessageDeclarationCrawler {
     private ErrorMessageDeclaration readErrorCode(final CtInvocation<?> methodInvocation)
             throws InvalidSyntaxException {
         CtExpression<?> target = methodInvocation.getTarget();
-        final ErrorMessageDeclaration.Builder errorCodeBuilder = ErrorMessageDeclaration.builder();
+        final var errorCodeBuilder = ErrorMessageDeclaration.builder();
         while (target instanceof CtInvocation) {
             final CtInvocation<?> builderCall = (CtInvocation<?>) target;
             addBuilderStep(builderCall, errorCodeBuilder);

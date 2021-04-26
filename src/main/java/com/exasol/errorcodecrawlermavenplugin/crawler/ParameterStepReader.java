@@ -27,10 +27,10 @@ class ParameterStepReader implements MessageBuilderStepReader {
             final Path projectDirectory) throws InvalidSyntaxException {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert arguments.size() > 1;
-        final String signature = builderCall.getExecutable().getSignature();
-        final String parameterName = new ArgumentReader(signature).readStringArgumentValue(arguments.get(0));
-        final String description = readDescription(arguments, signature);
-        final boolean quoted = !signature.startsWith("unquoted");
+        final var signature = builderCall.getExecutable().getSignature();
+        final var parameterName = new ArgumentReader(signature).readStringArgumentValue(arguments.get(0));
+        final var description = readDescription(arguments, signature);
+        final var quoted = !signature.startsWith("unquoted");
         errorCodeBuilder.addParameter(parameterName, description, quoted);
     }
 
