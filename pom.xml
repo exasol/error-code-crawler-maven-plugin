@@ -403,6 +403,11 @@
                     <excludedPlugins>
                         <excludedPlugin>com.exasol:error-code-crawler-maven-plugin</excludedPlugin>
                     </excludedPlugins>
+                    <linkReplacements>
+                        <linkReplacement>
+                            https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/
+                        </linkReplacement>
+                    </linkReplacements>
                 </configuration>
             </plugin>
             <plugin>

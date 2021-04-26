@@ -60,6 +60,7 @@
 [7]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [32]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [60]: http://www.sonatype.com/public-parent/nexus-maven-plugins/nexus-staging/nexus-staging-maven-plugin/
+[16]: https://github.com/FasterXML/jackson-modules-java8/
 [66]: http://maven.apache.org/plugins/maven-clean-plugin/
 [30]: https://maven.apache.org/shared/maven-verifier/
 [11]: https://opensource.org/licenses/MIT
@@ -70,7 +71,6 @@
 [42]: http://www.mojohaus.org/versions-maven-plugin/
 [21]: http://opensource.org/licenses/BSD-3-Clause
 [38]: https://maven.apache.org/plugins/maven-compiler-plugin/
-[16]: https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310
 [50]: http://maven.apache.org/plugins/maven-gpg-plugin/
 [24]: http://junit.org
 [37]: https://www.eclipse.org/legal/epl-2.0/

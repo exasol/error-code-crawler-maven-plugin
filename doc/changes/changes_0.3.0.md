@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.3.0, released 2021-04-26
+# error-code-crawler-maven-plugin 0.3.0, released 2021-04-27
 
 Code name: Parameter validation
 
