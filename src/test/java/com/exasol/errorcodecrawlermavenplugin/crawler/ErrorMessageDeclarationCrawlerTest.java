@@ -148,4 +148,14 @@ class ErrorMessageDeclarationCrawlerTest {
                 .crawl(Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java"));
         assertTrue(result.getFindings().isEmpty());
     }
+
+    @Test
+    void testIllegalAssigningOfBuilderToVariable() {
+        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
+                .crawl(Path.of(TEST_DIR, "TestWithBuilderAssignedToVariable.java"));
+        final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
+                .collect(Collectors.toList());
+        assertThat(messages, containsInAnyOrder(
+                startsWith("E-ECM-31: Invalid incomplete builder call at TestWithBuilderAssignedToVariable.java:")));
+    }
 }

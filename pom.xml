@@ -387,7 +387,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>0.5.0</version>
+                <version>0.7.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -400,29 +400,19 @@
                         <module>maven_central</module>
                         <module>integration_tests</module>
                     </modules>
+                    <excludedPlugins>
+                        <excludedPlugin>com.exasol:error-code-crawler-maven-plugin</excludedPlugin>
+                    </excludedPlugins>
+                    <linkReplacements>
+                        <linkReplacement>
+                            https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/
+                        </linkReplacement>
+                        <linkReplacement>
+                            http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt|http://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
+                        </linkReplacement>
+                    </linkReplacements>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                <groupId>org.jasig.maven</groupId>
-                <artifactId>maven-notice-plugin</artifactId>
-                <version>1.1.1</version>
-                <configuration>
-                    <noticeTemplate>NOTICE.template</noticeTemplate>
-
-                    <licenseMapping>
-                        <param>https://source.jasig.org/licenses/license-mappings.xml</param>
-                    </licenseMapping>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -459,10 +449,17 @@
                         <exclude>src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/**</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.github.zlika</groupId>
+                <artifactId>reproducible-build-maven-plugin</artifactId>
+                <version>0.13</version>
                 <executions>
                     <execution>
+                        <id>strip-jar</id>
+                        <phase>package</phase>
                         <goals>
-                            <goal>verify</goal>
+                            <goal>strip-jar</goal>
                         </goals>
                     </execution>
                 </executions>
