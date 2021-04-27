@@ -449,13 +449,6 @@
                         <exclude>src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/**</exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>io.github.zlika</groupId>
