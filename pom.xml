@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>error-code-crawler-maven-plugin</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <name>error-code-crawler-maven-plugin</name>
     <description>Crawler for Exasol error codes.</description>
     <url>https://github.com/exasol/error-code-crawler-maven-plugin</url>
@@ -167,6 +167,12 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
             <version>3.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.exasol</groupId>
+            <artifactId>maven-project-version-getter</artifactId>
+            <version>0.1.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

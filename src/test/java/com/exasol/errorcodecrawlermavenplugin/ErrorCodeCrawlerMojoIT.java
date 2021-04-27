@@ -1,5 +1,6 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
+import static com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter.getCurrentProjectVersion;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,7 +27,9 @@ import org.junit.jupiter.params.provider.CsvSource;
  */
 @Tag("integration")
 class ErrorCodeCrawlerMojoIT {
-    private static final Path PLUGIN_JAR = Path.of("target", "error-code-crawler-maven-plugin-0.3.0.jar");
+    private static final String CURRENT_VERSION = getCurrentProjectVersion();
+    private static final Path PLUGIN_JAR = Path.of("target",
+            "error-code-crawler-maven-plugin-" + CURRENT_VERSION + ".jar");
     private static final Path ERROR_CODE_CRAWLER_POM = Path.of("pom.xml");
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
@@ -50,6 +53,7 @@ class ErrorCodeCrawlerMojoIT {
     @BeforeAll
     static void beforeAll() throws VerificationException, IOException {
         final File testDir = ResourceExtractor.simpleExtractResources(ErrorCodeCrawlerMojoIT.class, "/testProject");
+        writeCurrentPluginVersionToPom(testDir);
         final Verifier verifier = new Verifier(testDir.getAbsolutePath());
         verifier.setCliOptions(List.of(//
                 "-Dfile=" + PLUGIN_JAR.toAbsolutePath().toString(), //
@@ -57,6 +61,13 @@ class ErrorCodeCrawlerMojoIT {
                 "-DpomFile=" + ERROR_CODE_CRAWLER_POM.toAbsolutePath()));
         verifier.executeGoal("install:install-file");
         verifier.verifyErrorFreeLog();
+    }
+
+    private static void writeCurrentPluginVersionToPom(final File testDir) throws IOException {
+        final Path pom = testDir.toPath().resolve("pom.xml");
+        final String pomContent = Files.readString(pom);
+        Files.writeString(pom, pomContent.replace("CURRENT_VERSION", CURRENT_VERSION),
+                StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     @BeforeEach
@@ -109,7 +120,7 @@ class ErrorCodeCrawlerMojoIT {
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "[ERROR] Failed to execute goal com.exasol:error-code-crawler-maven-plugin:0.3.0:verify (default-cli) on project project-to-test: E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+                "E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
     }
 
     @Test
