@@ -57,7 +57,7 @@ class ErrorCodesBelongToPackageValidatorTest {
                 .of(ErrorMessageDeclaration.builder().errorCode(new ErrorCode(ErrorCode.Type.E, "UNKNOWN", 1))
                         .declaringPackage(EXAMPLE_PACKAGE).setPosition("src/test/Test.java", 1).build());
         assertValidationHasFindingsWithMessage(errors,
-                "E-ECM-12: The error tag 'UNKNOWN' was not declared in the errorCodeConfig.yml. Check if it is just a typo and if not add an entry for 'UNKNOWN' and package 'com.example'.");
+                "E-ECM-12: The error tag 'UNKNOWN' was not declared in the error_code_config.yml. Check if it is just a typo and if not add an entry for 'UNKNOWN' and package 'com.example'.");
     }
 
     @Test
@@ -65,6 +65,6 @@ class ErrorCodesBelongToPackageValidatorTest {
         final List<ErrorMessageDeclaration> errors = List.of(ErrorMessageDeclaration.builder().errorCode(E_TEST_1)
                 .declaringPackage(OTHER_PACKAGE).setPosition("src/test/Test.java", 1).build());
         assertValidationHasFindingsWithMessage(errors,
-                "E-ECM-13: According to this project's errorCodeConfig.yml, the error tag 'TEST' is not allowed for the package 'com.other'. The config allows the tag 'TEST' for the following packages: ['com.example'].  For this package it allows the tag 'OTHER'.");
+                "E-ECM-13: According to this project's error_code_config.yml, the error tag 'TEST' is not allowed for the package 'com.other'. The config allows the tag 'TEST' for the following packages: ['com.example'].  For this package it allows the tag 'OTHER'.");
     }
 }

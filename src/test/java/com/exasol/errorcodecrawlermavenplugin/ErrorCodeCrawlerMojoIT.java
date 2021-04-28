@@ -84,8 +84,8 @@ class ErrorCodeCrawlerMojoIT {
                 this.projectDir.resolve("pom.xml"), StandardCopyOption.REPLACE_EXISTING);
         Files.copy(
                 Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("testProject/errorCodeConfig.yml")),
-                this.projectDir.resolve("errorCodeConfig.yml"), StandardCopyOption.REPLACE_EXISTING);
+                        getClass().getClassLoader().getResourceAsStream("testProject/error_code_config.yml")),
+                this.projectDir.resolve("error_code_config.yml"), StandardCopyOption.REPLACE_EXISTING);
     }
 
     @AfterEach
@@ -115,12 +115,12 @@ class ErrorCodeCrawlerMojoIT {
     void testMissingErrorConfig() throws VerificationException, IOException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);
-        Files.delete(this.projectDir.resolve("errorCodeConfig.yml"));
+        Files.delete(this.projectDir.resolve("error_code_config.yml"));
         final Verifier verifier = getVerifier();
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+                "E-ECM-9: Could not find error_code_config.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
     }
 
     @Test
@@ -128,14 +128,14 @@ class ErrorCodeCrawlerMojoIT {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);
         Files.copy(
-                Objects.requireNonNull(
-                        getClass().getClassLoader().getResourceAsStream("testProject/wrongPackageErrorCodeConfig.yml")),
-                this.projectDir.resolve("errorCodeConfig.yml"), StandardCopyOption.REPLACE_EXISTING);
+                Objects.requireNonNull(getClass().getClassLoader()
+                        .getResourceAsStream("testProject/wrongPackageerror_code_config.yml")),
+                this.projectDir.resolve("error_code_config.yml"), StandardCopyOption.REPLACE_EXISTING);
         final Verifier verifier = getVerifier();
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(
-                "[ERROR] E-ECM-13: According to this project's errorCodeConfig.yml, the error tag 'TEST' is not allowed for the package 'com.exasol.errorcodecrawlermavenplugin.examples'. The config allows the tag 'TEST' for the following packages: ['com.other']."));
+                "[ERROR] E-ECM-13: According to this project's error_code_config.yml, the error tag 'TEST' is not allowed for the package 'com.exasol.errorcodecrawlermavenplugin.examples'. The config allows the tag 'TEST' for the following packages: ['com.other']."));
     }
 
     @ParameterizedTest

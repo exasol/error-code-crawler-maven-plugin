@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * This class represents the contents of the errorCodeConfig.yml. It is created by {@link ErrorCodeConfigReader}.
+ * This class represents the contents of the error_code_config.yml. It is created by {@link ErrorCodeConfigReader}.
  */
 public class ErrorCodeConfig {
     private final Map<String, SingleErrorCodeConfig> errorTags;

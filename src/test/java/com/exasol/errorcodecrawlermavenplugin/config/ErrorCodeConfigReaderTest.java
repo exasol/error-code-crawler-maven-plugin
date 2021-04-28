@@ -28,7 +28,7 @@ class ErrorCodeConfigReaderTest {
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class,
                 () -> new ErrorCodeConfigReader(this.tempDir));
         assertThat(exception.getMessage(), equalTo(
-                "E-ECM-9: Could not find errorCodeConfig.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+                "E-ECM-9: Could not find error_code_config.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
     }
 
     @Test
@@ -36,7 +36,7 @@ class ErrorCodeConfigReaderTest {
         copyResourceToTestProject("errorCodeConfig/invalidRoot.yml");
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
-        assertThat(exception.getMessage(), equalTo("E-ECM-7: Failed to read projects errorCodeConfig.yml."));
+        assertThat(exception.getMessage(), equalTo("E-ECM-7: Failed to read projects error_code_config.yml."));
     }
 
     private void copyResourceToTestProject(final String resourceName) throws IOException {

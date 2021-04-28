@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * This class represents the config for a single error tag in the errorCodeConfig.yml. It is created by
+ * This class represents the config for a single error tag in the error_code_config.yml. It is created by
  * {@link ErrorCodeConfigReader}.
  */
 public class SingleErrorCodeConfig {

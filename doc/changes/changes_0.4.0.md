@@ -2,9 +2,14 @@
 
 Code name:
 
+## Summary
+
+In this release we renamed to `errorCodeConfig.yml` to `error_code_config.yml` in order to unify the casing of out project files. Don't forget to update the file when updating.
+
 ## Refactoring
 
-* #35 Remove hardcoded version numbers from tests
+* #35: Remove hardcoded version numbers from tests
+* #37: Renamed errorCodeConfig.yml to error_code_config.yml
 
 ## Dependency Updates
 
