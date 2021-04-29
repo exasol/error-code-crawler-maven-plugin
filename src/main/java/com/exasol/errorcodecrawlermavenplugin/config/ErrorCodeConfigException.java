@@ -1,7 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin.config;
 
 /**
- * Exception that is thrown on an invalid errorCodeConfig.yml
+ * Exception that is thrown on an error code config.
  */
 public class ErrorCodeConfigException extends Exception {
     /**

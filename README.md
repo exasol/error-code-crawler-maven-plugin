@@ -47,7 +47,7 @@ This will add the plugin to the maven `verify` lifecycle phase.
 
 Each project has an individual error-tag (e.g. `EXM`). Different sub packages within the project can have different sub tags (`EXM-MODEL`). This plugin validates that the classes of the project only use the corresponding short tag.
 
-For that you need to configure the projects error-tag mapping in the `errorCodeConfig.yml` file stored in your projects root directory.
+For that you need to configure the project's error-tag mapping in the `error_code_config.yml` file stored in your project's root directory.
 
 Example:
 

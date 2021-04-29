@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
- * This class reads the errorCodeConfig.yml into a {@link ErrorCodeConfig}.
+ * This class reads the error code config file into a {@link ErrorCodeConfig}.
  */
 public class ErrorCodeConfigReader {
-    public static final String CONFIG_NAME = "errorCodeConfig.yml";
+    public static final String CONFIG_NAME = "error_code_config.yml";
     private final File errorConfigFile;
 
     /**
@@ -26,7 +26,7 @@ public class ErrorCodeConfigReader {
         this.errorConfigFile = projectDir.resolve(CONFIG_NAME).toFile();
         if (!this.errorConfigFile.exists()) {
             throw new ErrorCodeConfigException(messageBuilder("E-ECM-9")
-                    .message("Could not find errorCodeConfig.yml in the current project.")
+                    .message("Could not find " + CONFIG_NAME + " in the current project.")
                     .mitigation(
                             "Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin.")
                     .toString());
@@ -46,7 +46,7 @@ public class ErrorCodeConfigReader {
             return mapper.readValue(this.errorConfigFile, ErrorCodeConfig.class);
         } catch (final IOException exception) {
             throw new ErrorCodeConfigException(
-                    messageBuilder("E-ECM-7").message("Failed to read projects errorCodeConfig.yml.").toString(),
+                    messageBuilder("E-ECM-7").message("Failed to read projects " + CONFIG_NAME + ".").toString(),
                     exception);
         }
     }
