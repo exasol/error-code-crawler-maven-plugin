@@ -13,7 +13,7 @@ In this release we renamed `errorCodeConfig.yml` to `error_code_config.yml` in o
 
 ## Bugfixes
 
-* #40: Fixed source scope (crawler tried to crawl resources)
+* #40: Fixed source scope so that it does not crawl resources
 
 ## Dependency Updates
 
