@@ -129,7 +129,7 @@ class ErrorCodeCrawlerMojoIT {
                 StandardCopyOption.REPLACE_EXISTING);
         Files.copy(
                 Objects.requireNonNull(getClass().getClassLoader()
-                        .getResourceAsStream("testProject/wrongPackageerror_code_config.yml")),
+                        .getResourceAsStream("testProject/wrong_package_error_code_config.yml")),
                 this.projectDir.resolve(CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
         final Verifier verifier = getVerifier();
         final VerificationException exception = assertThrows(VerificationException.class,
