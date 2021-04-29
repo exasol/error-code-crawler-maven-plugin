@@ -1,5 +1,6 @@
 package com.exasol.errorcodecrawlermavenplugin.config;
 
+import static com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader.CONFIG_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
@@ -27,8 +28,8 @@ class ErrorCodeConfigReaderTest {
     void testConfigFileMissing() {
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class,
                 () -> new ErrorCodeConfigReader(this.tempDir));
-        assertThat(exception.getMessage(), equalTo(
-                "E-ECM-9: Could not find error_code_config.yml in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+        assertThat(exception.getMessage(), equalTo("E-ECM-9: Could not find " + CONFIG_NAME
+                + " in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
     }
 
     @Test
@@ -36,11 +37,11 @@ class ErrorCodeConfigReaderTest {
         copyResourceToTestProject("errorCodeConfig/invalidRoot.yml");
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
-        assertThat(exception.getMessage(), equalTo("E-ECM-7: Failed to read projects error_code_config.yml."));
+        assertThat(exception.getMessage(), equalTo("E-ECM-7: Failed to read projects " + CONFIG_NAME + "."));
     }
 
     private void copyResourceToTestProject(final String resourceName) throws IOException {
         Files.copy(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourceName)),
-                this.tempDir.resolve(ErrorCodeConfigReader.CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
+                this.tempDir.resolve(CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
     }
 }
