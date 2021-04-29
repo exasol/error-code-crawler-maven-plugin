@@ -38,8 +38,8 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         final ErrorCodeConfig config = readConfig(projectDir);
         final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
                 Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-        final var srcMainPath = projectDir.resolve(Path.of("src", "main"));
-        final var srcTestPath = projectDir.resolve(Path.of("src", "test"));
+        final var srcMainPath = projectDir.resolve(Path.of("src", "main", "java"));
+        final var srcTestPath = projectDir.resolve(Path.of("src", "test", "java"));
         final var crawlResult = crawler.crawl(srcMainPath, srcTestPath);
         final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
         reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
