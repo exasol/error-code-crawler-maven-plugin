@@ -17,7 +17,7 @@ In this release we renamed `errorCodeConfig.yml` to `error_code_config.yml` in o
 
 ## Documentation
 
-* #42: Add documentation on excludes
+* #42: Added documentation on excludes
 
 ## Dependency Updates
 

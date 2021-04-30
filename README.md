@@ -73,7 +73,7 @@ For the moment the value of this property needs to be updated manually
 
 ### Excludes
 
-In some very rare cases you may want to exclude some files from crawling. But usually: Don't do it!
+In some very rare cases you may want to exclude some files from crawling. But we don't recommend excluding files.
 
 You can define the excludes by adding the following configuration to the maven-plugin:
 
@@ -86,7 +86,7 @@ You can define the excludes by adding the following configuration to the maven-p
 </configuration>
 ```
 
-The excludes only affect the validation – not compiling. So if the specific file has syntax errors, excluding won't help.
+The excludes only affect the validation &mdash; not compiling. So if the specific file has syntax errors, excluding won't help.
 
 **Keep in mind that error codes from excluded files will not show up in the error catalog and are not validated. So use this option with care!**
 
