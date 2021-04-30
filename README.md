@@ -71,6 +71,25 @@ The `highest-index` property contains the index of the last error code declarati
 
 For the moment the value of this property needs to be updated manually
 
+### Excludes
+
+In some very rare cases you may want to exclude some files from crawling. But we don't recommend excluding files.
+
+You can define the excludes by adding the following configuration to the maven-plugin:
+
+```xml
+
+<configuration>
+    <excludes>
+        <exclude>**/MyTest.java</exclude>
+    </excludes>
+</configuration>
+```
+
+The excludes only affect the validation &mdash; not compiling. So if the specific file has syntax errors, excluding won't help.
+
+**Keep in mind that error codes from excluded files will not show up in the error catalog and are not validated. So use this option with care!**
+
 ## Usage
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.

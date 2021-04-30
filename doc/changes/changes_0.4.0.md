@@ -15,6 +15,10 @@ In this release we renamed `errorCodeConfig.yml` to `error_code_config.yml` in o
 
 * #40: Fixed source scope so that it does not crawl resources
 
+## Documentation
+
+* #42: Added documentation on excludes
+
 ## Dependency Updates
 
 ### Test Dependency Updates
