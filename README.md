@@ -1,6 +1,6 @@
 # Error Code Crawler
 
-[![Build Status](https://travis-ci.com/exasol/error-code-crawler-maven-plugin.svg?branch=master)](https://travis-ci.com/exasol/error-code-crawler-maven-plugin)
+[![Build Status](https://travis-ci.com/exasol/error-code-crawler-maven-plugin.svg?branch=main)](https://travis-ci.com/exasol/error-code-crawler-maven-plugin)
 [![Maven Central](https://img.shields.io/maven-central/v/com.exasol/error-code-crawler-maven-plugin)](https://search.maven.org/artifact/com.exasol/error-code-crawler-maven-plugin)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aerror-code-crawler-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Aerror-code-crawler-maven-plugin)
