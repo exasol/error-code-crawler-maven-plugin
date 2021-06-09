@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.?.?, released 2021-XX-XX
+# error-code-crawler-maven-plugin 0.4.1, released 2021-XX-XX
 
 Code name:
 
