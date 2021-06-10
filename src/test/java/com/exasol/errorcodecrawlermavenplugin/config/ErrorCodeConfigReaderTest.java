@@ -13,6 +13,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+//[utest->dsn~config-parser~1]
 class ErrorCodeConfigReaderTest {
     @TempDir
     Path tempDir;

@@ -16,6 +16,7 @@ import com.exasol.errorreporting.*;
  * This {@link ErrorMessageDeclarationValidator} validates that all parameters used in message and mitigation are
  * declared.
  */
+// [impl->dsn~parameters-validator~1]
 class ParametersValidator extends AbstractIndependentErrorMessageDeclarationValidator {
 
     @Override

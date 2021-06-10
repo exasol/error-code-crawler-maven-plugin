@@ -20,6 +20,7 @@ import com.exasol.errorreporting.ExaError;
 /**
  * This class is the entry point of the plugin.
  */
+//[impl->dsn~mvn-verify-goal~1]
 @Mojo(name = "verify", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorCodeCrawlerMojo extends AbstractMojo {
 

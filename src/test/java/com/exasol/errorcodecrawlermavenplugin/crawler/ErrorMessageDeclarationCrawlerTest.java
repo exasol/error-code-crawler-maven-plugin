@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.model.*;
 
+// [utest->dsn~error-declaration-crawler~1]
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
     private static final ErrorMessageDeclarationCrawler DECLARATION_CRAWLER = new ErrorMessageDeclarationCrawler(

@@ -10,6 +10,7 @@ import com.exasol.errorreporting.ExaError;
 /**
  * This {@link ErrorMessageDeclarationValidator} validates that no error code is declared twice.
  */
+// [impl->dsn~duplication-validator~1]
 class DuplicatesValidator implements ErrorMessageDeclarationValidator {
     @Override
     public List<Finding> validate(final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {

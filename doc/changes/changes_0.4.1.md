@@ -8,6 +8,10 @@ Code name:
 
 * #43: Refactored integration test to use maven-plugin-integration-testing
 
+## Documentation
+
+* #46: Add requirements and design
+
 ## Dependency Updates
 
 ### Test Dependency Updates

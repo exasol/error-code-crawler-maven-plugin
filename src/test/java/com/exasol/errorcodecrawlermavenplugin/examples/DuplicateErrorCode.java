@@ -5,6 +5,7 @@ import com.exasol.errorreporting.ExaError;
 /**
  * Invalid example that is crawled in the tests.
  */
+//[itest->dsn~duplication-validator~1]
 public class DuplicateErrorCode {
     public void run1() {
         throw new IllegalStateException(ExaError.messageBuilder("E-TEST-1").message("Test message").toString());

@@ -13,6 +13,7 @@ import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorCode;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
+// [utest->dsn~duplication-validator~1]
 class DuplicatesValidatorTest {
     private static final ErrorCode E_TEST_1 = new ErrorCode(ErrorCode.Type.E, "TEST", 1);
     private static final String EXAMPLE_PACKAGE = "com.example";
