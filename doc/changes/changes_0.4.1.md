@@ -21,3 +21,4 @@ Code name:
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:0.4.0` to `0.4.1`
+* Added `org.itsallcode:openfasttrace-maven-plugin:1.2.0`
