@@ -66,7 +66,7 @@ Needs: impl, itest
 
 `dsn~duplication-validator~1`
 
-The duplication validator check that each error tag is unique.
+The duplication validator checks that each error tag is unique.
 
 The requirements only require that the whole tag is unique. We decided however, to be more strict and also not allow tags that only differ by the number So this implementation considers `E-TEST-1` and `F-TEST-1` as duplicate. This approach has two advantages:
 
@@ -144,7 +144,6 @@ Covers:
 * `feat~mvn-integration~1`
 
 Needs: impl, itest
-
 
 
 
