@@ -105,7 +105,7 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
-    // [itest->dsn~error-code-belongs-to-package-validator~1]
+    // [itest->dsn~error-identifier-belongs-to-package-validator~1]
     void testWrongPackageErrorConfig() throws IOException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);

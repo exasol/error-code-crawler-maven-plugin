@@ -37,12 +37,26 @@ class Test {
         } else {
             builder.message("Message 2");
         }
-        builder.toString();
+        throw new IllegalStateException(builder.toString());
     }
 }
 ```
 
 Supporting this is, however, not desirable since it make it impossible to determine the error message using static code analysis, since the error message will only be determined at runtime.
+
+Instead, just rewrite your code to:
+
+```java
+class Test {
+    void test() {
+        if (x) {
+            throw new IllegalStateException(ExaError.messageBuilder("E-TEST-1").message("Message 1").toString());
+        } else {
+            throw new IllegalStateException(ExaError.messageBuilder("E-TEST-2").message("Message 2").toString());
+        }
+    }
+}
+```
 
 Covers:
 
@@ -66,12 +80,12 @@ Needs: impl, itest
 
 `dsn~duplication-validator~1`
 
-The duplication validator check that each error tag is unique.
+The duplication validator check that each error identifier is unique.
 
-The requirements only require that the whole tag is unique. We decided however, to be more strict and also not allow tags that only differ by the number So this implementation considers `E-TEST-1` and `F-TEST-1` as duplicate. This approach has two advantages:
+The requirements only require that the whole identifier is unique. We decided however, to be more strict and also not allow identifiers that only differ by the number. So this implementation considers `E-TEST-1` and `F-TEST-1` as duplicate. This approach has two advantages:
 
-* Users can simply change the type of the code without searching for a new number
-* We only need to keep track of the highest number per tag and not per type-tag combination.
+* Users can simply change the severity of the code without searching for a new number (For example change `E-TEST-1` to `F-TEST-1`)
+* For generating the next free code users want to keep track of the highest used number. By that limitation they only need to keep track of the highest number per identifier and not per project-shorttag severity combination.
 
 Covers:
 
@@ -99,9 +113,9 @@ Covers:
 
 Needs: impl, utest, itest
 
-### Error Code Belongs to Package Validator
+### Error Identifier Belongs to Package Validator
 
-`dsn~error-code-belongs-to-package-validator~1`
+`dsn~error-identifier-belongs-to-package-validator~1`
 
 Covers:
 

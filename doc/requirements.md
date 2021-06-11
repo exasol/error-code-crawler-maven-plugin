@@ -2,6 +2,18 @@
 
 The Error Code Crawler Maven Plugin (ECM) is a tool that analyzes invocations of the [Exasol Error Code Builder](https://github.com/exasol/error-reporting-java/) from Java source code.
 
+## Terminology
+
+* `Error Message Declaration`: A Java statement that builds an error message and typically throws an exception:
+  Example:
+  ```
+  ExaError.messageBuilder("E-TEST-1").message("Failed to start database.").toString();
+  ```
+* `Error Identifier`: Each error code has a unique identifier. Example: `E-Test-1`. Also known as `Error Code`. An Error Identifier consists of:
+    * `Severity`: The first letter defines the servity (`W`: Warning `E`: Error, `F`: Fatal)
+    * `Project-Shorttag`: Identifier of the project / module. Example: `Test`
+    * `Error-Number`: Number of the error. The number is used to make the codes unique.
+
 ## Features
 
 ### Verify Error Code Declarations
