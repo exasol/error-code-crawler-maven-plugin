@@ -85,7 +85,7 @@ The duplication validator checks that each error identifier is unique.
 The requirements only require that the whole identifier is unique. We decided however, to be more strict and also not allow identifiers that only differ by the number. So this implementation considers `E-TEST-1` and `F-TEST-1` as duplicate. This approach has two advantages:
 
 * Users can simply change the severity of the code without searching for a new number (For example change `E-TEST-1` to `F-TEST-1`)
-* For generating the next free code users want to keep track of the highest used number. By that limitation they only need to keep track of the highest number per identifier and not per project-shorttag severity combination.
+* For generating the next free code developers want to keep track of the highest used number. By that limitation they only need to keep track of the highest number per identifier and not per project-shorttag severity combination.
 
 Covers:
 
