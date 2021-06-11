@@ -123,7 +123,7 @@ Needs: dsn
 
 `feat~create-error-code-report~1`
 
-**Missing! This feature ios not yet implemented**
+**Missing! This feature is not yet implemented**
 
 ECM can write an error code report in the format specified by the [error code report schema](https://github.com/exasol/schemas/blob/main/error_code_report-0.1.0.json).
 
@@ -142,6 +142,5 @@ Rationale:
 We use maven in all our Java projects. By adding it to the build we make sure that the validations run on local testing and during CI.
 
 Needs: dsn
-
 
 
