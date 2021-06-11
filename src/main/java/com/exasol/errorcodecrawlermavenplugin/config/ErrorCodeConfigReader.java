@@ -12,6 +12,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 /**
  * This class reads the error code config file into a {@link ErrorCodeConfig}.
  */
+//[impl->dsn~config-parser~1]
 public class ErrorCodeConfigReader {
     public static final String CONFIG_NAME = "error_code_config.yml";
     private final File errorConfigFile;

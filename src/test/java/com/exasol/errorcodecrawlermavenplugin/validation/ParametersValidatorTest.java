@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
+// [utest->dsn~parameters-validator~1]
 class ParametersValidatorTest {
     @Test
     void testValid() {

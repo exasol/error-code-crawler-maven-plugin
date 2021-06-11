@@ -7,6 +7,7 @@ import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
 /**
  * Factory for {@link ErrorMessageDeclarationValidator}.
  */
+//[impl->dsn~validator~1]
 public class ErrorMessageDeclarationValidatorFactory {
 
     /**

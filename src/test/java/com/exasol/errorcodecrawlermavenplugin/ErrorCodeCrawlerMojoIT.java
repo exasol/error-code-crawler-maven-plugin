@@ -26,6 +26,7 @@ import com.exasol.mavenpluginintegrationtesting.MavenIntegrationTestEnvironment;
  * temporary project, runs the plugin on that project and checks the output.
  */
 @Tag("integration")
+//[itest->dsn~mvn-verify-goal~1]
 class ErrorCodeCrawlerMojoIT {
     private static MavenIntegrationTestEnvironment testEnvironment;
     private static final String CURRENT_VERSION = getCurrentProjectVersion();
@@ -104,6 +105,7 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
+    // [itest->dsn~error-identifier-belongs-to-package-validator~1]
     void testWrongPackageErrorConfig() throws IOException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);
@@ -120,10 +122,11 @@ class ErrorCodeCrawlerMojoIT {
 
     @ParameterizedTest
     @CsvSource({ //
-            "DuplicateErrorCode.java, E-ECM-4", //
-            "TestWithUndeclaredParameter.java, E-ECM-17", //
-            "IllegalUnnamedParameter.java, E-ECM-19",//
+            "DuplicateErrorCode.java, E-ECM-4", // [itest->dsn~duplication-validator~1]
+            "TestWithUndeclaredParameter.java, E-ECM-17", // [itest->dsn~parameters-validator~1]
+            "IllegalUnnamedParameter.java, E-ECM-19",// [itest->dsn~empty-parameter-name-validator~1]
     })
+    // [itest->dsn~validator~1]
     void testValidations(final String testFile, final String expectedString) throws IOException {
         Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectsTestSrc.resolve(testFile),
                 StandardCopyOption.REPLACE_EXISTING);

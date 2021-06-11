@@ -13,6 +13,7 @@ import com.exasol.errorreporting.ExaError;
  * This {@link ErrorMessageDeclarationValidator} validates that error codes are only declared in packages they belong to
  * (according to the config file).
  */
+//[impl->dsn~error-identifier-belongs-to-package-validator~1]
 class ErrorCodesBelongToPackageValidator extends AbstractIndependentErrorMessageDeclarationValidator {
     private final ErrorCodeConfig config;
 

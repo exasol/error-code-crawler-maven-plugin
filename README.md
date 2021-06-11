@@ -19,6 +19,8 @@ This maven plugin analyzes invocations of the [Exasol error code builder](https:
 
 **This plugin is still under development.** It can not write a report yet, but only run the validations.
 
+[Features](doc/requirements.md)
+
 ## Installation
 
 Add the plugin to your `pom.xml`:
@@ -99,3 +101,5 @@ You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
 * [Changelog](doc/changes/changelog.md)
 * [License](LICENSE)
 * [Dependencies](dependencies.md)
+* [Features and Requirements](doc/requirements.md)
+* [Design](doc/design.md)

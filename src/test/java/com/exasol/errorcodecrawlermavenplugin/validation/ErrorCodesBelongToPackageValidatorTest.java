@@ -17,6 +17,7 @@ import com.exasol.errorcodecrawlermavenplugin.config.SingleErrorCodeConfig;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorCode;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 
+//[utest->dsn~error-identifier-belongs-to-package-validator~1]
 class ErrorCodesBelongToPackageValidatorTest {
     private static final ErrorCode E_TEST_1 = new ErrorCode(ErrorCode.Type.E, "TEST", 1);
     private static final String EXAMPLE_PACKAGE = "com.example";

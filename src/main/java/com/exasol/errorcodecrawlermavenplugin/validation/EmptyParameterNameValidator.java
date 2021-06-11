@@ -9,8 +9,10 @@ import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This {@link ErrorMessageDeclarationValidator} validates, that there are no parameters with no name.
+ * test-db-builder-java 3.2.0 This {@link ErrorMessageDeclarationValidator} validates, that there are no parameters with
+ * no name.
  */
+//[impl->dsn~empty-parameter-name-validator~1]
 class EmptyParameterNameValidator extends AbstractIndependentErrorMessageDeclarationValidator {
     @Override
     protected Stream<Finding> validateSingleErrorMessageDeclaration(

@@ -23,6 +23,7 @@ import spoon.reflect.visitor.filter.TypeFilter;
 /**
  * Crawler that reads invocations of {@link com.exasol.errorreporting.ExaError#messageBuilder(String)}.
  */
+// [impl->dsn~error-declaration-crawler~1]
 public class ErrorMessageDeclarationCrawler {
     private static final String ERRORREPORTING_PACKAGE = "com.exasol.errorreporting";
     private static final List<MessageBuilderStepReader> STEP_READERS = List.of(new ExaErrorStepReader(),

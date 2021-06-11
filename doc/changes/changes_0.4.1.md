@@ -8,6 +8,10 @@ Code name:
 
 * #43: Refactored integration test to use maven-plugin-integration-testing
 
+## Documentation
+
+* #46: Add requirements and design
+
 ## Dependency Updates
 
 ### Test Dependency Updates
@@ -17,3 +21,4 @@ Code name:
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:0.4.0` to `0.4.1`
+* Added `org.itsallcode:openfasttrace-maven-plugin:1.2.0`
