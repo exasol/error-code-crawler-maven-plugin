@@ -16,7 +16,7 @@ class ParametersValidatorTest {
     @Test
     void testValid() {
         final ErrorMessageDeclaration validErrorDeclaration = ErrorMessageDeclaration.builder()
-                .prependMessage("test {{my param}}").addParameter("my param", null, true).build();
+                .prependMessage("test {{my param}}").addParameter("my param", null).build();
         final List<Finding> result = new ParametersValidator().validate(List.of(validErrorDeclaration));
         assertThat(result, empty());
     }
@@ -34,8 +34,8 @@ class ParametersValidatorTest {
     @Test
     void testDeclaredTwice() {
         final ErrorMessageDeclaration validErrorDeclaration = ErrorMessageDeclaration.builder()
-                .prependMessage("test {{my param}}").addParameter("my param", null, true)
-                .addParameter("my param", null, true).setPosition("myFile.java", 1).build();
+                .prependMessage("test {{my param}}").addParameter("my param", null).addParameter("my param", null)
+                .setPosition("myFile.java", 1).build();
         final List<Finding> result = new ParametersValidator().validate(List.of(validErrorDeclaration));
         final List<String> findingMessages = result.stream().map(Finding::getMessage).collect(Collectors.toList());
         assertThat(findingMessages, contains(

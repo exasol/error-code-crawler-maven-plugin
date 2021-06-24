@@ -15,7 +15,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.*;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exasol.errorcodecrawlermavenplugin.model.NamedParameter;
 
 // [utest->dsn~error-declaration-crawler~1]
 class ErrorMessageDeclarationCrawlerTest {
@@ -32,7 +33,7 @@ class ErrorMessageDeclarationCrawlerTest {
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
                 () -> assertThat(errorCodes.size(), equalTo(1)),
-                () -> assertThat(first.getErrorCode(), equalTo(new ErrorCode(ErrorCode.Type.E, "TEST", 1))),
+                () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
                 () -> assertThat(first.getSourceFile(),
                         equalTo("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")),
                 () -> assertThat(first.getLine(), equalTo(10)), //
@@ -68,8 +69,8 @@ class ErrorMessageDeclarationCrawlerTest {
         assertAll(//
                 () -> assertThat(first.getMessage(),
                         equalTo("message with parameters {{param1}} {{param2|uq}} {{param3}}")),
-                () -> assertThat(first.getNamedParameters(), containsInAnyOrder(
-                        new NamedParameter("param1", null, true), new NamedParameter("param2", null, false)))//
+                () -> assertThat(first.getNamedParameters(),
+                        containsInAnyOrder(new NamedParameter("param1", null), new NamedParameter("param2", null)))//
         );
     }
 
@@ -90,25 +91,21 @@ class ErrorMessageDeclarationCrawlerTest {
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
                 () -> assertThat(first.getMitigations(), contains("That's how to fix it: {{hint}}")),
-                () -> assertThat(first.getNamedParameters(), contains(new NamedParameter("hint", null, true)))//
+                () -> assertThat(first.getNamedParameters(), contains(new NamedParameter("hint", null)))//
         );
     }
 
     @ParameterizedTest
     @CsvSource({ //
-            "TestWithNamedParameter.java,,true", //
-            "TestWithNamedUnquotedParameter.java,,false", //
-            "TestWithNamedParameterWithDescription.java,just a parameter,true", //
-            "TestWithNamedUnquotedParameterWithDescription.java,just a parameter,false",//
+            "TestWithNamedParameter.java,", //
+            "TestWithNamedParameterWithDescription.java,just a parameter", //
     })
-    void testCrawlNamedParameter(final String testFile, final String expectedDescription,
-            final boolean expectedQuoted) {
+    void testCrawlNamedParameter(final String testFile, final String expectedDescription) {
         final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
                 .crawl(Path.of(TEST_DIR, testFile).toAbsolutePath());
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
-        assertThat(first.getNamedParameters(),
-                contains(new NamedParameter("test", expectedDescription, expectedQuoted)));
+        assertThat(first.getNamedParameters(), contains(new NamedParameter("test", expectedDescription)));
     }
 
     @Test
@@ -119,16 +116,6 @@ class ErrorMessageDeclarationCrawlerTest {
                 .collect(Collectors.toList());
         assertThat(messages, containsInAnyOrder(
                 "E-ECM-16: Invalid parameter for messageBuilder(java.lang.String) call. (IllegalErrorCodeFromFunction.java:10) Only literals, string-constants and concatenation of these two are supported."));
-    }
-
-    @Test
-    void testInvalidErrorCodeSyntax() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "InvalidErrorCodeSyntax.java"));
-        final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
-                .collect(Collectors.toList());
-        assertThat(messages, containsInAnyOrder(
-                "E-ECM-10: The error code 'E-TEST-X' has an invalid format. (InvalidErrorCodeSyntax.java:10)"));
     }
 
     @Test

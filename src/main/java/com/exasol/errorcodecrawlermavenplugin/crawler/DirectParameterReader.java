@@ -25,7 +25,7 @@ class DirectParameterReader {
                 if (placeholderCounter >= inlineParameterArgumentsCount) {
                     break; // there is not argument for this placeholder
                 }
-                errorCodeBuilder.addParameter(placeholder.getName(), null, !placeholder.isUnquoted());
+                errorCodeBuilder.addParameter(placeholder.getName(), null);
                 placeholderCounter++;
             }
         }

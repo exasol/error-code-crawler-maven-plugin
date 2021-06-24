@@ -150,7 +150,7 @@ public class ErrorMessageDeclarationCrawler {
      * </p>
      * 
      * @param methodInvocation invocation of {@link ErrorMessageBuilder#toString()}
-     * @return crawled ErrorCode
+     * @return crawled ErrorIdentifier
      * @throws InvalidSyntaxException in case the call has an invalid syntax
      */
     private ErrorMessageDeclaration readErrorCode(final CtInvocation<?> methodInvocation)
@@ -171,7 +171,7 @@ public class ErrorMessageDeclarationCrawler {
 
     private void assertCallIsComplete(final CtInvocation<?> methodInvocation,
             final ErrorMessageDeclaration messageDeclaration) throws InvalidSyntaxException {
-        if (messageDeclaration.getErrorCode() == null) {
+        if (messageDeclaration.getIdentifier() == null) {
             throw new InvalidSyntaxException(ExaError.messageBuilder("E-ECM-31").message(
                     "Invalid incomplete builder call at {{position|uq}}.\nThis typically happens when you assign the ErrorMessageBuilder to a local variable and then call `toString()` on that variable. "
                             + "Doing so is not allowed since it makes it impossible to determine all components of the error declaration using static code analysis. (You could for example use if statements to select a message).",

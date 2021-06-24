@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
 
-class ErrorCodeTest {
+class ErrorIdentifierTest {
     @Test
     void testEquals() {
-        EqualsVerifier.simple().forClass(ErrorCode.class).verify();
+        EqualsVerifier.simple().forClass(ErrorIdentifier.class).verify();
     }
 
     @Test
     void testToString() {
-        assertThat(new ErrorCode(ErrorCode.Type.W, "EXA", 1).toString(), equalTo("W-EXA-1"));
+        assertThat(new ErrorIdentifier(ErrorIdentifier.Type.W, "EXA", 1).toString(), equalTo("W-EXA-1"));
     }
 }

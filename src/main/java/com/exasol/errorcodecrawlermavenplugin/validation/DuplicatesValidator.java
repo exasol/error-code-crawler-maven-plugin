@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorIdentifier;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
 
@@ -22,12 +23,17 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
             final Collection<ErrorMessageDeclaration> errorMessageDeclarations) {
         final Map<String, List<String>> positionsPerCode = new HashMap<>();
         for (final ErrorMessageDeclaration errorMessageDeclaration : errorMessageDeclarations) {
-            final var errorCode = errorMessageDeclaration.getErrorCode();
-            final String errorId = errorCode.getTag() + "-" + errorCode.getIndex();
-            if (positionsPerCode.containsKey(errorId)) {
-                positionsPerCode.get(errorId).add(getSourceReference(errorMessageDeclaration));
-            } else {
-                positionsPerCode.put(errorId, new LinkedList<>(List.of(getSourceReference(errorMessageDeclaration))));
+            try {
+                final var errorCode = ErrorIdentifier.parse(errorMessageDeclaration.getIdentifier());
+                final String errorId = errorCode.getTag() + "-" + errorCode.getIndex();
+                if (positionsPerCode.containsKey(errorId)) {
+                    positionsPerCode.get(errorId).add(getSourceReference(errorMessageDeclaration));
+                } else {
+                    positionsPerCode.put(errorId,
+                            new LinkedList<>(List.of(getSourceReference(errorMessageDeclaration))));
+                }
+            } catch (final ErrorIdentifier.SyntaxException exception) {
+                // ignore. Will be reported by another validator
             }
         }
         return positionsPerCode;

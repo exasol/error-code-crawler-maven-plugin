@@ -20,6 +20,15 @@ class PositionFormatter {
      * @return formatted string
      */
     static String getFormattedPosition(final ErrorMessageDeclaration errorMessageDeclaration) {
-        return new File(errorMessageDeclaration.getSourceFile()).getName() + ":" + errorMessageDeclaration.getLine();
+        final String fileName = formatFileName(errorMessageDeclaration);
+        return fileName + ":" + errorMessageDeclaration.getLine();
+    }
+
+    private static String formatFileName(final ErrorMessageDeclaration errorMessageDeclaration) {
+        if (errorMessageDeclaration.getSourceFile() == null || errorMessageDeclaration.getSourceFile().isBlank()) {
+            return "UNKNOWN-FILE";
+        } else {
+            return new File(errorMessageDeclaration.getSourceFile()).getName();
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
@@ -13,6 +15,8 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import com.exasol.errorcodecrawlermavenplugin.config.*;
 import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorCodeReport;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorCodeReportWriter;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
 import com.exasol.errorreporting.ExaError;
@@ -23,6 +27,7 @@ import com.exasol.errorreporting.ExaError;
 //[impl->dsn~mvn-verify-goal~1]
 @Mojo(name = "verify", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorCodeCrawlerMojo extends AbstractMojo {
+    private static final Path REPORT_PATH = Path.of("target", "error_code_report.json");
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
@@ -43,7 +48,25 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         final var srcTestPath = projectDir.resolve(Path.of("src", "test", "java"));
         final var crawlResult = crawler.crawl(srcMainPath, srcTestPath);
         final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
+        createTargetDirIfNotExists();
+        // [impl->dsn~report-writer~1]
+        new ErrorCodeReportWriter().writeReport(new ErrorCodeReport(this.project.getArtifactId(),
+                this.project.getVersion(), crawlResult.getErrorMessageDeclarations()), REPORT_PATH);
         reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
+    }
+
+    private void createTargetDirIfNotExists() {
+        final Path targetDir = REPORT_PATH.getParent();
+        if (!Files.exists(targetDir)) {
+            try {
+                Files.createDirectories(targetDir);
+            } catch (final IOException exception) {
+                throw new IllegalStateException(
+                        ExaError.messageBuilder("E-ECM-24")
+                                .message("Failed to create 'target/' directory for error-code-report.").toString(),
+                        exception);
+            }
+        }
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {
