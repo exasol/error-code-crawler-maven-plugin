@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
 import com.exasol.errorcodecrawlermavenplugin.config.SingleErrorCodeConfig;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 //[utest->dsn~error-identifier-belongs-to-package-validator~1]
 class ErrorCodesBelongToPackageValidatorTest {

@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.*;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorIdentifier;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorIdentifier;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * This {@link ErrorMessageDeclarationValidator} validates that no error code is declared twice.

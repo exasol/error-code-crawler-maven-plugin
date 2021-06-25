@@ -2,7 +2,7 @@ package com.exasol.errorcodecrawlermavenplugin.validation;
 
 import java.io.File;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * Format a error code positions for error messages.

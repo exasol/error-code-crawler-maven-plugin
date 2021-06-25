@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 //[utest->dsn~identifier-validator~1]
 class ErrorIdentifierValidatorTest {
@@ -27,7 +27,7 @@ class ErrorIdentifierValidatorTest {
         final List<Finding> findings = new ErrorIdentifierValidator().validate(List.of(declaration));
         final List<String> findingMessages = findings.stream().map(Finding::getMessage).collect(Collectors.toList());
         assertThat(findingMessages, contains(
-                "E-ECM-11: Illegal error code 'Q-TEST-1'. The codes must start with 'W-', 'E-' or 'F-'. (Test.java:1)"));
+                "E-ECMOJ-2: Illegal error code 'Q-TEST-1'. The codes must start with 'W-', 'E-' or 'F-'. (Test.java:1)"));
     }
 
     @Test
@@ -36,6 +36,6 @@ class ErrorIdentifierValidatorTest {
                 .setPosition("Test.java", 1).build();
         final List<Finding> findings = new ErrorIdentifierValidator().validate(List.of(declaration));
         final List<String> findingMessages = findings.stream().map(Finding::getMessage).collect(Collectors.toList());
-        assertThat(findingMessages, contains("E-ECM-10: The error code '123' has an invalid format. (Test.java:1)"));
+        assertThat(findingMessages, contains("E-ECMOJ-1: The error code '123' has an invalid format. (Test.java:1)"));
     }
 }

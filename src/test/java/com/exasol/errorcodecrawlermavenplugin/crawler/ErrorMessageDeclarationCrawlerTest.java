@@ -15,8 +15,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
-import com.exasol.errorcodecrawlermavenplugin.model.NamedParameter;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.NamedParameter;
 
 // [utest->dsn~error-declaration-crawler~1]
 class ErrorMessageDeclarationCrawlerTest {

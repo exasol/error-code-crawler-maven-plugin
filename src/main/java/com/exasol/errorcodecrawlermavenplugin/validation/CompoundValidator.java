@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * This {@link ErrorMessageDeclarationValidator} combine multiple {@link ErrorMessageDeclarationValidator}s into one.

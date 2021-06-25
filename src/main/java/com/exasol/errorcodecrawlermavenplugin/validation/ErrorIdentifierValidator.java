@@ -3,8 +3,8 @@ package com.exasol.errorcodecrawlermavenplugin.validation;
 import java.util.stream.Stream;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorIdentifier;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorIdentifier;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * This {@link ErrorMessageDeclarationValidator} validates that the error identifier has a valid format.

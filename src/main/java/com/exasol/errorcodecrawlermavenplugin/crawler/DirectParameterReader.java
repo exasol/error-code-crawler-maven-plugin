@@ -1,8 +1,8 @@
 package com.exasol.errorcodecrawlermavenplugin.crawler;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.Placeholder;
 import com.exasol.errorreporting.PlaceholderMatcher;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * Reader inline parameters from messages.

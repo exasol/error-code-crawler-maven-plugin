@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * Interface for classes that validate {@link ErrorMessageDeclaration}s.

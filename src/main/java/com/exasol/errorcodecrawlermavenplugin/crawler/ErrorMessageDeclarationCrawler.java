@@ -6,9 +6,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ErrorMessageBuilder;
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 import spoon.Launcher;
 import spoon.SpoonAPI;
