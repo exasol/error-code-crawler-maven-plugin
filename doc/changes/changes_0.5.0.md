@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.5.0, released 2021-06-27
+# error-code-crawler-maven-plugin 0.5.0, released 2021-06-25
 
 Code name: Writing error-code-report
 
