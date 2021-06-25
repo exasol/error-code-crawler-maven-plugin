@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>error-code-crawler-maven-plugin</artifactId>
-    <version>0.4.1</version>
+    <version>0.5.0</version>
     <name>error-code-crawler-maven-plugin</name>
     <description>Crawler for Exasol error codes.</description>
     <url>https://github.com/exasol/error-code-crawler-maven-plugin</url>
@@ -124,6 +124,17 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.12.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.glassfish/javax.json -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version>
         </dependency>
         <!-- test dependencies -->
         <dependency>

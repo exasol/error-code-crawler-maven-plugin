@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
+import com.exasol.errorcodecrawlermavenplugin.model.ErrorIdentifier;
 import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
 
@@ -29,17 +30,23 @@ class ErrorCodesBelongToPackageValidator extends AbstractIndependentErrorMessage
     @Override
     protected Stream<Finding> validateSingleErrorMessageDeclaration(
             final ErrorMessageDeclaration errorMessageDeclaration) {
-        final String tag = errorMessageDeclaration.getErrorCode().getTag();
-        final String declaringPackage = errorMessageDeclaration.getDeclaringPackage();
-        if (!this.config.hasErrorTag(tag)) {
-            return getUndeclaredTagFinding(tag, declaringPackage);
+        final String identifier = errorMessageDeclaration.getIdentifier();
+        try {
+            final ErrorIdentifier errorIdentifier = ErrorIdentifier.parse(identifier);
+            final String tag = errorIdentifier.getTag();
+            final String declaringPackage = errorMessageDeclaration.getDeclaringPackage();
+            if (!this.config.hasErrorTag(tag)) {
+                return getUndeclaredTagFinding(tag, declaringPackage);
+            }
+            final Optional<String> requiredTag = this.config.getErrorTagForPackage(declaringPackage);
+            if (requiredTag.isEmpty() || !tag.equalsIgnoreCase(requiredTag.get())) {
+                final String tagSuggestion = getTagSuggestion(errorMessageDeclaration);
+                return getWrongTagFinding(tag, declaringPackage, tagSuggestion);
+            }
+            return Stream.empty();
+        } catch (final ErrorIdentifier.SyntaxException exception) {
+            return Stream.empty();// invalid error codes will are handled by a different validator
         }
-        final Optional<String> requiredTag = this.config.getErrorTagForPackage(declaringPackage);
-        if (requiredTag.isEmpty() || !tag.equalsIgnoreCase(requiredTag.get())) {
-            final String tagSuggestion = getTagSuggestion(errorMessageDeclaration);
-            return getWrongTagFinding(tag, declaringPackage, tagSuggestion);
-        }
-        return Stream.empty();
     }
 
     private Stream<Finding> getWrongTagFinding(final String tag, final String declaringPackage,

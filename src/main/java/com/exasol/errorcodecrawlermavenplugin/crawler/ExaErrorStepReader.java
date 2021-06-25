@@ -1,7 +1,5 @@
 package com.exasol.errorcodecrawlermavenplugin.crawler;
 
-import static com.exasol.errorcodecrawlermavenplugin.crawler.PositionFormatter.formatPosition;
-
 import java.nio.file.Path;
 import java.util.List;
 
@@ -16,7 +14,6 @@ import spoon.reflect.code.CtInvocation;
  * {@link com.exasol.errorreporting.ExaError#messageBuilder(String)}.
  */
 public class ExaErrorStepReader implements MessageBuilderStepReader {
-    private static final ErrorCodeParser ERROR_CODE_READER = new ErrorCodeParser();
     private static final String SIGNATURE = "messageBuilder(java.lang.String)";
 
     @Override
@@ -25,7 +22,7 @@ public class ExaErrorStepReader implements MessageBuilderStepReader {
         final List<CtExpression<?>> arguments = builderCall.getArguments();
         assert arguments.size() == 1;
         final var errorCode = new ArgumentReader(SIGNATURE).readStringArgumentValue(arguments.get(0));
-        errorCodeBuilder.errorCode(ERROR_CODE_READER.parse(errorCode, formatPosition(builderCall.getPosition())));
+        errorCodeBuilder.identifier(errorCode);
         errorCodeBuilder.setPosition(
                 projectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
                 builderCall.getPosition().getLine());

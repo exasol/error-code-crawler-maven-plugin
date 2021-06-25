@@ -76,6 +76,18 @@ Covers:
 
 Needs: impl, itest
 
+### Identifier Validator
+
+`dsn~identifier-validator~1`
+
+The identifier validator checks that the error identifiers have the correct format using a regular expression.
+
+Covers:
+
+* `req~verify-error-identifier-format~1`
+
+Needs: impl, utest, itest
+
 ### Duplication Validator
 
 `dsn~duplication-validator~1`
@@ -134,6 +146,18 @@ Covers:
 * `arch~components~1`
 
 Needs: impl, utest
+
+## Report Writer
+
+`dsn~report-writer~1`
+
+ECM uses the report writer from error-code-model-java to write the json report.
+
+Needs: impl, itest
+
+Covers:
+
+* `feat~create-error-code-report~1`
 
 ## Implementation as Maven Plugin
 

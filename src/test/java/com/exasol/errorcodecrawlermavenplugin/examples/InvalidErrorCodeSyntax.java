@@ -7,6 +7,6 @@ import com.exasol.errorreporting.ExaError;
  */
 public class InvalidErrorCodeSyntax {
     public void run() {
-        throw new IllegalStateException(ExaError.messageBuilder("E-TEST-X").message("Test message").toString());
+        throw new IllegalStateException(ExaError.messageBuilder("Q-TEST-1").message("Test message").toString());
     }
 }

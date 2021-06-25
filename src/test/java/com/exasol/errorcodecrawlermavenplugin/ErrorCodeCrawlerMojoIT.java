@@ -4,6 +4,7 @@ import static com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReade
 import static com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter.getCurrentProjectVersion;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
@@ -84,6 +85,17 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
+    void testErrorReport() throws VerificationException, IOException {
+        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
+                StandardCopyOption.REPLACE_EXISTING);
+        final Verifier verifier = getVerifier();
+        verifier.executeGoal("error-code-crawler:verify");
+        final String report = Files.readString(this.projectDir.resolve(Path.of("target", "error_code_report.json")));
+        assertThat(report, equalTo(// [itest->dsn~report-writer~1]
+                "{\"$schema\":\"https://schemas.exasol.com/error_code_report-0.2.0.json\",\"projectName\":\"project-to-test\",\"projectVersion\":\"1.0.0\",\"errorCodes\":[{\"identifier\":\"E-TEST-1\",\"message\":\"Test message\",\"messagePlaceholders\":[],\"sourceFile\":\"src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java\",\"sourceLine\":10,\"mitigations\":[]}]}"));
+    }
+
+    @Test
     void testCrawlingWithHigherJavaSourceVersion() throws VerificationException, IOException {
         Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectsSrc.resolve("Java10.java"),
                 StandardCopyOption.REPLACE_EXISTING);
@@ -124,7 +136,8 @@ class ErrorCodeCrawlerMojoIT {
     @CsvSource({ //
             "DuplicateErrorCode.java, E-ECM-4", // [itest->dsn~duplication-validator~1]
             "TestWithUndeclaredParameter.java, E-ECM-17", // [itest->dsn~parameters-validator~1]
-            "IllegalUnnamedParameter.java, E-ECM-19",// [itest->dsn~empty-parameter-name-validator~1]
+            "IllegalUnnamedParameter.java, E-ECM-19", // [itest->dsn~empty-parameter-name-validator~1]
+            "InvalidErrorCodeSyntax.java, E-ECM-11",// [itest->dsn~identifier-validator~1]
     })
     // [itest->dsn~validator~1]
     void testValidations(final String testFile, final String expectedString) throws IOException {

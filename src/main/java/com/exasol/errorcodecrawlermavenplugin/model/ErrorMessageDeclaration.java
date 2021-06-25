@@ -1,13 +1,12 @@
 package com.exasol.errorcodecrawlermavenplugin.model;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class represents declaration
  */
 public class ErrorMessageDeclaration {
-    private final ErrorCode errorCode;
+    private final String identifier;
     private final String message;
     private final String sourceFile;
     private final int line;
@@ -16,7 +15,7 @@ public class ErrorMessageDeclaration {
     private final List<NamedParameter> namedParameters;
 
     private ErrorMessageDeclaration(final Builder builder) {
-        this.errorCode = builder.errorCode;
+        this.identifier = builder.identifier;
         this.message = builder.messageBuilder.toString();
         this.sourceFile = builder.sourceFile;
         this.declaringPackage = builder.declaringPackage;
@@ -34,8 +33,8 @@ public class ErrorMessageDeclaration {
      *
      * @return error code
      */
-    public ErrorCode getErrorCode() {
-        return this.errorCode;
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     /**
@@ -92,9 +91,37 @@ public class ErrorMessageDeclaration {
         return this.namedParameters;
     }
 
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        final ErrorMessageDeclaration that = (ErrorMessageDeclaration) other;
+        return this.line == that.line && Objects.equals(this.identifier, that.identifier)
+                && Objects.equals(this.message, that.message) && Objects.equals(this.sourceFile, that.sourceFile)
+                && Objects.equals(this.declaringPackage, that.declaringPackage)
+                && Objects.equals(this.mitigations, that.mitigations)
+                && Objects.equals(this.namedParameters, that.namedParameters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.identifier, this.message, this.sourceFile, this.line, this.declaringPackage,
+                this.mitigations, this.namedParameters);
+    }
+
+    @Override
+    public String toString() {
+        return "ErrorMessageDeclaration{" + "identifier='" + this.identifier + '\'' + ", message='" + this.message
+                + '\'' + ", sourceFile='" + this.sourceFile + '\'' + ", line=" + this.line + ", declaringPackage='"
+                + this.declaringPackage + '\'' + ", mitigations=" + this.mitigations + ", namedParameters="
+                + this.namedParameters + '}';
+    }
+
     public static class Builder {
         private final StringBuilder messageBuilder = new StringBuilder();
-        private ErrorCode errorCode;
+        private String identifier;
         private String sourceFile;
         private int line = -1;
         private String declaringPackage;
@@ -105,19 +132,19 @@ public class ErrorMessageDeclaration {
         }
 
         /**
-         * Add an error code.
+         * Set the error identifier.
          *
-         * @param errorCode error code to add
+         * @param identifier error identifier
          * @return self for fluent programming
          */
-        public Builder errorCode(final ErrorCode errorCode) {
-            this.errorCode = errorCode;
+        public Builder identifier(final String identifier) {
+            this.identifier = identifier;
             return this;
         }
 
         /**
          * Set the position where the error message is declared.
-         * 
+         *
          * @param sourceFile name of the source file relative to the project's root directory
          * @param line       linux number
          * @return self for fluent programming
@@ -130,7 +157,7 @@ public class ErrorMessageDeclaration {
 
         /**
          * Set the declaring java-package.
-         * 
+         *
          * @param declaringPackage declaring java package
          * @return self for fluent programming
          */
@@ -162,15 +189,25 @@ public class ErrorMessageDeclaration {
         }
 
         /**
-         * Add a parameter.
-         * 
-         * @param name        parameter name
-         * @param description description
-         * @param quoted      if the parameter is qouted
+         * Append a mitigation.
+         *
+         * @param mitigation mitigation to prepend.
          * @return self for fluent programming
          */
-        public Builder addParameter(final String name, final String description, final boolean quoted) {
-            this.namedParameters.add(new NamedParameter(name, description, quoted));
+        public Builder appendMitigation(final String mitigation) {
+            this.mitigations.add(mitigation);
+            return this;
+        }
+
+        /**
+         * Add a parameter.
+         *
+         * @param name        parameter name
+         * @param description description
+         * @return self for fluent programming
+         */
+        public Builder addParameter(final String name, final String description) {
+            this.namedParameters.add(new NamedParameter(name, description));
             return this;
         }
 

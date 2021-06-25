@@ -1,6 +1,6 @@
 # Requirements for the Error Code Crawler Maven Plugin
 
-The Error Code Crawler Maven Plugin (ECM) is a tool that analyzes invocations of the [Exasol Error Code Builder](https://github.com/exasol/error-reporting-java/) from Java source code.
+The Error Code Crawler Maven Plugin (ECM) is a tool that analyzes invocations of the [Exasol Error Code Builder](https://github.com/exasol/error-reporting-java/) from Java source code and writes them into a json report.
 
 ## Terminology
 
@@ -23,6 +23,30 @@ The Error Code Crawler Maven Plugin (ECM) is a tool that analyzes invocations of
 ECM checks that the error code declarations are valid.
 
 Needs: req
+
+#### Verify Error Identifier
+
+`req~verify-error-identifier-format~1`
+
+ECM checks that the error identifier matches the following [ABNF](https://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_form):
+
+```abnf
+error-identifier = severity "-" project-short-tag [ "-" module-short-tag ] "-" error-number
+ 
+severity = ( "F" / "E" / "W" )
+ 
+project-short-tag = ALPHA 1*4ALPHANUM
+ 
+module-short-tag = ALPHA 1*4ALPHANUM
+ 
+error-number = 1*5ALPHANUM
+```
+
+Covers:
+
+* `feat~verify-error-code-declarations~1`
+
+Needs: dsn
 
 #### Verify no Error Code is Declared Twice
 
@@ -123,13 +147,13 @@ Needs: dsn
 
 `feat~create-error-code-report~1`
 
-**Missing! This feature is not yet implemented**
-
 ECM can write an error code report in the format specified by the [error code report schema](https://github.com/exasol/schemas/blob/main/error_code_report-0.1.0.json).
 
 Rationale:
 
 All error-declarations of exasol open-source projects should be listed in a central [error-catalog](https://github.com/exasol/error-catalog). The generated file is the exchange format. [Release-droid](https://github.com/release-droid/) will add the generated files to the artifacts for each release on GitHub and from there the [error-catalog](https://github.com/exasol/error-catalog) will collect them.
+
+Needs: dsn
 
 ### Mvn Integration
 

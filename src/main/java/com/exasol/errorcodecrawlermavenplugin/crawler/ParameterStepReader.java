@@ -30,8 +30,7 @@ class ParameterStepReader implements MessageBuilderStepReader {
         final var signature = builderCall.getExecutable().getSignature();
         final var parameterName = new ArgumentReader(signature).readStringArgumentValue(arguments.get(0));
         final var description = readDescription(arguments, signature);
-        final var quoted = !signature.startsWith("unquoted");
-        errorCodeBuilder.addParameter(parameterName, description, quoted);
+        errorCodeBuilder.addParameter(parameterName, description);
     }
 
     private String readDescription(final List<CtExpression<?>> arguments, final String signature)

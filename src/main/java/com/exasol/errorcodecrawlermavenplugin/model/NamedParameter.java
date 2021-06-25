@@ -10,19 +10,16 @@ import com.exasol.errorreporting.ExaError;
 public class NamedParameter {
     private final String name;
     private final String description;
-    private final boolean quoted;
 
     /**
      * Create a new instance of {@link NamedParameter}.
      * 
      * @param name        parameter name
      * @param description parameter description
-     * @param quoted      {@code true} if the parameter should be quouted
      */
-    public NamedParameter(final String name, final String description, final boolean quoted) {
+    public NamedParameter(final String name, final String description) {
         this.name = name;
         this.description = description;
-        this.quoted = quoted;
     }
 
     /**
@@ -43,15 +40,6 @@ public class NamedParameter {
         return this.description;
     }
 
-    /**
-     * Get if the parameter should get quoted.
-     * 
-     * @return {@code true} if the parameter should get quoted.
-     */
-    public boolean isQuoted() {
-        return this.quoted;
-    }
-
     @Override
     public boolean equals(final Object other) {
         if (this == other)
@@ -59,18 +47,16 @@ public class NamedParameter {
         if (other == null || getClass() != other.getClass())
             return false;
         final NamedParameter that = (NamedParameter) other;
-        return this.quoted == that.quoted && Objects.equals(this.name, that.name)
-                && Objects.equals(this.description, that.description);
+        return Objects.equals(this.name, that.name) && Objects.equals(this.description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.description, this.quoted);
+        return Objects.hash(this.name, this.description);
     }
 
     @Override
     public String toString() {
-        return "NamedParameter{" + "name='" + this.name + '\'' + ", description='" + this.description + '\''
-                + ", quoted=" + this.quoted + '}';
+        return "NamedParameter{" + "name='" + this.name + '\'' + ", description='" + this.description + '\'' + '}';
     }
 }

@@ -6,19 +6,19 @@ import java.util.Objects;
  * This class represents an Exasol error code (e.g: E-EX-1). Each tag has a type (eg: E), a tag (e.g: EX) and an index
  * (e.g: 1).
  */
-public class ErrorCode {
+public class ErrorIdentifier {
     private final Type type;
     private final String tag;
     private final int index;
 
     /**
-     * Create a new instance of {@link ErrorCode}.
+     * Create a new instance of {@link ErrorIdentifier}.
      * 
      * @param type  error type
      * @param tag   error tag
      * @param index error index
      */
-    public ErrorCode(final Type type, final String tag, final int index) {
+    public ErrorIdentifier(final Type type, final String tag, final int index) {
         this.type = type;
         this.tag = tag;
         this.index = index;
@@ -51,16 +51,8 @@ public class ErrorCode {
         return this.index;
     }
 
-    @Override
-    public boolean equals(final Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof ErrorCode)) {
-            return false;
-        }
-        final var errorCode = (ErrorCode) other;
-        return this.index == errorCode.index && this.type == errorCode.type && Objects.equals(this.tag, errorCode.tag);
+    public static ErrorIdentifier parse(final String errorCode) throws SyntaxException {
+        return new ErrorCodeParser().parse(errorCode);
     }
 
     @Override
@@ -78,5 +70,27 @@ public class ErrorCode {
      */
     public enum Type {
         E, F, W
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof ErrorIdentifier)) {
+            return false;
+        }
+        final var errorCode = (ErrorIdentifier) other;
+        return this.index == errorCode.index && this.type == errorCode.type && Objects.equals(this.tag, errorCode.tag);
+    }
+
+    public static class SyntaxException extends Exception {
+        public SyntaxException(final String message) {
+            super(message);
+        }
+
+        public SyntaxException(final String message, final Throwable cause) {
+            super(message, cause);
+        }
     }
 }
