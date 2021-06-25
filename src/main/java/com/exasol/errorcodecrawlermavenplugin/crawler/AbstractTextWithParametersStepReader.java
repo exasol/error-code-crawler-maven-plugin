@@ -4,8 +4,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ErrorMessageBuilder;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;

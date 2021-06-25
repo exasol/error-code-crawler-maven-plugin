@@ -5,8 +5,8 @@ import static com.exasol.errorcodecrawlermavenplugin.validation.PositionFormatte
 import java.util.stream.Stream;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * test-db-builder-java 3.2.0 This {@link ErrorMessageDeclarationValidator} validates, that there are no parameters with

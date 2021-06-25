@@ -15,11 +15,11 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import com.exasol.errorcodecrawlermavenplugin.config.*;
 import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorCodeReport;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorCodeReportWriter;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorCodeReport;
+import com.exsol.errorcodemodel.ErrorCodeReportWriter;
 
 /**
  * This class is the entry point of the plugin.

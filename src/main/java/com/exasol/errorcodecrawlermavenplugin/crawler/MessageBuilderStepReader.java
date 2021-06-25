@@ -2,7 +2,7 @@ package com.exasol.errorcodecrawlermavenplugin.crawler;
 
 import java.nio.file.Path;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 import spoon.reflect.code.CtInvocation;
 

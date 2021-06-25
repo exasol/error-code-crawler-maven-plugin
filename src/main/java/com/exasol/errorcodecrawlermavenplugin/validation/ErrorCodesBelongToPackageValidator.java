@@ -6,9 +6,9 @@ import java.util.stream.Stream;
 import com.exasol.errorcodecrawlermavenplugin.Finding;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorIdentifier;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorIdentifier;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * This {@link ErrorMessageDeclarationValidator} validates that error codes are only declared in packages they belong to

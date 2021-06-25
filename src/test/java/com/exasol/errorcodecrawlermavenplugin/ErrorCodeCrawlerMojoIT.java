@@ -137,7 +137,7 @@ class ErrorCodeCrawlerMojoIT {
             "DuplicateErrorCode.java, E-ECM-4", // [itest->dsn~duplication-validator~1]
             "TestWithUndeclaredParameter.java, E-ECM-17", // [itest->dsn~parameters-validator~1]
             "IllegalUnnamedParameter.java, E-ECM-19", // [itest->dsn~empty-parameter-name-validator~1]
-            "InvalidErrorCodeSyntax.java, E-ECM-11",// [itest->dsn~identifier-validator~1]
+            "InvalidErrorCodeSyntax.java, E-ECMOJ-2",// [itest->dsn~identifier-validator~1]
     })
     // [itest->dsn~validator~1]
     void testValidations(final String testFile, final String expectedString) throws IOException {

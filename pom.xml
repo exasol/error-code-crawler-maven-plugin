@@ -126,15 +126,9 @@
             <version>2.12.2</version>
         </dependency>
         <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.1.4</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.glassfish/javax.json -->
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.1.4</version>
+            <groupId>com.exasol</groupId>
+            <artifactId>error-code-model-java</artifactId>
+            <version>0.1.0</version>
         </dependency>
         <!-- test dependencies -->
         <dependency>
@@ -149,7 +143,7 @@
             <version>3.5.5</version>
             <scope>test</scope>
         </dependency>
-        <!-- Overrides Junit 4.12 which is used in test containers but contains a security issue: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
+        <!-- Overrides Junit 4.12 which is used in maven but contains a security issue: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

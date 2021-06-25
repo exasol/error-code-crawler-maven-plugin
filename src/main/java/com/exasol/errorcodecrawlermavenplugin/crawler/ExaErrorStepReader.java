@@ -3,8 +3,8 @@ package com.exasol.errorcodecrawlermavenplugin.crawler;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;

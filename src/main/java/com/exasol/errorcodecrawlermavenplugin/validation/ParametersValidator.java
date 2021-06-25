@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
-import com.exasol.errorcodecrawlermavenplugin.model.NamedParameter;
 import com.exasol.errorreporting.*;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.NamedParameter;
 
 /**
  * This {@link ErrorMessageDeclarationValidator} validates that all parameters used in message and mitigation are

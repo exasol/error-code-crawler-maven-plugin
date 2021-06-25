@@ -2,8 +2,8 @@ package com.exasol.errorcodecrawlermavenplugin.crawler;
 
 import java.util.Set;
 
-import com.exasol.errorcodecrawlermavenplugin.model.ErrorMessageDeclaration;
 import com.exasol.errorreporting.ErrorMessageBuilder;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * Reader for invocations of {@link ErrorMessageBuilder#message(String, Object...)}.

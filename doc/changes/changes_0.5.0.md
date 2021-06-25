@@ -13,6 +13,7 @@ Starting from this release ECM writes an `error_code_report.json` to `target/`. 
 ## Refactoring
 
 * #43: Refactored integration test to use maven-plugin-integration-testing
+* #49: Moved model to error-code-model-java
 
 ## Documentation
 
@@ -22,8 +23,7 @@ Starting from this release ECM writes an `error_code_report.json` to `target/`. 
 
 ### Compile Dependency Updates
 
-* Added `javax.json:javax.json-api:1.1.4`
-* Added `org.glassfish:javax.json:1.1.4`
+* Added `com.exasol:error-code-model-java:0.1.0`
 
 ### Test Dependency Updates
 
