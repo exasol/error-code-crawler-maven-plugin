@@ -13,6 +13,7 @@ In this release we updated the dependencies of this project and by that fixed th
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.2` to `2.12.4`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2` to `2.12.4`
 * Updated `fr.inria.gforge.spoon:spoon-core:8.3.0` to `9.0.0`
+* Added `org.apache.commons:commons-compress:1.21`
 * Updated `org.apache.maven:maven-artifact:3.6.3` to `3.8.1`
 * Updated `org.apache.maven:maven-core:3.6.3` to `3.8.1`
 * Updated `org.apache.maven:maven-plugin-api:3.6.3` to `3.8.1`
