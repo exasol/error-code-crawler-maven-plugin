@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>error-code-crawler-maven-plugin</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1</version>
     <name>error-code-crawler-maven-plugin</name>
     <description>Crawler for Exasol error codes.</description>
     <url>https://github.com/exasol/error-code-crawler-maven-plugin</url>
@@ -13,9 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
-        <maven.version>3.6.3</maven.version>
-        <junit.version>5.7.1</junit.version>
-        <jacoco.version>0.8.5</jacoco.version>
+        <maven.version>3.8.1</maven.version>
+        <junit.version>5.7.2</junit.version>
+        <jacoco.version>0.8.7</jacoco.version>
         <vscommon.version>11.0.0</vscommon.version>
         <gpg.skip>true</gpg.skip>
         <surefire.and.failsafe.plugin.version>3.0.0-M3</surefire.and.failsafe.plugin.version>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.6.0</version>
+            <version>3.6.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>fr.inria.gforge.spoon</groupId>
             <artifactId>spoon-core</artifactId>
-            <version>8.3.0</version>
+            <version>9.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -112,23 +112,29 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.30</version>
+            <version>1.7.32</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.12.2</version>
+            <version>2.12.4</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.12.2</version>
+            <version>2.12.4</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>error-code-model-java</artifactId>
             <version>0.1.0</version>
+        </dependency>
+        <!-- explicit import to overwrite vulnerable transitive version -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.21</version>
         </dependency>
         <!-- test dependencies -->
         <dependency>
@@ -140,7 +146,7 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.5.5</version>
+            <version>3.7</version>
             <scope>test</scope>
         </dependency>
         <!-- Overrides Junit 4.12 which is used in maven but contains a security issue: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
@@ -171,7 +177,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.6.3</version>
+            <version>3.8.1</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -240,28 +246,31 @@
                         </goals>
                     </execution>
                     <execution>
+                        <id>merge-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}/</directory>
+                                    <includes>
+                                        <include>jacoco*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/aggregate.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>report-integration</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report-integration</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report-udf-integration</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report-integration</goal>
-                        </goals>
                         <configuration>
-                            <dataFile>${project.build.directory}/jacoco-udf.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-udf</outputDirectory>
+                            <dataFile>${project.build.directory}/aggregate.exec</dataFile>
                         </configuration>
                     </execution>
                 </executions>
@@ -404,7 +413,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>0.7.0</version>
+                <version>0.10.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -420,6 +429,10 @@
                     <excludedPlugins>
                         <excludedPlugin>com.exasol:error-code-crawler-maven-plugin</excludedPlugin>
                     </excludedPlugins>
+                    <excludedFiles>
+                        <!-- We need a custom build command here -->
+                        <excludedFile>.github/workflows/release_droid_upload_github_release_assets.yml</excludedFile>
+                    </excludedFiles>
                     <linkReplacements>
                         <linkReplacement>
                             https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/
