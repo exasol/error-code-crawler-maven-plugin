@@ -58,7 +58,6 @@
 | [Maven Install Plugin][80]                              | [The Apache Software License, Version 2.0][7] |
 | [Maven Site Plugin 3][82]                               | [The Apache Software License, Version 2.0][7] |
 
-[42]: https://www.eclemma.org/jacoco/index.html
 [62]: https://github.com/exasol/project-keeper-maven-plugin
 [10]: https://github.com/exasol/error-reporting-java
 [7]: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -67,7 +66,7 @@
 [32]: https://maven.apache.org/shared/maven-verifier/
 [11]: https://opensource.org/licenses/MIT
 [6]: http://maven.apache.org/
-[20]: https://maven.apache.org/ref/3.6.3/maven-artifact/
+[20]: https://maven.apache.org/ref/3.8.1/maven-artifact/
 [34]: https://github.com/exasol/maven-project-version-getter
 [48]: http://www.mojohaus.org/versions-maven-plugin/
 [23]: http://opensource.org/licenses/BSD-3-Clause
@@ -76,7 +75,7 @@
 [72]: https://github.com/itsallcode/openfasttrace-maven-plugin
 [26]: http://junit.org
 [43]: https://www.eclipse.org/legal/epl-2.0/
-[4]: https://maven.apache.org/ref/3.6.3/maven-core/
+[42]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
 [70]: http://zlika.github.io/reproducible-build-maven-plugin
 [13]: http://www.opensource.org/licenses/mit-license.php
 [18]: https://github.com/exasol/error-code-model-java
@@ -91,10 +90,10 @@
 [9]: http://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [66]: http://www.sonatype.com/public-parent/nexus-maven-plugins/nexus-staging/nexus-staging-maven-plugin/
 [16]: https://github.com/FasterXML/jackson-modules-java8/
+[4]: https://maven.apache.org/ref/3.8.1/maven-core/
 [40]: https://maven.apache.org/surefire/maven-failsafe-plugin/
 [46]: http://maven.apache.org/plugins/maven-dependency-plugin/
 [27]: http://www.eclipse.org/legal/epl-v10.html
-[2]: https://maven.apache.org/ref/3.6.3/maven-plugin-api/
 [73]: https://www.gnu.org/licenses/gpl-3.0.html
 [78]: http://maven.apache.org/plugins/maven-jar-plugin/
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
@@ -107,5 +106,6 @@
 [24]: http://www.jqno.nl/equalsverifier
 [64]: http://maven.apache.org/plugins/maven-deploy-plugin/
 [82]: http://maven.apache.org/plugins/maven-site-plugin/
+[2]: https://maven.apache.org/ref/3.8.1/maven-plugin-api/
 [54]: https://maven.apache.org/plugins/maven-javadoc-plugin/
 [68]: https://github.com/exasol/error-code-crawler-maven-plugin
