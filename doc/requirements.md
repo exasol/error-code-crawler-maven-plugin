@@ -151,7 +151,7 @@ ECM can write an error code report in the format specified by the [error code re
 
 Rationale:
 
-All error-declarations of exasol open-source projects should be listed in a central [error-catalog](https://github.com/exasol/error-catalog). The generated file is the exchange format. [Release-droid](https://github.com/release-droid/) will add the generated files to the artifacts for each release on GitHub and from there the [error-catalog](https://github.com/exasol/error-catalog) will collect them.
+All error-declarations of exasol open-source projects should be listed in a central [error-catalog](https://github.com/exasol/error-catalog). The generated file is the exchange format. [Release-droid](https://github.com/exasol/release-droid/) will add the generated files to the artifacts for each release on GitHub and from there the [error-catalog](https://github.com/exasol/error-catalog) will collect them.
 
 Needs: dsn
 
