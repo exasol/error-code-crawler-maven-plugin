@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -38,15 +39,29 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Parameter(name = "excludes")
     private List<String> excludes;// this variable must have the same name as the parameter
 
+    @Parameter(name = "sourcePaths")
+    private List<String> sourcePaths;
+
+    // [impl->dsn~src-directrories]
+    // [impl->dsn~src-directrory-override]
+    private List<Path> getSourcePaths() {
+        if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
+            return List.of(Path.of("src", "main", "java"), Path.of("src", "test", "java"));
+        } else {
+            final String separator = System.getProperty("file.separator");
+            return this.sourcePaths.stream().map(string -> Path.of(string.replace("/", separator)))
+                    .collect(Collectors.toList());
+        }
+    }
+
     @Override
     public void execute() throws MojoFailureException {
         final var projectDir = this.project.getBasedir().toPath();
         final ErrorCodeConfig config = readConfig(projectDir);
         final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
                 Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-        final var srcMainPath = projectDir.resolve(Path.of("src", "main", "java"));
-        final var srcTestPath = projectDir.resolve(Path.of("src", "test", "java"));
-        final var crawlResult = crawler.crawl(srcMainPath, srcTestPath);
+        final Path[] absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).toArray(Path[]::new);
+        final var crawlResult = crawler.crawl(absoluteSourcePaths);
         final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
         createTargetDirIfNotExists();
         // [impl->dsn~report-writer~1]
