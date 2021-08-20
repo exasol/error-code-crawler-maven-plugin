@@ -73,7 +73,7 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
-    // [itest->dsn~src-directrories]
+    // [itest->dsn~src-directories]
     void testValidCrawling() throws VerificationException, IOException {
         writeDefaultPom();
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
@@ -154,7 +154,7 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
-    // [impl->dsn~src-directrory-override]
+    // [impl->dsn~src-directory-override]
     void testDifferentSourcePath() throws IOException, VerificationException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);

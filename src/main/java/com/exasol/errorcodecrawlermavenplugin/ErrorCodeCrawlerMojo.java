@@ -42,8 +42,8 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Parameter(name = "sourcePaths")
     private List<String> sourcePaths;
 
-    // [impl->dsn~src-directrories]
-    // [impl->dsn~src-directrory-override]
+    // [impl->dsn~src-directories]
+    // [impl->dsn~src-directory-override]
     private List<Path> getSourcePaths() {
         if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
             return List.of(Path.of("src", "main", "java"), Path.of("src", "test", "java"));
