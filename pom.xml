@@ -191,6 +191,13 @@
             <version>0.1.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <artifactId>org.jacoco.agent</artifactId>
+            <groupId>org.jacoco</groupId>
+            <version>0.8.5</version>
+            <classifier>runtime</classifier>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -218,6 +225,9 @@
                     <includes>
                         <include>**IT.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <test.coverage>true</test.coverage>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>
@@ -301,6 +311,7 @@
                         </configuration>
                     </execution>
                 </executions>
+                <groupId>org.apache.maven.plugins</groupId>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -425,6 +436,7 @@
                     <modules>
                         <module>maven_central</module>
                         <module>integration_tests</module>
+                        <module>udf_coverage</module>
                     </modules>
                     <excludedPlugins>
                         <excludedPlugin>com.exasol:error-code-crawler-maven-plugin</excludedPlugin>
