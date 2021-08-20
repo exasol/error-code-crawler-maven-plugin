@@ -183,6 +183,31 @@ Covers:
 
 Needs: impl, itest
 
+### Default Source Directories
+
+`dsn~src-directories-1`
+
+By default, ECM crawls `src/main/java` and `src/main/test`.
+
+Covers:
+
+* `feat~src-directories`
+
+Needs: impl, itest
+
+### Src Directory Override
+
+`dsn~src-directory-override`
+
+Users can override the sources to crawl. ECM supports this by a `sourcePaths` property in the plugin configuration in the `pom.xml`.
+
+Covers:
+
+* `feat~src-directory-override`
+
+Needs: impl, itest
+
+
 
 
 

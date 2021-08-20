@@ -92,6 +92,24 @@ The excludes only affect the validation &mdash; not compiling. So if the specifi
 
 **Keep in mind that error codes from excluded files will not show up in the error catalog and are not validated. So use this option with care!**
 
+### Source Path
+
+ECM allows you to override the source directories that it crawls.
+
+A common use case for this is when you use [project Lombok](https://projectlombok.org/) in your project. In that case crawling the regular sources will fail since the ECM can't find some sources. To fix this you can use the [lombok-maven-plugin](http://anthonywhitford.com/lombok.maven/lombok-maven-plugin/). This plugin applies the Lombok annotations and generates new source code. To tell ECM top crawl these sources instead use:
+
+```xml
+
+<configuration>
+    <sourcePaths>
+        <sourcePath>target/generated-sources/delombok</sourcePath>
+        <sourcePath>target/generated-test-sources/delombok</sourcePath>
+    </sourcePaths>
+</configuration>
+```
+
+For a working example project with Lombok and error-code-crawler take a look at the [virtual-schema-common-document](https://github.com/exasol/virtual-schema-common-document).
+
 ## Usage
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.

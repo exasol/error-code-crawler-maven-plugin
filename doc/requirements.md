@@ -167,4 +167,24 @@ We use maven in all our Java projects. By adding it to the build we make sure th
 
 Needs: dsn
 
+### Default Source Directories
+
+`feat~src-directories`
+
+By default, ECM crawls source directories of the maven project.
+
+Needs: dsn
+
+### Src Directory Override
+
+`feat~src-directory-override`
+
+It's possible to override the default src directories by configuration.
+
+Rationale:
+
+In some projects we don't want to crawl the sources directly but the generated sources. For example since we are using project Lombok which expands annotations to generated Java code.
+
+Needs: dsn
+
 
