@@ -33,6 +33,10 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
 
+    // [impl->dsn~skip-execution~1]
+    @Parameter(property = "error-code-crawler.skip", defaultValue = "false")
+    String skip;
+
     /**
      * Glob patterns for files that should be excluded from validation.
      */
@@ -54,20 +58,36 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         }
     }
 
+    // [impl->dsn~skip-execution~1]
+    protected boolean isEnabled() {
+        if ("true".equals(this.skip)) {
+            getLog().info("Skipping error-code crawling.");
+            return false;
+        } else if ("false".equals(this.skip)) {
+            return true;
+        } else {
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-ECM-51")
+                    .message("Invalid value {{value}} for property 'error-code-crawler.skip'.", this.skip)
+                    .mitigation("Please set the property to 'true' or 'false'.").toString());
+        }
+    }
+
     @Override
     public void execute() throws MojoFailureException {
-        final var projectDir = this.project.getBasedir().toPath();
-        final ErrorCodeConfig config = readConfig(projectDir);
-        final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
-                Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-        final Path[] absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).toArray(Path[]::new);
-        final var crawlResult = crawler.crawl(absoluteSourcePaths);
-        final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
-        createTargetDirIfNotExists();
-        // [impl->dsn~report-writer~1]
-        new ErrorCodeReportWriter().writeReport(new ErrorCodeReport(this.project.getArtifactId(),
-                this.project.getVersion(), crawlResult.getErrorMessageDeclarations()), REPORT_PATH);
-        reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
+        if (isEnabled()) {
+            final var projectDir = this.project.getBasedir().toPath();
+            final ErrorCodeConfig config = readConfig(projectDir);
+            final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
+                    Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
+            final Path[] absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).toArray(Path[]::new);
+            final var crawlResult = crawler.crawl(absoluteSourcePaths);
+            final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
+            createTargetDirIfNotExists();
+            // [impl->dsn~report-writer~1]
+            new ErrorCodeReportWriter().writeReport(new ErrorCodeReport(this.project.getArtifactId(),
+                    this.project.getVersion(), crawlResult.getErrorMessageDeclarations()), REPORT_PATH);
+            reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
+        }
     }
 
     private void createTargetDirIfNotExists() {

@@ -114,6 +114,8 @@ For a working example project with Lombok and error-code-crawler take a look at 
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
 
+You can skip the execution of this plugin by adding `-Derror-code-crawler.skip=true` to your maven command.
+
 ## Additional Information
 
 * [Changelog](doc/changes/changelog.md)

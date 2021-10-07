@@ -5,6 +5,7 @@ import static com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter.get
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
@@ -151,6 +152,18 @@ class ErrorCodeCrawlerMojoIT {
         final VerificationException exception = assertThrows(VerificationException.class,
                 () -> verifier.executeGoal("error-code-crawler:verify"));
         assertThat(exception.getMessage(), containsString(expectedString));
+    }
+
+    // [itest->dsn~skip-execution~1]
+    @Test
+    void testSkip() throws IOException {
+        writeDefaultPom();
+        final String testFile = "DuplicateErrorCode.java";
+        Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectsTestSrc.resolve(testFile),
+                StandardCopyOption.REPLACE_EXISTING);
+        final Verifier verifier = getVerifier();
+        verifier.setSystemProperty("error-code-crawler.skip", "true");
+        assertDoesNotThrow(() -> verifier.executeGoal("error-code-crawler:verify"));
     }
 
     @Test
