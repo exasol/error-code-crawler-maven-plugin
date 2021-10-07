@@ -183,6 +183,18 @@ Covers:
 
 Needs: impl, itest
 
+## Skip Property
+
+`dsn~skip-execution~1`
+
+Users can disable the execution of ECM by setting the java property `error-code-crawler.skip`.
+
+Covers:
+
+* `req~skip-execution~1`
+
+Needs: impl, itest, utest
+
 ### Default Source Directories
 
 `dsn~src-directories-1`

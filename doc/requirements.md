@@ -165,6 +165,20 @@ Rationale:
 
 We use maven in all our Java projects. By adding it to the build we make sure that the validations run on local testing and during CI.
 
+Needs: req, dsn
+
+### Skipping the execution
+
+`req~skip-execution~1`
+
+Users can skip the execution of the maven plugin.
+
+That's useful for testing. For example, since it speeds up the build. Of course it should not be skipped in the CI.
+
+Covers:
+
+* `feat~mvn-integration~1`
+
 Needs: dsn
 
 ### Default Source Directories
