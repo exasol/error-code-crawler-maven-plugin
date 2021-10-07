@@ -173,7 +173,7 @@ Needs: req, dsn
 
 Users can skip the execution of the maven plugin.
 
-That's useful for testing. For example, since it speeds up the build. Of it should not be skipped in the CI.
+That's useful for testing. For example, since it speeds up the build. Of course it should not be skipped in the CI.
 
 Covers:
 
