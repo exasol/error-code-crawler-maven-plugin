@@ -5,6 +5,7 @@ import static com.exasol.errorreporting.ExaError.messageBuilder;
 import java.util.*;
 
 import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorCodeReport;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -22,13 +23,18 @@ public class ErrorCodeConfig {
      */
     @JsonCreator
     public ErrorCodeConfig(@JsonProperty("error-tags") final Map<String, SingleErrorCodeConfig> errorTags) {
+        this.errorTags = readErrorTags(errorTags);
+        this.packageToErrorCodeMapping = inverseMapping(errorTags);
+    }
+
+    private static Map<String, SingleErrorCodeConfig> readErrorTags(final Map<String, SingleErrorCodeConfig> errorTags) {
         if (errorTags == null) {
             throw new IllegalArgumentException(messageBuilder("E-ECM-52")
                     .message("Invalid " + ErrorCodeConfigReader.CONFIG_NAME + ". Missing error tags.")
                     .mitigation("Add error tags to project configuration.").toString());
+        } else {
+            return errorTags;
         }
-        this.errorTags = Objects.requireNonNull(errorTags, "errorTags");
-        this.packageToErrorCodeMapping = inverseMapping(errorTags);
     }
 
     private Map<String, String> inverseMapping(final Map<String, SingleErrorCodeConfig> errorTags) {
