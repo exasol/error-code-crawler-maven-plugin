@@ -6,7 +6,7 @@ Code name: Fix NullPointerException
 
 This release fixes a NullPointerException when the error codes are not specified in the config. Now the error message contains a helpful message and mitigation.
 
-## Features
+## Bug Fixes
 
 * #53: Fixed a NullPointerException when the error codes are not specified in the config
 
