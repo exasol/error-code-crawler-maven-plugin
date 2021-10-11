@@ -39,7 +39,7 @@ class ErrorCodeConfigReaderTest {
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
         assertThat(exception.getMessage(), equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
-        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Missing error tags. Add error tags to project configuration."));
+        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
     }
 
     @Test
@@ -48,7 +48,7 @@ class ErrorCodeConfigReaderTest {
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
         assertThat(exception.getMessage(), equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
-        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Missing error tags. Add error tags to project configuration."));
+        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
     }
 
     private void copyResourceToTestProject(final String resourceName) throws IOException {

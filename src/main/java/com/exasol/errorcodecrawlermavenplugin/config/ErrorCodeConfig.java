@@ -23,7 +23,8 @@ public class ErrorCodeConfig {
     @JsonCreator
     public ErrorCodeConfig(@JsonProperty("error-tags") final Map<String, SingleErrorCodeConfig> errorTags) {
         if (errorTags == null) {
-            throw new IllegalArgumentException(messageBuilder("E-ECM-52").message("Invalid error_code_config.yml. Missing error tags.")
+            throw new IllegalArgumentException(messageBuilder("E-ECM-52")
+                    .message("Invalid " + ErrorCodeConfigReader.CONFIG_NAME + ". Missing error tags.")
                     .mitigation("Add error tags to project configuration.").toString());
         }
         this.errorTags = Objects.requireNonNull(errorTags, "errorTags");
