@@ -38,11 +38,23 @@ class ErrorCodeConfigReaderTest {
         copyResourceToTestProject("errorCodeConfig/invalidRoot.yml");
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
-        assertThat(exception.getMessage(), equalTo("E-ECM-7: Failed to read projects " + CONFIG_NAME + "."));
+        assertThat(exception.getMessage(), equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
+        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
+    }
+
+    @Test
+    void testMissingTags() throws IOException, ErrorCodeConfigException {
+        copyResourceToTestProject("errorCodeConfig/missingTags.yml");
+        final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
+        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
+        assertThat(exception.getMessage(), equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
+        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
     }
 
     private void copyResourceToTestProject(final String resourceName) throws IOException {
-        Files.copy(Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourceName)),
+        Files.copy(
+                Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourceName),
+                        "Resource '" + resourceName + "' not found"),
                 this.tempDir.resolve(CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
     }
 }
