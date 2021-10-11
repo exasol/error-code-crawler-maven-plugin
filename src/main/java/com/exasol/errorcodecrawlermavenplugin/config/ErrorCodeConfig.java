@@ -1,5 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin.config;
 
+import static com.exasol.errorreporting.ExaError.messageBuilder;
+
 import java.util.*;
 
 import com.exasol.errorreporting.ExaError;
@@ -20,7 +22,11 @@ public class ErrorCodeConfig {
      */
     @JsonCreator
     public ErrorCodeConfig(@JsonProperty("error-tags") final Map<String, SingleErrorCodeConfig> errorTags) {
-        this.errorTags = errorTags;
+        if (errorTags == null) {
+            throw new IllegalArgumentException(messageBuilder("E-ECM-52").message("Missing error tags.")
+                    .mitigation("Add error tags to project configuration.").toString());
+        }
+        this.errorTags = Objects.requireNonNull(errorTags, "errorTags");
         this.packageToErrorCodeMapping = inverseMapping(errorTags);
     }
 

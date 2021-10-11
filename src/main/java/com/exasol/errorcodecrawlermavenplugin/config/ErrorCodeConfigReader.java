@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 /**
@@ -45,6 +46,10 @@ public class ErrorCodeConfigReader {
             final var mapper = new ObjectMapper(new YAMLFactory());
             mapper.findAndRegisterModules();
             return mapper.readValue(this.errorConfigFile, ErrorCodeConfig.class);
+        } catch (final ValueInstantiationException exception) {
+            throw new ErrorCodeConfigException(
+                    messageBuilder("E-ECM-53").message("Failed to read projects " + CONFIG_NAME + " because of invalid file format.").toString(),
+                    exception.getCause());
         } catch (final IOException exception) {
             throw new ErrorCodeConfigException(
                     messageBuilder("E-ECM-7").message("Failed to read projects " + CONFIG_NAME + ".").toString(),
