@@ -15,6 +15,9 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 //[impl->dsn~config-parser~1]
 public class ErrorCodeConfigReader {
+    /**
+     * Name of the error code configuration file.
+     */
     public static final String CONFIG_NAME = "error_code_config.yml";
     private final File errorConfigFile;
 
@@ -47,8 +50,8 @@ public class ErrorCodeConfigReader {
             mapper.findAndRegisterModules();
             return mapper.readValue(this.errorConfigFile, ErrorCodeConfig.class);
         } catch (final ValueInstantiationException exception) {
-            throw new ErrorCodeConfigException(
-                    messageBuilder("E-ECM-53").message("Failed to read projects " + CONFIG_NAME + " because of invalid file format.").toString(),
+            throw new ErrorCodeConfigException(messageBuilder("E-ECM-53")
+                    .message("Failed to read projects " + CONFIG_NAME + " because of invalid file format.").toString(),
                     exception.getCause());
         } catch (final IOException exception) {
             throw new ErrorCodeConfigException(
