@@ -58,6 +58,11 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         }
     }
 
+    /**
+     * Check if the plugin is enabled and should run.
+     * 
+     * @return {@code true} if the plugin is enabled, else {@code false}
+     */
     // [impl->dsn~skip-execution~1]
     protected boolean isEnabled() {
         if ("true".equals(this.skip)) {
