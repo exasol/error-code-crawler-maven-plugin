@@ -45,7 +45,7 @@
 | [Apache Maven Source Plugin][55]                        | [Apache License, Version 2.0][1]              |
 | [Maven Plugin Plugin][57]                               | [Apache License, Version 2.0][1]              |
 | [Apache Maven Javadoc Plugin][59]                       | [Apache License, Version 2.0][1]              |
-| [Apache Maven GPG Plugin][61]                           | [Apache License, Version 2.0][7]              |
+| [Apache Maven GPG Plugin][61]                           | [Apache License, Version 2.0][1]              |
 | [org.sonatype.ossindex.maven:ossindex-maven-plugin][63] | [ASL2][7]                                     |
 | [Apache Maven Enforcer Plugin][65]                      | [Apache License, Version 2.0][1]              |
 | [Project keeper maven plugin][67]                       | [MIT][10]                                     |
@@ -75,7 +75,6 @@
 [53]: http://www.mojohaus.org/versions-maven-plugin/
 [26]: http://opensource.org/licenses/BSD-3-Clause
 [49]: https://maven.apache.org/plugins/maven-compiler-plugin/
-[61]: http://maven.apache.org/plugins/maven-gpg-plugin/
 [77]: https://github.com/itsallcode/openfasttrace-maven-plugin
 [29]: http://junit.org
 [42]: https://www.eclipse.org/legal/epl-2.0/
@@ -106,6 +105,7 @@
 [32]: https://www.eclipse.org/legal/epl-v20.html
 [85]: http://maven.apache.org/plugins/maven-install-plugin/
 [63]: https://sonatype.github.io/ossindex-maven/maven-plugin/
+[61]: https://maven.apache.org/plugins/maven-gpg-plugin/
 [8]: http://spoon.gforge.inria.fr/
 [39]: https://github.com/exasol/maven-plugin-integration-testing
 [27]: http://www.jqno.nl/equalsverifier
