@@ -11,6 +11,8 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 public class TestMavenModel extends Model {
+    private static final long serialVersionUID = 422440090869638523L;
+
     public TestMavenModel(final ErrorCodeCrawlerPluginDefinition errorCodeCrawlerPluginDefinition) {
         this.setBuild(new Build());
         this.setVersion("1.0.0");

@@ -4,6 +4,8 @@ package com.exasol.errorcodecrawlermavenplugin.config;
  * Exception that is thrown on an error code config.
  */
 public class ErrorCodeConfigException extends Exception {
+    private static final long serialVersionUID = 238304659477136337L;
+
     /**
      * Create a new instance of {@link ErrorCodeConfigException}.
      * 

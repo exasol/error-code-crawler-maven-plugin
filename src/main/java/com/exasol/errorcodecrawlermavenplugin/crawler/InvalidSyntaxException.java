@@ -6,6 +6,7 @@ import com.exasol.errorcodecrawlermavenplugin.Finding;
  * Exception that is thrown if the error declaration crawling found an syntax error.
  */
 class InvalidSyntaxException extends Exception {
+    private static final long serialVersionUID = -5224230640960774874L;
     private final transient Finding finding;
 
     /**
