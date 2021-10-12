@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.7.1, released 2021-10-11
+# error-code-crawler-maven-plugin 0.7.1, released 2021-10-12
 
 Code name: Fix NullPointerException
 
@@ -15,6 +15,7 @@ This release fixes a NullPointerException when the error codes are not specified
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:0.7.0` to `0.7.1`
+* Updated `com.exasol:project-keeper-maven-plugin:1.2.0` to `1.3.0`
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.0.0-M3` to `3.0.0`
 * Updated `org.apache.maven.plugins:maven-gpg-plugin:1.6` to `3.0.1`
 * Updated `org.apache.maven.plugins:maven-javadoc-plugin:3.2.0` to `3.3.1`

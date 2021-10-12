@@ -5,7 +5,6 @@ import static com.exasol.errorreporting.ExaError.messageBuilder;
 import java.util.*;
 
 import com.exasol.errorreporting.ExaError;
-import com.exsol.errorcodemodel.ErrorCodeReport;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

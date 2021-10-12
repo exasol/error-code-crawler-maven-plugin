@@ -29,3 +29,10 @@ Scripts
 .directory
 venv/
 *.tmp
+
+~*
+*.lock
+*.bak
+*.orig
+*.old
+*.md.html
