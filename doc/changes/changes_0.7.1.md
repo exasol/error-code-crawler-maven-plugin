@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.7.1, released 2021-10-11
+# error-code-crawler-maven-plugin 0.7.1, released 2021-10-12
 
 Code name: Fix NullPointerException
 
