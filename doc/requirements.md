@@ -6,7 +6,7 @@ The Error Code Crawler Maven Plugin (ECM) is a tool that analyzes invocations of
 
 * `Error Message Declaration`: A Java statement that builds an error message and typically throws an exception:
   Example:
-  ```
+  ```java
   ExaError.messageBuilder("E-TEST-1").message("Failed to start database.").toString();
   ```
 * `Error Identifier`: Each error code has a unique identifier. Example: `E-Test-1`. Also known as `Error Code`. An Error Identifier consists of:
@@ -107,7 +107,7 @@ ExaError.messageBuilder("E-TEST-1").message("Unknown parameter: {{parameter name
 Valid Example:
 
 ```java
-ExaError.messageBuilder("E-TEST-1").message("Unknown parameter: {{parameter name}}",value).toString();
+ExaError.messageBuilder("E-TEST-1").message("Unknown parameter: {{parameter name}}", value).toString();
 ```
 
 Covers:

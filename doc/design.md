@@ -24,7 +24,7 @@ For implementing the error declaration crawler we decided to use [Spoon](https:/
 In contrast to using regular expression matching, this approach has the following advantages:
 
 * The crawler gets the source code in a unified form. Whitespace and line breaks can't cause errors
-* The crawler can handle string concatenation can constants in error messages
+* The crawler can handle string concatenation with constants in error messages
 
 One could want to support string concatenation with variables or crawl error declarations like:
 
@@ -151,7 +151,7 @@ Needs: impl, utest
 
 `dsn~report-writer~1`
 
-ECM uses the report writer from error-code-model-java to write the json report.
+ECM uses the report writer from `error-code-model-java` to write the json report.
 
 Needs: impl, itest
 
@@ -187,7 +187,7 @@ Needs: impl, itest
 
 `dsn~skip-execution~1`
 
-Users can disable the execution of ECM by setting the java property `error-code-crawler.skip`.
+Users can disable the execution of ECM by setting the java property `error-code-crawler.skip` to `true`.
 
 Covers:
 
@@ -218,9 +218,3 @@ Covers:
 * `feat~src-directory-override`
 
 Needs: impl, itest
-
-
-
-
-
-
