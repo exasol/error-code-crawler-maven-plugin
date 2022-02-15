@@ -19,9 +19,10 @@ Code name: Enforce stricter error code format
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0` to `2.13.1`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0` to `2.13.1`
 * Updated `fr.inria.gforge.spoon:spoon-core:9.1.0` to `10.0.0`
-* Updated `org.apache.maven:maven-artifact:3.8.3` to `3.8.4`
-* Updated `org.apache.maven:maven-core:3.8.3` to `3.8.4`
-* Updated `org.apache.maven:maven-plugin-api:3.8.3` to `3.8.4`
+* Removed `org.apache.maven:maven-artifact:3.8.3`
+* Removed `org.apache.maven:maven-core:3.8.3`
+* Removed `org.apache.maven:maven-plugin-api:3.8.3`
+* Removed `org.apache.maven:maven-project:2.2.1`
 * Updated `org.slf4j:slf4j-jdk14:1.7.32` to `1.7.36`
 
 ### Test Dependency Updates
