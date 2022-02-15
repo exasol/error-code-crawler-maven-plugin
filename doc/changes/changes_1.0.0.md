@@ -6,9 +6,12 @@ Code name: Enforce stricter error code format
 
 **This is a breaking change:** Before, error codes with more than one module name (e.g. `E-EXA-MOD1-MOD2-42`) where allowed. To unify error codes we limit this now to at most one module name (e.g. `E-EXA-MOD1-42`) as specified in the [spec](https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/doc/requirements.md#verify-error-identifier). Tags can now have at most 10 characters and the severity (`F`, `W`, `E`) is now optional, defaulting to `E`. This allows using error codes like `SQL-1234`. See the ABNF grammar in the [requirement specification](https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/doc/requirements.md#verify-error-identifier).
 
+This release also checks if the value of `highest-index` specified in `error_code_config.yml` is correct.
+
 ## Features
 
 * #27: Added stricter code format validation
+* #30: Added validation for the highest error code index
 
 ## Dependency Updates
 
