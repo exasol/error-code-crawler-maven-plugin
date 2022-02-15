@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 0.8.0, released 2022-02-??
+# error-code-crawler-maven-plugin 0.8.0, released 2022-02-16
 
 Code name: Enforce stricter error code format
 
