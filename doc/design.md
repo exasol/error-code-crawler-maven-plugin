@@ -151,7 +151,7 @@ Needs: impl, utest
 
 `dsn~report-writer~1`
 
-ECM uses the report writer from `error-code-model-java` to write the json report.
+ECM uses the report writer from `error-code-model-java` to write the JSON report.
 
 Needs: impl, itest
 

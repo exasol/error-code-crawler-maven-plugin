@@ -38,7 +38,7 @@ module-short-tag = ALPHA 1*10ALPHANUM
 error-number = 1*5ALPHANUM
 ```
 
-The `severity` is optional and defaults to `F`.
+The `severity` is optional and defaults to `E`.
 
 Covers:
 
