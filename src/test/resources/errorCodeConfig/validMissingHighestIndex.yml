@@ -1,0 +1,4 @@
+error-tags:
+  EXM:
+    packages:
+      - com.exasol.example

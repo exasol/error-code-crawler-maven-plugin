@@ -23,6 +23,15 @@ class ErrorCodeConfigReaderTest {
         copyResourceToTestProject("errorCodeConfig/valid.yml");
         final ErrorCodeConfig read = new ErrorCodeConfigReader(this.tempDir).read();
         assertThat(read.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
+        assertThat(read.getHighestIndexForErrorTag("EXM"), equalTo(6));
+    }
+
+    @Test
+    void testReadFileWithMissingHighestIndexReturnsZero() throws IOException, ErrorCodeConfigException {
+        copyResourceToTestProject("errorCodeConfig/validMissingHighestIndex.yml");
+        final ErrorCodeConfig read = new ErrorCodeConfigReader(this.tempDir).read();
+        assertThat(read.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
+        assertThat(read.getHighestIndexForErrorTag("EXM"), equalTo(0));
     }
 
     @Test
