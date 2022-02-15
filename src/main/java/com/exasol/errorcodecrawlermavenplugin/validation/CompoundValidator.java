@@ -18,7 +18,7 @@ class CompoundValidator implements ErrorMessageDeclarationValidator {
      * 
      * @param validators validators to combine
      */
-    public CompoundValidator(final List<ErrorMessageDeclarationValidator> validators) {
+    CompoundValidator(final List<ErrorMessageDeclarationValidator> validators) {
         this.validators = validators;
     }
 

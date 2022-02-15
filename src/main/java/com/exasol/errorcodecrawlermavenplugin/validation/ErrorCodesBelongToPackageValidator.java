@@ -23,7 +23,7 @@ class ErrorCodesBelongToPackageValidator extends AbstractIndependentErrorMessage
      * 
      * @param config configuration
      */
-    public ErrorCodesBelongToPackageValidator(final ErrorCodeConfig config) {
+    ErrorCodesBelongToPackageValidator(final ErrorCodeConfig config) {
         this.config = config;
     }
 
@@ -45,7 +45,7 @@ class ErrorCodesBelongToPackageValidator extends AbstractIndependentErrorMessage
             }
             return Stream.empty();
         } catch (final ErrorIdentifier.SyntaxException exception) {
-            return Stream.empty();// invalid error codes will are handled by a different validator
+            return Stream.empty();// invalid error codes are handled by a different validator
         }
     }
 
