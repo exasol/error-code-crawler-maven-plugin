@@ -1,11 +1,9 @@
 package com.exasol.errorcodecrawlermavenplugin.validation;
 
-import java.io.File;
-
 import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
- * Format a error code positions for error messages.
+ * Format an error code positions for error messages.
  */
 class PositionFormatter {
 
@@ -20,15 +18,15 @@ class PositionFormatter {
      * @return formatted string
      */
     static String getFormattedPosition(final ErrorMessageDeclaration errorMessageDeclaration) {
-        final String fileName = formatFileName(errorMessageDeclaration);
-        return fileName + ":" + errorMessageDeclaration.getLine();
+        final String filePath = formatFilePath(errorMessageDeclaration);
+        return filePath + ":" + errorMessageDeclaration.getLine();
     }
 
-    private static String formatFileName(final ErrorMessageDeclaration errorMessageDeclaration) {
+    private static String formatFilePath(final ErrorMessageDeclaration errorMessageDeclaration) {
         if (errorMessageDeclaration.getSourceFile() == null || errorMessageDeclaration.getSourceFile().isBlank()) {
             return "UNKNOWN-FILE";
         } else {
-            return new File(errorMessageDeclaration.getSourceFile()).getName();
+            return errorMessageDeclaration.getSourceFile();
         }
     }
 }
