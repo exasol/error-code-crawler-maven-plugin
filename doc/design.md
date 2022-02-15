@@ -78,13 +78,13 @@ Needs: impl, itest
 
 ### Identifier Validator
 
-`dsn~identifier-validator~1`
+`dsn~identifier-validator~2`
 
 The identifier validator checks that the error identifiers have the correct format using a regular expression.
 
 Covers:
 
-* `req~verify-error-identifier-format~1`
+* `req~verify-error-identifier-format~2`
 
 Needs: impl, utest, itest
 

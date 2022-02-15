@@ -93,7 +93,7 @@ class ErrorCodeCrawlerMojoIT {
         verifier.executeGoal("error-code-crawler:verify");
         final String report = Files.readString(this.projectDir.resolve(Path.of("target", "error_code_report.json")));
         assertThat(report, equalTo(// [itest->dsn~report-writer~1]
-                "{\"$schema\":\"https://schemas.exasol.com/error_code_report-0.2.0.json\",\"projectName\":\"project-to-test\",\"projectVersion\":\"1.0.0\",\"errorCodes\":[{\"identifier\":\"E-TEST-1\",\"message\":\"Test message\",\"messagePlaceholders\":[],\"sourceFile\":\"src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java\",\"sourceLine\":10,\"mitigations\":[]}]}"));
+                "{\"$schema\":\"https://schemas.exasol.com/error_code_report-1.0.0.json\",\"projectName\":\"project-to-test\",\"projectVersion\":\"1.0.0\",\"errorCodes\":[{\"identifier\":\"E-TEST-1\",\"message\":\"Test message\",\"messagePlaceholders\":[],\"sourceFile\":\"src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java\",\"sourceLine\":10,\"mitigations\":[]}]}"));
     }
 
     @Test
@@ -141,7 +141,7 @@ class ErrorCodeCrawlerMojoIT {
             "DuplicateErrorCode.java, E-ECM-4", // [itest->dsn~duplication-validator~1]
             "TestWithUndeclaredParameter.java, E-ECM-17", // [itest->dsn~parameters-validator~1]
             "IllegalUnnamedParameter.java, E-ECM-19", // [itest->dsn~empty-parameter-name-validator~1]
-            "InvalidErrorCodeSyntax.java, E-ECMOJ-2",// [itest->dsn~identifier-validator~1]
+            "InvalidErrorCodeSyntax.java, E-ECMOJ-2", // [itest->dsn~identifier-validator~2]
     })
     // [itest->dsn~validator~1]
     void testValidations(final String testFile, final String expectedString) throws IOException {

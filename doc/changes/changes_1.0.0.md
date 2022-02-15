@@ -1,16 +1,20 @@
 # error-code-crawler-maven-plugin 0.8.0, released 2022-02-??
 
-Code name: Validate error code format
+Code name: Enforce stricter error code format
+
+## Summary
+
+**This is a breaking change:** Before, error codes with more than one module name (e.g. `E-EXA-MOD1-MOD2-42`) where allowed. To unify error codes we limit this now to at most one module name (e.g. `E-EXA-MOD1-42`) as specified in the [spec](https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/doc/requirements.md#verify-error-identifier). Tags can now have at most 10 characters and the severity (`F`, `W`, `E`) is now optional, defaulting to `E`. This allows using error codes like `SQL-1234`. See the ABNF grammar in the [requirement specification](https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/doc/requirements.md#verify-error-identifier).
 
 ## Features
 
-* #27: Added validation of the error code format
+* #27: Added stricter code format validation
 
 ## Dependency Updates
 
 ### Compile Dependency Updates
 
-* Updated `com.exasol:error-code-model-java:1.0.0` to `1.1.1`
+* Updated `com.exasol:error-code-model-java:1.0.0` to `2.0.0`
 * Updated `com.exasol:error-reporting-java:0.4.0` to `0.4.1`
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0` to `2.13.1`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0` to `2.13.1`
@@ -30,7 +34,7 @@ Code name: Validate error code format
 
 ### Plugin Dependency Updates
 
-* Updated `com.exasol:error-code-crawler-maven-plugin:0.7.1` to `0.8.0`
+* Updated `com.exasol:error-code-crawler-maven-plugin:0.7.1` to `1.0.0`
 * Updated `com.exasol:project-keeper-maven-plugin:1.3.0` to `1.3.4`
 * Updated `io.github.zlika:reproducible-build-maven-plugin:0.13` to `0.15`
 * Updated `org.apache.maven.plugins:maven-compiler-plugin:3.8.1` to `3.10.0`
@@ -39,4 +43,3 @@ Code name: Validate error code format
 * Updated `org.codehaus.mojo:versions-maven-plugin:2.8.1` to `2.9.0`
 * Updated `org.itsallcode:openfasttrace-maven-plugin:1.2.0` to `1.4.0`
 * Updated `org.sonatype.ossindex.maven:ossindex-maven-plugin:3.1.0` to `3.2.0`
-* Updated `org.sonatype.plugins:nexus-staging-maven-plugin:1.6.8` to `1.6.10`

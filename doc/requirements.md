@@ -26,21 +26,19 @@ Needs: req
 
 #### Verify Error Identifier
 
-`req~verify-error-identifier-format~1`
+`req~verify-error-identifier-format~2`
 
 ECM checks that the error identifier matches the following [ABNF](https://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_form):
 
 ```abnf
-error-identifier = severity "-" project-short-tag [ "-" module-short-tag ] "-" error-number
- 
+error-identifier = [ severity "-" ] project-short-tag [ "-" module-short-tag ] "-" error-number
 severity = ( "F" / "E" / "W" )
- 
-project-short-tag = ALPHA 1*4ALPHANUM
- 
-module-short-tag = ALPHA 1*4ALPHANUM
- 
+project-short-tag = ALPHA 1*10ALPHANUM
+module-short-tag = ALPHA 1*10ALPHANUM
 error-number = 1*5ALPHANUM
 ```
+
+The `severity` is optional and defaults to `F`.
 
 Covers:
 
