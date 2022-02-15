@@ -41,12 +41,11 @@ class HighestIndexValidator extends AbstractIndependentErrorMessageDeclarationVa
         }
         return Stream.of(new Finding(ExaError.messageBuilder("E-ECM-14")
                 .message("Highest index for tag {{tag}} configured in " + ErrorCodeConfigReader.CONFIG_NAME
-                        + " is {{highest index|uq}} but code {{code|uq}} in {{source file|uq}}:{{line}} is higher")
+                        + " is {{highest index|uq}} but code {{code|uq}} in {{source position|uq}} is higher")
                 .parameter("tag", identifier.getTag()) //
                 .parameter("highest index", highestIndex) //
                 .parameter("code", identifier.toString()) //
-                .parameter("source file", declaration.getSourceFile()) //
-                .parameter("line", declaration.getLine()) //
+                .parameter("source position", PositionFormatter.getFormattedPosition(declaration)) //
                 .mitigation("Update highest index in " + ErrorCodeConfigReader.CONFIG_NAME) //
                 .toString()));
     }
