@@ -474,6 +474,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
+                <!-- Version 1.6.10 is broken: https://issues.sonatype.org/projects/NEXUS/issues/NEXUS-31214 -->
                 <version>1.6.8</version>
                 <configuration>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
