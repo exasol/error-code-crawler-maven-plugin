@@ -9,6 +9,7 @@ Code name: Enforce stricter error code format
 ## Features
 
 * #27: Added stricter code format validation
+* #39: Mentioned location of offending short tag in validation error definitions
 
 ## Dependency Updates
 

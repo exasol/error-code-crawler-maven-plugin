@@ -36,7 +36,7 @@ class ErrorCodesBelongToPackageValidator extends AbstractIndependentErrorMessage
             final String tag = errorIdentifier.getTag();
             final String declaringPackage = errorMessageDeclaration.getDeclaringPackage();
             if (!this.config.hasErrorTag(tag)) {
-                return getUndeclaredTagFinding(tag, declaringPackage);
+                return getUndeclaredTagFinding(tag, declaringPackage, errorMessageDeclaration.getSourceFile(), errorMessageDeclaration.getLine());
             }
             final Optional<String> requiredTag = this.config.getErrorTagForPackage(declaringPackage);
             if (requiredTag.isEmpty() || !tag.equalsIgnoreCase(requiredTag.get())) {
@@ -63,10 +63,12 @@ class ErrorCodesBelongToPackageValidator extends AbstractIndependentErrorMessage
                 .toString()));
     }
 
-    private Stream<Finding> getUndeclaredTagFinding(final String tag, final String declaringPackage) {
+    private Stream<Finding> getUndeclaredTagFinding(final String tag, final String declaringPackage, String sourceFile, int line) {
         return Stream.of(new Finding(ExaError.messageBuilder("E-ECM-12")
-                .message("The error tag {{tag}} was not declared in the " + ErrorCodeConfigReader.CONFIG_NAME + ".")
+                .message("Error tag {{tag}} was found in {{source file|uq}}:{{line|uq}} but is not declared in file " + ErrorCodeConfigReader.CONFIG_NAME + ".")
                 .parameter("tag", tag)
+                .parameter("source file", sourceFile)
+                .parameter("line", line)
                 .mitigation("Check if it is just a typo and if not add an entry for {{tag}} and package {{package}}.")
                 .parameter("package", declaringPackage).toString()));
     }
