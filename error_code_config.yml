@@ -2,4 +2,4 @@ error-tags:
   ECM:
     packages:
       - com.exasol.errorcodecrawlermavenplugin
-    highest-index: 14
+    highest-index: 54
