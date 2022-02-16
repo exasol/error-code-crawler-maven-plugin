@@ -17,7 +17,7 @@ public class ErrorMessageDeclarationValidatorFactory {
      * @param config configuration
      */
     public ErrorMessageDeclarationValidator getValidator(final ErrorCodeConfig config) {
-        return new CompoundValidator(List.of(new ErrorIdentifierValidator(), new DuplicatesValidator(),
+        return new CompoundValidator(List.of(new ErrorIdentifierValidator(), new DuplicatesValidator(config),
                 new ErrorCodesBelongToPackageValidator(config), new ParametersValidator(),
                 new EmptyParameterNameValidator(), new HighestIndexValidator(config)));
     }
