@@ -53,7 +53,7 @@ class HighestIndexValidator extends AbstractIndependentErrorMessageDeclarationVa
     private Optional<ErrorIdentifier> parseIdentifier(final String identfier) {
         try {
             return Optional.of(ErrorIdentifier.parse(identfier));
-        } catch (final SyntaxException e) {
+        } catch (final SyntaxException exception) {
             return Optional.empty();
         }
     }
