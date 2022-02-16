@@ -6,7 +6,7 @@ The Error Code Crawler Maven Plugin (ECM) is a tool that analyzes invocations of
 
 * `Error Message Declaration`: A Java statement that builds an error message and typically throws an exception:
   Example:
-  ```
+  ```java
   ExaError.messageBuilder("E-TEST-1").message("Failed to start database.").toString();
   ```
 * `Error Identifier`: Each error code has a unique identifier. Example: `E-Test-1`. Also known as `Error Code`. An Error Identifier consists of:
@@ -26,21 +26,19 @@ Needs: req
 
 #### Verify Error Identifier
 
-`req~verify-error-identifier-format~1`
+`req~verify-error-identifier-format~2`
 
 ECM checks that the error identifier matches the following [ABNF](https://en.wikipedia.org/wiki/Augmented_Backus%E2%80%93Naur_form):
 
 ```abnf
-error-identifier = severity "-" project-short-tag [ "-" module-short-tag ] "-" error-number
- 
+error-identifier = [ severity "-" ] project-short-tag [ "-" module-short-tag ] "-" error-number
 severity = ( "F" / "E" / "W" )
- 
-project-short-tag = ALPHA 1*4ALPHANUM
- 
-module-short-tag = ALPHA 1*4ALPHANUM
- 
+project-short-tag = ALPHA 1*10ALPHANUM
+module-short-tag = ALPHA 1*10ALPHANUM
 error-number = 1*5ALPHANUM
 ```
+
+The `severity` is optional and defaults to `E`.
 
 Covers:
 
@@ -107,7 +105,7 @@ ExaError.messageBuilder("E-TEST-1").message("Unknown parameter: {{parameter name
 Valid Example:
 
 ```java
-ExaError.messageBuilder("E-TEST-1").message("Unknown parameter: {{parameter name}}",value).toString();
+ExaError.messageBuilder("E-TEST-1").message("Unknown parameter: {{parameter name}}", value).toString();
 ```
 
 Covers:

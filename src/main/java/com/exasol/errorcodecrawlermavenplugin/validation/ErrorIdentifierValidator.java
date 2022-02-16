@@ -9,7 +9,7 @@ import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 /**
  * This {@link ErrorMessageDeclarationValidator} validates that the error identifier has a valid format.
  */
-//[impl->dsn~identifier-validator~1]
+//[impl->dsn~identifier-validator~2]
 public class ErrorIdentifierValidator extends AbstractIndependentErrorMessageDeclarationValidator {
     @Override
     protected Stream<Finding> validateSingleErrorMessageDeclaration(
