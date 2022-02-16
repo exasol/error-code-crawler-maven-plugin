@@ -50,7 +50,7 @@
 | [org.sonatype.ossindex.maven:ossindex-maven-plugin][65] | [ASL2][9]                                     |
 | [Apache Maven Enforcer Plugin][67]                      | [Apache License, Version 2.0][1]              |
 | [Project keeper maven plugin][69]                       | [MIT][12]                                     |
-| [Maven Deploy Plugin][71]                               | [The Apache Software License, Version 2.0][9] |
+| [Apache Maven Deploy Plugin][71]                        | [Apache License, Version 2.0][1]              |
 | [Nexus Staging Maven Plugin][73]                        | [Eclipse Public License][38]                  |
 | [error-code-crawler-maven-plugin][75]                   | [MIT][12]                                     |
 | [Reproducible Build Maven Plugin][77]                   | [Apache 2.0][9]                               |
@@ -79,6 +79,7 @@
 [79]: https://github.com/itsallcode/openfasttrace-maven-plugin
 [37]: http://junit.org
 [44]: https://www.eclipse.org/legal/epl-2.0/
+[71]: https://maven.apache.org/plugins/maven-deploy-plugin/
 [49]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
 [25]: https://maven.apache.org/ref/3.8.4/maven-artifact/
 [77]: http://zlika.github.io/reproducible-build-maven-plugin
@@ -111,7 +112,6 @@
 [63]: https://maven.apache.org/plugins/maven-gpg-plugin/
 [10]: http://spoon.gforge.inria.fr/
 [41]: https://github.com/exasol/maven-plugin-integration-testing
-[71]: http://maven.apache.org/plugins/maven-deploy-plugin/
 [89]: http://maven.apache.org/plugins/maven-site-plugin/
 [61]: https://maven.apache.org/plugins/maven-javadoc-plugin/
 [75]: https://github.com/exasol/error-code-crawler-maven-plugin

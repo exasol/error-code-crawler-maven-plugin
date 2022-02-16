@@ -40,6 +40,7 @@ Code name: Enforce stricter error code format
 * Updated `com.exasol:project-keeper-maven-plugin:1.3.0` to `1.3.4`
 * Updated `io.github.zlika:reproducible-build-maven-plugin:0.13` to `0.15`
 * Updated `org.apache.maven.plugins:maven-compiler-plugin:3.8.1` to `3.10.0`
+* Updated `org.apache.maven.plugins:maven-deploy-plugin:2.7` to `3.0.0-M2`
 * Updated `org.apache.maven.plugins:maven-javadoc-plugin:3.3.1` to `3.3.2`
 * Updated `org.apache.maven.plugins:maven-plugin-plugin:3.6.1` to `3.6.4`
 * Updated `org.codehaus.mojo:versions-maven-plugin:2.8.1` to `2.9.0`
