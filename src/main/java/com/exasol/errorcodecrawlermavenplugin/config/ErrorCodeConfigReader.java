@@ -1,10 +1,13 @@
 package com.exasol.errorcodecrawlermavenplugin.config;
 
 import static com.exasol.errorreporting.ExaError.messageBuilder;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
@@ -15,7 +18,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
  */
 //[impl->dsn~config-parser~1]
 public class ErrorCodeConfigReader {
-    /** Name of the error code configuration file.  */
+    /** Name of the error code configuration file. */
     public static final String CONFIG_NAME = "error_code_config.yml";
     private final File errorConfigFile;
 
@@ -43,6 +46,25 @@ public class ErrorCodeConfigReader {
      * @throws ErrorCodeConfigException if the config has an invalid syntax
      */
     public ErrorCodeConfig read() throws ErrorCodeConfigException {
+        final ErrorCodeConfig config = readYamlFile();
+        validateHighestIndex(config);
+        return config;
+    }
+
+    private void validateHighestIndex(final ErrorCodeConfig config) throws ErrorCodeConfigException {
+        final List<String> tagsWithoutHighestIndex = config.getErrorTags().stream()
+                .filter(tag -> config.getHighestIndexForErrorTag(tag) == 0) //
+                .sorted().collect(toList());
+        if (!tagsWithoutHighestIndex.isEmpty()) {
+            throw new ErrorCodeConfigException(messageBuilder("E-ECM-56")
+                    .message(
+                            "Highest index is zero or missing in " + CONFIG_NAME + " for error tags {{error tags|uq}}.")
+                    .parameter("error tags", tagsWithoutHighestIndex.stream().collect(joining(", "))) //
+                    .toString());
+        }
+    }
+
+    private ErrorCodeConfig readYamlFile() throws ErrorCodeConfigException {
         try {
             final var mapper = new ObjectMapper(new YAMLFactory());
             mapper.findAndRegisterModules();

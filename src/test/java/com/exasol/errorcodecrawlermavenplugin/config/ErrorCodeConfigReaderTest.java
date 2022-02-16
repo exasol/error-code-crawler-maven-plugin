@@ -26,21 +26,64 @@ class ErrorCodeConfigReaderTest {
                 + "    packages:\n" //
                 + "      - com.exasol.example\n" //
                 + "    highest-index: 6");
-        final ErrorCodeConfig read = new ErrorCodeConfigReader(this.tempDir).read();
-        assertThat(read.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
-        assertThat(read.getHighestIndexForErrorTag("EXM"), equalTo(6));
+        final ErrorCodeConfig config = this.readConfig();
+        assertThat(config.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
+        assertThat(config.getHighestIndexForErrorTag("EXM"), equalTo(6));
     }
 
     @Test
-    void testReadFileWithMissingHighestIndexReturnsZero() throws IOException, ErrorCodeConfigException {
+    void testReadMultiplePackages() throws IOException, ErrorCodeConfigException {
+        writeConfigFileToTestProject("error-tags:\n" //
+                + "  EXM:\n" //
+                + "    packages:\n" //
+                + "      - com.exasol.example.a\n" //
+                + "      - com.exasol.example.b\n" //
+                + "    highest-index: 6");
+        final ErrorCodeConfig config = this.readConfig();
+        assertThat(config.getPackagesForErrorTag("EXM"),
+                containsInAnyOrder("com.exasol.example.a", "com.exasol.example.b"));
+        assertThat(config.getHighestIndexForErrorTag("EXM"), equalTo(6));
+    }
+
+    @Test
+    void testReadNoPackages() throws IOException, ErrorCodeConfigException {
+        writeConfigFileToTestProject("error-tags:\n" //
+                + "  EXM:\n" //
+                + "    packages:\n" //
+                + "    highest-index: 6");
+        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, this::readConfig);
+        assertThat(exception.getMessage(),
+                equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
+        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-55: No packages defined for error code 'EXM'."));
+    }
+
+    @Test
+    void testReadMultipleTags() throws IOException, ErrorCodeConfigException {
+        writeConfigFileToTestProject("error-tags:\n" //
+                + "  EXMA:\n" //
+                + "    packages:\n" //
+                + "      - com.exasol.example.a\n" //
+                + "    highest-index: 6\n" //
+                + "  EXMB:\n" //
+                + "    packages:\n" //
+                + "      - com.exasol.example.b\n" //
+                + "    highest-index: 7");
+        final ErrorCodeConfig config = this.readConfig();
+        assertThat(config.getPackagesForErrorTag("EXMA"), containsInAnyOrder("com.exasol.example.a"));
+        assertThat(config.getHighestIndexForErrorTag("EXMA"), equalTo(6));
+        assertThat(config.getPackagesForErrorTag("EXMB"), containsInAnyOrder("com.exasol.example.b"));
+        assertThat(config.getHighestIndexForErrorTag("EXMB"), equalTo(7));
+    }
+
+    @Test
+    void testReadFileWithMissingHighestIndexFails() throws IOException, ErrorCodeConfigException {
         writeConfigFileToTestProject("error-tags:\n"//
                 + "  EXM:\n" //
                 + "    packages:\n" //
-                + "      - com.exasol.example\n" //
-                + "");
-        final ErrorCodeConfig read = new ErrorCodeConfigReader(this.tempDir).read();
-        assertThat(read.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
-        assertThat(read.getHighestIndexForErrorTag("EXM"), equalTo(0));
+                + "      - com.exasol.example");
+        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, this::readConfig);
+        assertThat(exception.getMessage(),
+                equalTo("E-ECM-56: Highest index is zero or missing in " + CONFIG_NAME + " for error tags EXM."));
     }
 
     @Test
@@ -54,8 +97,7 @@ class ErrorCodeConfigReaderTest {
     @Test
     void testInvalidRoot() throws IOException, ErrorCodeConfigException {
         writeConfigFileToTestProject("unknown: 123");
-        final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
-        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
+        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, this::readConfig);
         assertThat(exception.getMessage(),
                 equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
         assertThat(exception.getCause().getMessage(), equalTo(
@@ -65,12 +107,15 @@ class ErrorCodeConfigReaderTest {
     @Test
     void testMissingTags() throws IOException, ErrorCodeConfigException {
         writeConfigFileToTestProject("error-tags:");
-        final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
-        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
+        final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, this::readConfig);
         assertThat(exception.getMessage(),
                 equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
         assertThat(exception.getCause().getMessage(), equalTo(
                 "E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
+    }
+
+    private ErrorCodeConfig readConfig() throws ErrorCodeConfigException {
+        return new ErrorCodeConfigReader(this.tempDir).read();
     }
 
     private void writeConfigFileToTestProject(final String content) throws IOException {

@@ -37,7 +37,7 @@ class HighestIndexValidator extends AbstractIndependentErrorMessageDeclarationVa
         }
         final int highestIndex = this.config.getHighestIndexForErrorTag(identifier.getTag());
         if (highestIndex == 0) {
-            // highest index not configured
+            // missing highest index is handled by config reader
             return Stream.empty();
         }
         if (highestIndex >= identifier.getIndex()) {

@@ -39,6 +39,11 @@ public class ErrorCodeConfig {
     private Map<String, String> inverseMapping(final Map<String, SingleErrorCodeConfig> errorTags) {
         final Map<String, String> inverseMapping = new HashMap<>();
         for (final var entry : errorTags.entrySet()) {
+            if (entry.getValue().getPackages() == null) {
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-ECM-55")
+                        .message("No packages defined for error code {{error code}}.")
+                        .parameter("error code", entry.getKey()).toString());
+            }
             for (final String packageName : entry.getValue().getPackages()) {
                 verifyThatCodeIsNotUsedTwice(inverseMapping, entry, packageName);
                 inverseMapping.put(packageName, entry.getKey());
@@ -55,6 +60,15 @@ public class ErrorCodeConfig {
                     .parameter("package", packageName).parameter("first", inverseMapping.get(packageName))
                     .parameter("second", entry.getKey()).toString());
         }
+    }
+
+    /**
+     * Get all configured error tags.
+     *
+     * @return all error tags.
+     */
+    Set<String> getErrorTags() {
+        return this.errorTags.keySet();
     }
 
     /**
