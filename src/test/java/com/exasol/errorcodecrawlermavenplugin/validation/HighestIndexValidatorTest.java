@@ -25,7 +25,7 @@ class HighestIndexValidatorTest {
     void codeHasHigherIndex() {
         final List<Finding> findings = validate(config("EXA", 5), declaration("E-EXA-6"));
         assertFindings(findings,
-                "E-ECM-54: Highest index for tag 'EXA' configured in error_code_config.yml is 5 but code E-EXA-6 in file.java:42 is higher. Update highest index in error_code_config.yml.");
+                "E-ECM-54: Highest index for tag 'EXA' configured in error_code_config.yml is 5 but code E-EXA-6 in src/file.java:42 is higher. Update highest index in error_code_config.yml.");
     }
 
     @Test
