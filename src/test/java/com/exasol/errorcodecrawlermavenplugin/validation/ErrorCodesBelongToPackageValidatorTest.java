@@ -56,7 +56,7 @@ class ErrorCodesBelongToPackageValidatorTest {
     void testUnknownTag() {
         final List<ErrorMessageDeclaration> errors = List.of(ErrorMessageDeclaration.builder().identifier("E-UNKNOWN-1")
                 .declaringPackage(EXAMPLE_PACKAGE).setPosition("src/test/Test.java", 1).build());
-        assertValidationHasFindingsWithMessage(errors, "E-ECM-12: The error tag 'UNKNOWN' was not declared in the "
+        assertValidationHasFindingsWithMessage(errors, "E-ECM-12: Error tag 'UNKNOWN' was found in src/test/Test.java:1 but is not declared in file "
                 + CONFIG_NAME
                 + ". Check if it is just a typo and if not add an entry for 'UNKNOWN' and package 'com.example'.");
     }

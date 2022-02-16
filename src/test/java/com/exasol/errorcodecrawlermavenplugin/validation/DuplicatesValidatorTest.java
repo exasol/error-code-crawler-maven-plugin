@@ -42,7 +42,7 @@ class DuplicatesValidatorTest {
                 ErrorMessageDeclaration.builder().identifier(E_TEST_1).declaringPackage(EXAMPLE_PACKAGE)
                         .setPosition("src/test/Test.java", 5).build());
         assertValidationHasFindingsWithMessage(errors,
-                "E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: Test.java:1, Test.java:5.");
+                "E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: src/test/Test.java:1, src/test/Test.java:5.");
     }
 
     @Test
@@ -53,6 +53,6 @@ class DuplicatesValidatorTest {
                 ErrorMessageDeclaration.builder().identifier("F-TEST-1").declaringPackage(EXAMPLE_PACKAGE)
                         .setPosition("src/test/Test.java", 5).build());
         assertValidationHasFindingsWithMessage(errors,
-                "E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: Test.java:1, Test.java:5.");
+                "E-ECM-4: Found duplicate error code: 'TEST-1' was declared multiple times: src/test/Test.java:1, src/test/Test.java:5.");
     }
 }
