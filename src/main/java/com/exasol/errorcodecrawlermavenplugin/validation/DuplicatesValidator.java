@@ -1,6 +1,5 @@
 package com.exasol.errorcodecrawlermavenplugin.validation;
 
-import java.io.File;
 import java.util.*;
 
 import com.exasol.errorcodecrawlermavenplugin.Finding;
@@ -27,10 +26,10 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
                 final var errorCode = ErrorIdentifier.parse(errorMessageDeclaration.getIdentifier());
                 final String errorId = errorCode.getTag() + "-" + errorCode.getIndex();
                 if (positionsPerCode.containsKey(errorId)) {
-                    positionsPerCode.get(errorId).add(getSourceReference(errorMessageDeclaration));
+                    positionsPerCode.get(errorId).add(PositionFormatter.getFormattedPosition(errorMessageDeclaration));
                 } else {
                     positionsPerCode.put(errorId,
-                            new LinkedList<>(List.of(getSourceReference(errorMessageDeclaration))));
+                            new LinkedList<>(List.of(PositionFormatter.getFormattedPosition(errorMessageDeclaration))));
                 }
             } catch (final ErrorIdentifier.SyntaxException exception) {
                 // ignore. Will be reported by another validator
@@ -50,9 +49,5 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
             }
         }
         return findings;
-    }
-
-    private String getSourceReference(final ErrorMessageDeclaration errorMessageDeclaration) {
-        return new File(errorMessageDeclaration.getSourceFile()).getName() + ":" + errorMessageDeclaration.getLine();
     }
 }
