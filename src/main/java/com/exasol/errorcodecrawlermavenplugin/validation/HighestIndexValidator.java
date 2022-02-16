@@ -11,6 +11,10 @@ import com.exsol.errorcodemodel.ErrorIdentifier;
 import com.exsol.errorcodemodel.ErrorIdentifier.SyntaxException;
 import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
+/**
+ * This {@link ErrorMessageDeclarationValidator} verifies that the {@code highest-index} configured in
+ * {@code error_code_config.yml} is correct and no error code uses an index higher than this.
+ */
 class HighestIndexValidator extends AbstractIndependentErrorMessageDeclarationValidator {
     private final ErrorCodeConfig config;
 

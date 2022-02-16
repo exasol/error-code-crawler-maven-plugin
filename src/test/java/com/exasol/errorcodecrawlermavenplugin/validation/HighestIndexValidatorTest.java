@@ -18,14 +18,14 @@ import com.exasol.errorcodecrawlermavenplugin.config.SingleErrorCodeConfig;
 import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 class HighestIndexValidatorTest {
-    private static final String SOURCE_FILE = "file.java";
+    private static final String SOURCE_FILE = "src/file.java";
     private static final int SOURCE_LINE = 42;
 
     @Test
     void codeHasHigherIndex() {
         final List<Finding> findings = validate(config("EXA", 5), declaration("E-EXA-6"));
         assertFindings(findings,
-                "E-ECM-14: Highest index for tag 'EXA' configured in error_code_config.yml is 5 but code E-EXA-6 in file.java:42 is higher. Update highest index in error_code_config.yml.");
+                "E-ECM-54: Highest index for tag 'EXA' configured in error_code_config.yml is 5 but code E-EXA-6 in file.java:42 is higher. Update highest index in error_code_config.yml.");
     }
 
     @Test

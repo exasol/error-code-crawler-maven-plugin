@@ -7,8 +7,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.util.Objects;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -20,7 +21,11 @@ class ErrorCodeConfigReaderTest {
 
     @Test
     void testRead() throws IOException, ErrorCodeConfigException {
-        copyResourceToTestProject("errorCodeConfig/valid.yml");
+        writeConfigFileToTestProject("error-tags:\n" //
+                + "  EXM:\n" //
+                + "    packages:\n" //
+                + "      - com.exasol.example\n" //
+                + "    highest-index: 6");
         final ErrorCodeConfig read = new ErrorCodeConfigReader(this.tempDir).read();
         assertThat(read.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
         assertThat(read.getHighestIndexForErrorTag("EXM"), equalTo(6));
@@ -28,7 +33,11 @@ class ErrorCodeConfigReaderTest {
 
     @Test
     void testReadFileWithMissingHighestIndexReturnsZero() throws IOException, ErrorCodeConfigException {
-        copyResourceToTestProject("errorCodeConfig/validMissingHighestIndex.yml");
+        writeConfigFileToTestProject("error-tags:\n"//
+                + "  EXM:\n" //
+                + "    packages:\n" //
+                + "      - com.exasol.example\n" //
+                + "");
         final ErrorCodeConfig read = new ErrorCodeConfigReader(this.tempDir).read();
         assertThat(read.getPackagesForErrorTag("EXM"), containsInAnyOrder("com.exasol.example"));
         assertThat(read.getHighestIndexForErrorTag("EXM"), equalTo(0));
@@ -44,26 +53,27 @@ class ErrorCodeConfigReaderTest {
 
     @Test
     void testInvalidRoot() throws IOException, ErrorCodeConfigException {
-        copyResourceToTestProject("errorCodeConfig/invalidRoot.yml");
+        writeConfigFileToTestProject("unknown: 123");
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
-        assertThat(exception.getMessage(), equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
-        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
+        assertThat(exception.getMessage(),
+                equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
+        assertThat(exception.getCause().getMessage(), equalTo(
+                "E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
     }
 
     @Test
     void testMissingTags() throws IOException, ErrorCodeConfigException {
-        copyResourceToTestProject("errorCodeConfig/missingTags.yml");
+        writeConfigFileToTestProject("error-tags:");
         final ErrorCodeConfigReader reader = new ErrorCodeConfigReader(this.tempDir);
         final ErrorCodeConfigException exception = assertThrows(ErrorCodeConfigException.class, reader::read);
-        assertThat(exception.getMessage(), equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
-        assertThat(exception.getCause().getMessage(), equalTo("E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
+        assertThat(exception.getMessage(),
+                equalTo("E-ECM-53: Failed to read projects " + CONFIG_NAME + " because of invalid file format."));
+        assertThat(exception.getCause().getMessage(), equalTo(
+                "E-ECM-52: Invalid error_code_config.yml. Missing error tags. Add error tags to project configuration."));
     }
 
-    private void copyResourceToTestProject(final String resourceName) throws IOException {
-        Files.copy(
-                Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(resourceName),
-                        "Resource '" + resourceName + "' not found"),
-                this.tempDir.resolve(CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
+    private void writeConfigFileToTestProject(final String content) throws IOException {
+        Files.write(this.tempDir.resolve(CONFIG_NAME), content.getBytes(StandardCharsets.UTF_8));
     }
 }
