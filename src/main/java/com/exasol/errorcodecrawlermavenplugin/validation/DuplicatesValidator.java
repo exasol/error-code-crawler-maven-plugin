@@ -57,7 +57,12 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
                 final String locations = declaration.getValue().stream() //
                         .map(PositionFormatter::getFormattedPosition) //
                         .collect(joining(", "));
-                final String errorTag = parseIdentifier(declaration.getValue().get(0)).getTag();
+                final Optional<ErrorIdentifier> identifier = parseIdentifier(declaration.getValue().get(0));
+                if (identifier.isEmpty()) {
+                    // Ignore. Will be reported by another validator
+                    continue;
+                }
+                final String errorTag = identifier.get().getTag();
                 final int nextAvailableIndex = this.config.getHighestIndexForErrorTag(errorTag) + 1;
                 findings.add(new Finding(ExaError.messageBuilder("E-ECM-4").message(
                         "Found duplicate error code: {{errorCode}} was declared multiple times: {{declarations|uq}}.")
@@ -72,15 +77,11 @@ class DuplicatesValidator implements ErrorMessageDeclarationValidator {
         return findings;
     }
 
-    private ErrorIdentifier parseIdentifier(final ErrorMessageDeclaration errorMessageDeclaration) {
+    private Optional<ErrorIdentifier> parseIdentifier(final ErrorMessageDeclaration errorMessageDeclaration) {
         try {
-            return ErrorIdentifier.parse(errorMessageDeclaration.getIdentifier());
+            return Optional.of(ErrorIdentifier.parse(errorMessageDeclaration.getIdentifier()));
         } catch (final SyntaxException exception) {
-            throw new IllegalStateException(
-                    ExaError.messageBuilder("F-ECM-57").message("Error parsing identifier {{identifier}}")
-                            .parameter("identifier", errorMessageDeclaration.getIdentifier()) //
-                            .ticketMitigation().toString(),
-                    exception);
+            return Optional.empty();
         }
     }
 }
