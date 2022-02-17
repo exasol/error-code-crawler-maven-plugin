@@ -32,7 +32,7 @@ This release also checks if the value of `highest-index` specified in `error_cod
 
 ### Test Dependency Updates
 
-* Updated `com.exasol:maven-plugin-integration-testing:1.0.0` to `1.1.0`
+* Updated `com.exasol:maven-plugin-integration-testing:1.0.0` to `1.1.1`
 * Updated `com.exasol:maven-project-version-getter:1.0.0` to `1.1.0`
 * Updated `nl.jqno.equalsverifier:equalsverifier:3.7.1` to `3.9`
 * Updated `org.junit.jupiter:junit-jupiter-engine:5.8.1` to `5.8.2`
