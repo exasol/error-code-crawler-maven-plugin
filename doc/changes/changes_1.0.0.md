@@ -6,13 +6,14 @@ Code name: Enforce stricter error code format
 
 **This is a breaking change:** Before, error codes with more than one module name (e.g. `E-EXA-MOD1-MOD2-42`) where allowed. To unify error codes we limit this now to at most one module name (e.g. `E-EXA-MOD1-42`) as specified in the [spec](https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/doc/requirements.md#verify-error-identifier). Tags can now have at most 10 characters and the severity (`F`, `W`, `E`) is now optional, defaulting to `E`. This allows using error codes like `SQL-1234`. See the ABNF grammar in the [requirement specification](https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/doc/requirements.md#verify-error-identifier).
 
-This release also checks if the value of `highest-index` specified in `error_code_config.yml` is correct.
+This release also checks if the value of `highest-index` specified in `error_code_config.yml` is correct and proposes the next available index in case of duplicate codes.
 
 ## Features
 
 * #27: Added stricter code format validation
 * #30: Added validation for the highest error code index
 * #39: Mentioned location of offending short tag in validation error definitions
+* #66: Added proposal for next available error code index in case of duplicate codes
 
 ## Dependency Updates
 
@@ -31,7 +32,7 @@ This release also checks if the value of `highest-index` specified in `error_cod
 
 ### Test Dependency Updates
 
-* Updated `com.exasol:maven-plugin-integration-testing:1.0.0` to `1.1.0`
+* Updated `com.exasol:maven-plugin-integration-testing:1.0.0` to `1.1.1`
 * Updated `com.exasol:maven-project-version-getter:1.0.0` to `1.1.0`
 * Updated `nl.jqno.equalsverifier:equalsverifier:3.7.1` to `3.9`
 * Updated `org.junit.jupiter:junit-jupiter-engine:5.8.1` to `5.8.2`
