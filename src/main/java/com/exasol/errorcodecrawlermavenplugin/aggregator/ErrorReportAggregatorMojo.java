@@ -44,9 +44,8 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
             try {
                 Files.createDirectories(targetDir);
             } catch (final IOException exception) {
-                throw new IllegalStateException(
-                        ExaError.messageBuilder("E-ECM-36")
-                                .message("Failed to create directory {{path}} for merged report.").toString(),
+                throw new IllegalStateException(ExaError.messageBuilder("E-ECM-36")
+                        .message("Failed to create directory {{path}} for merged report.", targetDir).toString(),
                         exception);
             }
         }

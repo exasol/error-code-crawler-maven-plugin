@@ -26,7 +26,8 @@ public class ErrorCodeConfig {
         this.packageToErrorCodeMapping = inverseMapping(errorTags);
     }
 
-    private static Map<String, SingleErrorCodeConfig> readErrorTags(final Map<String, SingleErrorCodeConfig> errorTags) {
+    private static Map<String, SingleErrorCodeConfig> readErrorTags(
+            final Map<String, SingleErrorCodeConfig> errorTags) {
         if (errorTags == null) {
             throw new IllegalArgumentException(messageBuilder("E-ECM-52")
                     .message("Invalid " + ErrorCodeConfigReader.CONFIG_NAME + ". Missing error tags.")
@@ -108,7 +109,11 @@ public class ErrorCodeConfig {
      * @return highest index (according to the config file)
      */
     public int getHighestIndexForErrorTag(final String errorTag) {
-        return this.errorTags.get(errorTag).getHighestIndex();
+        if (!this.errorTags.containsKey(errorTag)) {
+            return -1;
+        } else {
+            return this.errorTags.get(errorTag).getHighestIndex();
+        }
     }
 
     @Override
