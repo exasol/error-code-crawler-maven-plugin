@@ -2,6 +2,7 @@ package com.exasol.errorcodecrawlermavenplugin.aggregator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
@@ -44,8 +45,8 @@ class ErrorReportAggregatorMojoTest {
         writeReport(Path.of("nested1/target"), ERROR_TEST_1);
         writeReport(Path.of("nested2/target"), ERROR_TEST_1);
         final IllegalStateException exception = assertThrows(IllegalStateException.class, this::runAggregatorMojo);
-        assertThat(exception.getMessage(), equalTo(
-                "E-ECM-35: The error tag 'TEST' is used in two nested reportPaths nested1/target/error_code_report.json and nested2/target/error_code_report.json. Please make sure that the different subprojects use different tags."));
+        assertThat(exception.getMessage(),
+                startsWith("E-ECM-35: The error tag 'TEST' is used in two nested reportPaths"));
     }
 
     @Test
