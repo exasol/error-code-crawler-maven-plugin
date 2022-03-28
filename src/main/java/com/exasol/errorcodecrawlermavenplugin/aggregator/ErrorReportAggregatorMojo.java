@@ -17,6 +17,10 @@ import com.exsol.errorcodemodel.*;
 
 import lombok.Data;
 
+/**
+ * This class is the entrypoint for the aggregate phase. It collects the reports from multiple submodules and merges it
+ * into one.
+ */
 @Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorReportAggregatorMojo extends AbstractMojo {
     private static final String DESTINATION_PATH = "target/error_code_report.json";
