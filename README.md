@@ -1,7 +1,7 @@
 # Error Code Crawler
 
 [![Build Status](https://github.com/exasol/error-code-crawler-maven-plugin/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/error-code-crawler-maven-plugin/actions/workflows/ci-build.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/com.exasol/error-code-crawler-maven-plugin)](https://search.maven.org/artifact/com.exasol/error-code-crawler-maven-plugin)
+[![Maven Central – error-code-crawler-maven-plugin](https://img.shields.io/maven-central/v/com.exasol/error-code-crawler-maven-plugin)](https://search.maven.org/artifact/com.exasol/error-code-crawler-maven-plugin)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aerror-code-crawler-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Aerror-code-crawler-maven-plugin)
 

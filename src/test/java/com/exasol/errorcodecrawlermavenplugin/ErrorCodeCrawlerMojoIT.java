@@ -35,7 +35,7 @@ class ErrorCodeCrawlerMojoIT {
     private static final String CURRENT_VERSION = getCurrentProjectVersion();
     private static final Path PLUGIN_JAR = Path.of("target",
             "error-code-crawler-maven-plugin-" + CURRENT_VERSION + ".jar");
-    private static final Path ERROR_CODE_CRAWLER_POM = Path.of("pom.xml");
+    private static final Path ERROR_CODE_CRAWLER_POM = Path.of(".flattened-pom.xml");
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
 
