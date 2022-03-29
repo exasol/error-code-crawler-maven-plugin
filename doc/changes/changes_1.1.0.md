@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 1.1.0, released 2022-??-??
+# error-code-crawler-maven-plugin 1.1.0, released 2022-03-29
 
 Code name: Aggregation
 
