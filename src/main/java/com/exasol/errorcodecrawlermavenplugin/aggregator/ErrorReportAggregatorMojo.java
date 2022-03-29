@@ -18,7 +18,7 @@ import com.exsol.errorcodemodel.*;
 import lombok.Data;
 
 /**
- * This class is the entrypoint for the aggregate phase. It collects the reports from multiple submodules and merges it
+ * This class is the entrypoint for the aggregate phase. It collects the reports from multiple submodules and merges them
  * into one.
  */
 @Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY)
