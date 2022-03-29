@@ -90,7 +90,8 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             createTargetDirIfNotExists();
             // [impl->dsn~report-writer~1]
             new ErrorCodeReportWriter().writeReport(new ErrorCodeReport(this.project.getArtifactId(),
-                    this.project.getVersion(), crawlResult.getErrorMessageDeclarations()), REPORT_PATH);
+                    this.project.getVersion(), crawlResult.getErrorMessageDeclarations()),
+                    projectDir.resolve(REPORT_PATH));
             reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
         }
     }
