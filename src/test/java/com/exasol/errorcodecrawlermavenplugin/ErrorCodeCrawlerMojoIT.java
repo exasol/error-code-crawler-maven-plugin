@@ -168,6 +168,7 @@ class ErrorCodeCrawlerMojoIT {
 
     @Test
     // [impl->dsn~src-directory-override]
+    // [utest->dsn~no-src-location-in-report-for-custom-source-path~1]
     void testDifferentSourcePath() throws IOException, VerificationException, ErrorCodeReportReader.ReadException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);

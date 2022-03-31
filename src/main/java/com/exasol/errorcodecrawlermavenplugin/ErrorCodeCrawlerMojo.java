@@ -58,7 +58,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     }
 
     private boolean hasCustomSourcePath() {
-        return !this.sourcePaths.isEmpty();
+        return this.sourcePaths != null && !this.sourcePaths.isEmpty();
     }
 
     /**
