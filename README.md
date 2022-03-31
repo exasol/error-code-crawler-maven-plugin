@@ -110,6 +110,8 @@ A common use case for this is when you use [project Lombok](https://projectlombo
 
 For a working example project with Lombok and error-code-crawler take a look at the [virtual-schema-common-document](https://github.com/exasol/virtual-schema-common-document).
 
+If you specify a source path, the plugin assumes that it's generated sources, and for that reason will not add the source location (file + line number) to the report.
+
 ## Usage
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.

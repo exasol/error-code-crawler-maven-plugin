@@ -218,3 +218,15 @@ Covers:
 * `feat~src-directory-override`
 
 Needs: impl, itest
+
+### No Source Location in Report if Csustom Source Path
+
+`dsn~no-src-location-in-report-for-custom-source-path~1`
+
+ECM adds the source position of each error message declaration to the error-code-report. That allows the catalog to generate links for jumping to the source location.
+
+For projects that specify a different source (typically generated code by delombok plugin) that's not possible, since the code ist just generated and not checked into the repository. For that reason we decided not to report the source location for projects that specify a sourcePath.
+
+An alternate solution special for deloboked code would be to replace the prefix of the generated dir to the original src directory. However then the line number would not fit, since Lombok expands the annotations. That could again be solved by searching in the original source for the error tag and by that determining the line number. However, we decided against this solution since for now the source position is not important enough.
+
+Needs: impl, utest

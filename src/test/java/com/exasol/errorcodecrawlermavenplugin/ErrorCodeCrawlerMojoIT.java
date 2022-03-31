@@ -5,8 +5,7 @@ import static com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter.get
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -22,6 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import com.exasol.mavenpluginintegrationtesting.MavenIntegrationTestEnvironment;
+import com.exsol.errorcodemodel.*;
 
 /**
  * This integration test tests the maven plugin in a save environment. Since we don't want to install the plugin to the
@@ -168,7 +168,7 @@ class ErrorCodeCrawlerMojoIT {
 
     @Test
     // [impl->dsn~src-directory-override]
-    void testDifferentSourcePath() throws IOException, VerificationException {
+    void testDifferentSourcePath() throws IOException, VerificationException, ErrorCodeReportReader.ReadException {
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectsSrc.resolve("Test1.java"),
                 StandardCopyOption.REPLACE_EXISTING);
         final String alternateSrcPath = "generated-sources/";
@@ -179,8 +179,16 @@ class ErrorCodeCrawlerMojoIT {
                 this.projectDir.resolve(alternateSrcPath).toFile());
         final Verifier verifier = getVerifier();
         verifier.executeGoal("error-code-crawler:verify");
-        final String report = Files.readString(this.projectDir.resolve(Path.of("target", "error_code_report.json")));
+        final Path reportPath = this.projectDir.resolve(Path.of("target", "error_code_report.json"));
+        final String report = Files.readString(reportPath);
         assertThat(report, containsString("E-TEST-1"));
+        final ErrorCodeReport parsedReport = new ErrorCodeReportReader().readReport(reportPath);
+        final ErrorMessageDeclaration firstDeclaration = parsedReport.getErrorMessageDeclarations().get(0);
+        assertAll(//
+                () -> assertThat(firstDeclaration.getIdentifier(), equalTo("E-TEST-1")),
+                () -> assertThat(firstDeclaration.getSourceFile(), equalTo("")),
+                () -> assertThat(firstDeclaration.getLine(), equalTo(-1))//
+        );
     }
 
     private Verifier getVerifier() {

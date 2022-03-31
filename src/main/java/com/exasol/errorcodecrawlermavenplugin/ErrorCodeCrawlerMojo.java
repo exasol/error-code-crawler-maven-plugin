@@ -19,8 +19,7 @@ import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCra
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
 import com.exasol.errorreporting.ExaError;
-import com.exsol.errorcodemodel.ErrorCodeReport;
-import com.exsol.errorcodemodel.ErrorCodeReportWriter;
+import com.exsol.errorcodemodel.*;
 
 /**
  * This class is the entry point of the plugin.
@@ -58,6 +57,10 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         }
     }
 
+    private boolean hasCustomSourcePath() {
+        return !this.sourcePaths.isEmpty();
+    }
+
     /**
      * Check if the plugin is enabled and should run.
      * 
@@ -88,12 +91,20 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             final var crawlResult = crawler.crawl(absoluteSourcePaths);
             final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
             createTargetDirIfNotExists();
+            List<ErrorMessageDeclaration> errorMessageDeclarations = crawlResult.getErrorMessageDeclarations();
+            if (hasCustomSourcePath()) {
+                // [impl->dsn~no-src-location-in-report-for-custom-source-path~1]
+                errorMessageDeclarations = removeSourcePositions(errorMessageDeclarations);
+            }
             // [impl->dsn~report-writer~1]
             new ErrorCodeReportWriter().writeReport(new ErrorCodeReport(this.project.getArtifactId(),
-                    this.project.getVersion(), crawlResult.getErrorMessageDeclarations()),
-                    projectDir.resolve(REPORT_PATH));
-            reportResult(crawlResult.getErrorMessageDeclarations().size(), findings);
+                    this.project.getVersion(), errorMessageDeclarations), projectDir.resolve(REPORT_PATH));
+            reportResult(errorMessageDeclarations.size(), findings);
         }
+    }
+
+    private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
+        return declarations.stream().map(ErrorMessageDeclaration::withoutSourcePosition).collect(Collectors.toList());
     }
 
     private void createTargetDirIfNotExists() {
