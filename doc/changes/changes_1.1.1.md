@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 1.1.1, released 2022-03-31
+# error-code-crawler-maven-plugin 1.1.1, released 2022-04-04
 
 Code name: Fixed wrong src url when used with lombok
 
