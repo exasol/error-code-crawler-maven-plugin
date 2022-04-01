@@ -1,16 +1,16 @@
 # error-code-crawler-maven-plugin 1.1.1, released 2022-04-04
 
-Code name: Fixed wrong src url when used with lombok
+Code name: Fixed wrong source URL when used with lombok
 
 ## Summary
 
-In this release we fixed the bug that this plugin added references to npn existing source files when crawling projects that use Project Lombok.
+In this release we fixed the bug that this plugin added references to non existing source files when crawling projects that use Project Lombok.
 
 Starting from this release this plugin will no longer report source positions for projects that use a non-default source path.
 
 ## Bug Fixes:
 
-* #71: Fixed wrong src url when used with lombok
+* #71: Fixed wrong source URL when used with lombok
 
 ## Dependency Updates
 
