@@ -55,6 +55,7 @@ public class TestMavenModel extends Model {
     private Xpp3Dom buildConfiguration(final ErrorCodeCrawlerPluginDefinition declaration) {
         final Xpp3Dom configuration = new Xpp3Dom("configuration");
         addSourcePath(declaration, configuration);
+        addSkip(declaration, configuration);
         return configuration;
     }
 
@@ -62,6 +63,14 @@ public class TestMavenModel extends Model {
         if (declaration.getSourcePaths() != null) {
             final Xpp3Dom sourcePathsXml = buildXmlList("sourcePaths", "sourcePath", declaration.getSourcePaths());
             configuration.addChild(sourcePathsXml);
+        }
+    }
+
+    private void addSkip(final ErrorCodeCrawlerPluginDefinition declaration, final Xpp3Dom configuration) {
+        if (declaration.getSkip() != null) {;
+            final Xpp3Dom skipXmlElement = new Xpp3Dom("skip");
+            skipXmlElement.setValue(declaration.getSkip());
+            configuration.addChild(skipXmlElement);
         }
     }
 

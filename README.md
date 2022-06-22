@@ -17,8 +17,6 @@
 
 This maven plugin analyzes invocations of the [Exasol error code builder](https://github.com/exasol/error-reporting-java/) from Java source code. It runs some validations on these definitions, for example, that no error code is defined twice.
 
-**This plugin is still under development.** It can not write a report yet, but only run the validations.
-
 [Features](doc/requirements.md)
 
 ## Installation
@@ -26,7 +24,6 @@ This maven plugin analyzes invocations of the [Exasol error code builder](https:
 Add the plugin to your `pom.xml`:
 
 ```xml
-
 <plugins>
     <plugin>
         <groupId>com.exasol</groupId>
@@ -71,7 +68,7 @@ For example the class `com.exasol.example.model.Test` belongs to a sub package o
 
 The `highest-index` property contains the index of the last error code declaration. So in the example the highest error code could be `E-EXM-3`. This plugin validates that value of this property is higher or equal than the actual highest. You can safely use this property to determine the next error code.
 
-For the moment the value of this property needs to be updated manually
+For the moment the value of this property needs to be updated manually.
 
 ### Excludes
 
@@ -96,10 +93,9 @@ The excludes only affect the validation &mdash; not compiling. So if the specifi
 
 ECM allows you to override the source directories that it crawls.
 
-A common use case for this is when you use [project Lombok](https://projectlombok.org/) in your project. In that case crawling the regular sources will fail since the ECM can't find some sources. To fix this you can use the [lombok-maven-plugin](http://anthonywhitford.com/lombok.maven/lombok-maven-plugin/). This plugin applies the Lombok annotations and generates new source code. To tell ECM top crawl these sources instead use:
+A common use case for this is when you use [project Lombok](https://projectlombok.org/) in your project. In that case crawling the regular sources will fail since the ECM can't find some sources. To fix this you can use the [lombok-maven-plugin](http://anthonywhitford.com/lombok.maven/lombok-maven-plugin/). This plugin applies the Lombok annotations and generates new source code. To tell ECM to crawl these sources instead use:
 
 ```xml
-
 <configuration>
     <sourcePaths>
         <sourcePath>target/generated-sources/delombok</sourcePath>
@@ -116,7 +112,13 @@ If you specify a source path, the plugin assumes that it's generated sources, an
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
 
-You can skip the execution of this plugin by adding `-Derror-code-crawler.skip=true` to your maven command.
+You can skip the execution of this plugin by adding `-Derror-code-crawler.skip=true` to your maven command or by specifying the following configuration in `pom.xml`:
+
+```xml
+<configuration>
+    <skip>true</skip>
+</configuration>
+```
 
 ## Additional Information
 

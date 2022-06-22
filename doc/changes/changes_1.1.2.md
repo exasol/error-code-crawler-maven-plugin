@@ -1,12 +1,16 @@
-# error-code-crawler-maven-plugin 1.1.2, released 2022-??-??
+# error-code-crawler-maven-plugin 1.1.2, released 2022-06-22
 
 Code name: 1.1.2: Upgrade dependencies
 
 ## Summary
 
-## Features
+## Bugfixes
 
 * #74: Upgraded dependencies to fix [CVE-2020-36518](https://ossindex.sonatype.org/vulnerability/CVE-2020-36518) and [CVE-2021-26291](https://ossindex.sonatype.org/vulnerability/CVE-2021-26291)
+
+## Documentation
+
+* #73: Documented how to skip plugin execution with the `skip` configuration property
 
 ## Dependency Updates
 
