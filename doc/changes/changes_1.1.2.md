@@ -1,4 +1,4 @@
-# error-code-crawler-maven-plugin 1.1.2, released 2022-??-??
+# error-code-crawler-maven-plugin 1.1.2, released 2022-06-22
 
 Code name: 1.1.2: Upgrade dependencies
 
