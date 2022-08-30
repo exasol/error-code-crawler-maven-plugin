@@ -112,7 +112,17 @@ If you specify a source path, the plugin assumes that it's generated sources, an
 
 You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
 
-You can skip the execution of this plugin by adding `-Derror-code-crawler.skip=true` to your maven command or by specifying the following configuration in `pom.xml`:
+You can skip the execution of this plugin by either 
+
+**a)** adding `-Derror-code-crawler.skip=true` to your Maven command
+
+**b)** setting the property in your `pom.xml` (recommended):
+
+```xml
+<error-code-crawler.skip>true</error-code-crawler.skip>
+````
+
+**c)** specifying the following configuration in `pom.xml`:
 
 ```xml
 <configuration>
