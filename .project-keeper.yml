@@ -4,8 +4,6 @@ sources:
     modules:
       - maven_central
       - integration_tests
-      - udf_coverage
-      - lombok
 linkReplacements:
   - "https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/"
   - "http://www.cecill.info/licences/Licence_CeCILL-C_V1-en.txt|http://cecill.info/licences/Licence_CeCILL-C_V1-en.txt"
