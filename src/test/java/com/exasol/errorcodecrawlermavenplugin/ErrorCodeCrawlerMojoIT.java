@@ -169,7 +169,7 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testSkipWithConfiguration() throws IOException {
         new TestMavenModel(new ErrorCodeCrawlerPluginDefinition(CURRENT_VERSION, null, "true"))
-        .writeAsPomToProject(this.projectDir);
+                .writeAsPomToProject(this.projectDir);
         final String testFile = "DuplicateErrorCode.java";
         Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectsTestSrc.resolve(testFile),
                 StandardCopyOption.REPLACE_EXISTING);

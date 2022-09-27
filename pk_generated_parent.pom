@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>error-code-crawler-maven-plugin-generated-parent</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,21 +32,7 @@
         <developerConnection>scm:git:https://github.com/exasol/error-code-crawler-maven-plugin.git</developerConnection>
         <url>https://github.com/exasol/error-code-crawler-maven-plugin/</url>
     </scm>
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jacoco</groupId>
-            <artifactId>org.jacoco.agent</artifactId>
-            <version>0.8.8</version>
-            <scope>test</scope>
-            <classifier>runtime</classifier>
-        </dependency>
-    </dependencies>
+    <dependencies/>
     <build>
         <plugins>
             <plugin>
@@ -66,7 +52,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -118,20 +104,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>audit</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>io.github.zlika</groupId>
-                <artifactId>reproducible-build-maven-plugin</artifactId>
-                <version>0.15</version>
-                <executions>
-                    <execution>
-                        <id>strip-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>strip-jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -247,66 +219,13 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-jacoco</id>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <phase>compile</phase>
-                        <configuration>
-                            <includeArtifactIds>org.jacoco.agent</includeArtifactIds>
-                            <includeClassifiers>runtime</includeClassifiers>
-                            <outputDirectory>${project.build.directory}/jacoco-agent</outputDirectory>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.20.0</version>
-                <executions>
-                    <execution>
-                        <id>delombok-main</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>delombok</goal>
-                        </goals>
-                        <configuration>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <sourceDirectory>src/main/java</sourceDirectory>
-                            <outputDirectory>target/delombok/main</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>delombok-test</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>testDelombok</goal>
-                        </goals>
-                        <configuration>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <sourceDirectory>src/test/java</sourceDirectory>
-                            <outputDirectory>target/delombok/test</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
                     <!-- Set the highest log level for coverage testing, so that we have a chance to reach branches
           <property>	                      in the logging lambdas too. -->
                     <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties ${argLine}</argLine>
-                    <systemPropertyVariables>
-                        <test.coverage>true</test.coverage>
-                    </systemPropertyVariables>
+                    <systemPropertyVariables/>
                     <excludedGroups>${test.excludeTags}</excludedGroups>
                 </configuration>
                 <executions>
@@ -328,12 +247,6 @@
                         <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>prepare-agent-integration</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
                         </goals>
                     </execution>
                     <execution>
@@ -369,7 +282,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>error-code-crawler-maven-plugin</artifactId>
-                <version>1.1.1</version>
+                <version>1.1.2</version>
                 <executions>
                     <execution>
                         <id>verify</id>
@@ -378,12 +291,20 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <sourcePaths>
-                        <sourcePath>target/delombok/main</sourcePath>
-                        <sourcePath>target/delombok/test</sourcePath>
-                    </sourcePaths>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.github.zlika</groupId>
+                <artifactId>reproducible-build-maven-plugin</artifactId>
+                <version>0.15</version>
+                <executions>
+                    <execution>
+                        <id>strip-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>strip-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

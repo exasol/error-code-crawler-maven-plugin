@@ -15,11 +15,9 @@ import org.apache.maven.project.MavenProject;
 import com.exasol.errorreporting.ExaError;
 import com.exsol.errorcodemodel.*;
 
-import lombok.Data;
-
 /**
- * This class is the entrypoint for the aggregate phase. It collects the reports from multiple submodules and merges them
- * into one.
+ * This class is the entrypoint for the aggregate phase. It collects the reports from multiple submodules and merges
+ * them into one.
  */
 @Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorReportAggregatorMojo extends AbstractMojo {
@@ -111,9 +109,25 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
         }
     }
 
-    @Data
     private static class ReadReport {
         private final Path reportPath;
         private final ErrorCodeReport report;
+
+        /**
+         * @param reportPath path to report
+         * @param report     report data
+         */
+        public ReadReport(final Path reportPath, final ErrorCodeReport report) {
+            this.reportPath = reportPath;
+            this.report = report;
+        }
+
+        public Path getReportPath() {
+            return this.reportPath;
+        }
+
+        public ErrorCodeReport getReport() {
+            return this.report;
+        }
     }
 }
