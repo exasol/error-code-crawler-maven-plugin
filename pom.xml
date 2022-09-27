@@ -205,7 +205,7 @@
                 </executions>
                 <configuration>
                     <excludes>
-                        <exclude>target/delombok/test/com/exasol/errorcodecrawlermavenplugin/examples/**</exclude>
+                        <exclude>src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

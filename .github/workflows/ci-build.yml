@@ -32,9 +32,7 @@ jobs:
       - name: Enable testcontainer reuse
         run: echo 'testcontainers.reuse.enable=true' > "$HOME/.testcontainers.properties"
       - name: Run tests and build with Maven
-        run: |
-          mvn --batch-mode --update-snapshots clean install -DtrimStackTrace=false
-          mvn error-code-crawler:verify
+        run: mvn --batch-mode --update-snapshots clean install -DtrimStackTrace=false
       - name: Publish Test Report
         uses: scacap/action-surefire-report@v1
         if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
@@ -53,4 +51,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Run error-code-crawler on itself
-        run: mvn error-code-crawler:verify
+        run: mvn --batch-mode error-code-crawler:verify
