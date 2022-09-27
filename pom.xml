@@ -3,6 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>error-code-crawler-maven-plugin</artifactId>
     <name>error-code-crawler-maven-plugin</name>
+    <version>1.2.0</version>
     <description>Crawler for Exasol error codes.</description>
     <url>https://github.com/exasol/error-code-crawler-maven-plugin/</url>
     <packaging>maven-plugin</packaging>
