@@ -105,15 +105,8 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.13.3</version>
-            <exclusions>
-                <!-- excluded since it introduces CVE-2020-8908 -->
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-        <!-- explicit import to overwrite vulnerable transitive version -->
+        <!-- Fix CVE-2020-8908: explicit import to overwrite vulnerable transitive dependency of jackson-datatype-jsr310 -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
