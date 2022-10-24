@@ -19,11 +19,7 @@ This release fixes CVE-2022-42003 and CVE-2022-42004 in `com.fasterxml.jackson.c
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3` to `2.13.4`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3` to `2.13.4`
 * Updated `fr.inria.gforge.spoon:spoon-core:10.1.1` to `10.2.0`
-* Removed `org.slf4j:slf4j-jdk14:1.7.36`
-
-### Runtime Dependency Updates
-
-* Added `org.slf4j:slf4j-jdk14:2.0.3`
+* Removed `org.apache.commons:commons-compress:1.21`
 
 ### Test Dependency Updates
 
