@@ -27,15 +27,14 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testCrawlValidCode() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "Test1.java").toAbsolutePath());
+        final Path path = Path.of(TEST_DIR, "Test1.java");
+        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER.crawl(path.toAbsolutePath());
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
                 () -> assertThat(errorCodes.size(), equalTo(1)),
                 () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
-                () -> assertThat(first.getSourceFile(),
-                        equalTo("src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")),
+                () -> assertThat(first.getSourceFile(), equalTo(path.toString())),
                 () -> assertThat(first.getLine(), equalTo(10)), //
                 () -> assertThat(first.getDeclaringPackage(),
                         equalTo("com.exasol.errorcodecrawlermavenplugin.examples")), //
