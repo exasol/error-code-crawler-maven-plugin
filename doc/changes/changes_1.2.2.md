@@ -1,6 +1,6 @@
-# error-code-crawler-maven-plugin 1.2.2, released 2023-01-18
+# error-code-crawler-maven-plugin 1.2.2, released 2023-01-19
 
-Code name: Fix vulnerabilities in dependencies on top of 1.2.1
+Code name: Fixed vulnerabilities in dependencies on top of 1.2.1
 
 ## Summary
 
