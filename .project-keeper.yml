@@ -10,4 +10,3 @@ linkReplacements:
 excludes:
   - "E-PK-CORE-18: Outdated content: '.github/workflows/ci-build.yml'"
   - "E-PK-CORE-18: Outdated content: '.github/workflows/release_droid_upload_github_release_assets.yml'"
-  - "[WARNING] W-PK-CORE-155: Could not detect latest available version of project-keeper. Server returned HTTP response code: 504 for URL: https://search.maven.org/solrsearch/select?q=g:com.exasol+AND+a:project-keeper-maven-plugin&wt=json. Please check network connection and response from 'https://search.maven.org/solrsearch/select?q=g:com.exasol+AND+a:project-keeper-maven-plugin&wt=json'"
