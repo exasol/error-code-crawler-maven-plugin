@@ -22,7 +22,7 @@ This release supports crawling Java 17 source code by upgrading the parser libra
 
 ### Runtime Dependency Updates
 
-* Added `org.slf4j:slf4j-jdk14:2.0.7`
+* Added `org.slf4j:slf4j-jdk14:1.7.36`
 
 ### Test Dependency Updates
 
