@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -121,6 +123,16 @@ class ErrorMessageDeclarationCrawlerTest {
     void testLanguageLevel() {
         final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
                 .crawl(Path.of(TEST_DIR, "Java10.java").toAbsolutePath());
+        assertDoesNotThrow(result::getErrorMessageDeclarations);
+    }
+
+    @Test
+    @EnabledOnJre({ JRE.JAVA_17 })
+    void testLanguageLevelJava17() {
+        final Path path = Path.of("src/test/resources/java17/").toAbsolutePath();
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, new String[] {}, 17,
+                Collections.emptyList());
+        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(path);
         assertDoesNotThrow(result::getErrorMessageDeclarations);
     }
 
