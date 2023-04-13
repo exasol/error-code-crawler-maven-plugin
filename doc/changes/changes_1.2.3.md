@@ -4,7 +4,7 @@ Code name: Support Java 17
 
 ## Summary
 
-This release supports crawling Java 17 source code by upgrading the parser library.
+This release supports crawling Java 17 source code by upgrading the parser library `fr.inria.gforge.spoon:spoon-core` to `10.3.0`.
 
 ## Features
 
