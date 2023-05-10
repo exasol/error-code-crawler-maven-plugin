@@ -12,6 +12,7 @@ Code name:
 
 ### Compile Dependency Updates
 
+* Updated `com.exasol:error-code-model-java:2.1.1` to `2.1.2`
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.2` to `2.15.0`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2` to `2.15.0`
 
