@@ -5,9 +5,9 @@ Code name: Fixed vulnerabilities in dependencies on top of 1.2.1
 ## Summary
 
 Ignored vulnerabilities as an exploit requires write access to the source code repository and attempts to inject malicious code will be detected during regular code reviews:
-* [com.fasterxml.jackson.core:jackson-core:jar:2.13.4](https://ossindex.sonatype.org/component/pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.4?utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1) in compile
-    * [sonatype-2022-6438](https://ossindex.sonatype.org/vulnerability/sonatype-2022-6438): 1 vulnerability (7.5)
-* [org.yaml:snakeyaml:jar:1.33](https://ossindex.sonatype.org/component/pkg:maven/org.yaml/snakeyaml@1.33?utm_source=ossindex-client&utm_medium=integration&utm_content=1.8.1) in compile
+* [com.fasterxml.jackson.core:jackson-core:jar:2.13.4](https://ossindex.sonatype.org/component/pkg:maven/com.fasterxml.jackson.core/jackson-core@2.13.4) in compile
+    * sonatype-2022-6438: 1 vulnerability (7.5)
+* [org.yaml:snakeyaml:jar:1.33](https://ossindex.sonatype.org/component/pkg:maven/org.yaml/snakeyaml@1.33) in compile
     * CVE-2022-1471, severity CWE-502: Deserialization of Untrusted Data (9.8)
 
 ## Bugfixes
