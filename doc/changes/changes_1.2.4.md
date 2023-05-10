@@ -1,8 +1,10 @@
-# Error Code Crawler Maven Plugin 1.2.4, released 2023-??-??
+# Error Code Crawler Maven Plugin 1.2.4, released 2023-05-10
 
-Code name:
+Code name: Fix duplicate classes
 
 ## Summary
+
+This release removes duplicate classes from dependencies and removes broken links in the changelog.
 
 ## Documentation
 
