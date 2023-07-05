@@ -141,6 +141,7 @@ class ErrorCodeCrawlerMojoIT {
         verifier.verifyErrorFreeLog();
     }
 
+    @Disabled("Blocked by upstream issue in spoon")
     @Test
     void testCrawlingWithModuleInfo() throws VerificationException, IOException {
         writeDefaultPom();
