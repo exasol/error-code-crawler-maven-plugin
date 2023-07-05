@@ -8,13 +8,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.*;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,9 +42,6 @@ class ErrorCodeCrawlerMojoIT {
 
     @TempDir
     Path projectDir;
-    private Path projectMainSrcJava;
-    private Path projectMainSrcPackage;
-    private Path projectTestSrcPackage;
 
     @BeforeAll
     static void beforeAll() {
@@ -51,136 +49,88 @@ class ErrorCodeCrawlerMojoIT {
         testEnvironment.installPlugin(PLUGIN_JAR.toFile(), ERROR_CODE_CRAWLER_POM.toFile());
     }
 
-    @BeforeEach
-    void beforeEach() throws IOException {
-        this.projectMainSrcJava = this.projectDir.resolve(Path.of("src", "main", "java"));
-        this.projectMainSrcPackage = this.projectMainSrcJava
-                .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
-        this.projectTestSrcPackage = this.projectDir
-                .resolve(Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
-        if (!(this.projectMainSrcPackage.toFile().mkdirs() && this.projectTestSrcPackage.toFile().mkdirs())) {
-            throw new IllegalStateException("Failed to create test projects src folder.");
-        }
-        writeErrorCodeConfigToTestProject();
-    }
-
-    private void writeErrorCodeConfigToTestProject() throws IOException {
-        Files.copy(
-                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME)),
-                this.projectDir.resolve(CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
-    }
-
-    private void writeDefaultPom() throws IOException {
-        new TestMavenModel(new ErrorCodeCrawlerPluginDefinition(CURRENT_VERSION, null))
-                .writeAsPomToProject(this.projectDir);
-    }
-
-    private void writeEmptyModuleInfoFile() throws IOException {
-        Files.writeString(projectMainSrcJava.resolve("module-info.java"), "module dummy.module {}");
-    }
-
-    private void writeDefaultModuleInfoFile() throws IOException {
-        Files.writeString(projectMainSrcJava.resolve("module-info.java"),
-                "module dummy.module {requires error.reporting.java;}");
-    }
-
     @Test
     // [itest->dsn~src-directories]
     void testValidCrawling() throws VerificationException, IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectMainSrcPackage.resolve("Test1.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        verifier.verifyErrorFreeLog();
+        getVerifier().withDefaultPom().withJavaFile("Test1.java").verify().assertNoErrors();
     }
 
     @Test
     void testErrorReport() throws VerificationException, IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectMainSrcPackage.resolve("Test1.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        final String report = Files.readString(this.projectDir.resolve(Path.of("target", "error_code_report.json")));
-        assertThat(report, equalTo(// [itest->dsn~report-writer~1]
-                "{\"$schema\":\"https://schemas.exasol.com/error_code_report-1.0.0.json\",\"projectName\":\"project-to-test\",\"projectVersion\":\"1.0.0\",\"errorCodes\":[{\"identifier\":\"E-TEST-1\",\"message\":\"Test message\",\"messagePlaceholders\":[],\"sourceFile\":\"src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java\",\"sourceLine\":10,\"mitigations\":[]}]}"));
+        final String path = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
+                .toString().replace("\\", "\\\\");
+        getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("Test1.java") //
+                .verify() //
+                .assertReport(equalTo(
+                        // [itest->dsn~report-writer~1]
+                        "{\"$schema\":\"https://schemas.exasol.com/error_code_report-1.0.0.json\"," //
+                                + "\"projectName\":\"project-to-test\",\"projectVersion\":\"1.0.0\"," //
+                                + "\"errorCodes\":[{\"identifier\":\"E-TEST-1\",\"message\":\"Test message\"," //
+                                + "\"messagePlaceholders\":[],\"sourceFile\":" //
+                                + "\"" + path + "\"," //
+                                + "\"sourceLine\":10,\"mitigations\":[]}]}"));
     }
 
     @Test
     void testCrawlingWithHigherJavaSourceVersion() throws VerificationException, IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectMainSrcPackage.resolve("Java10.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        verifier.verifyErrorFreeLog();
+        getVerifier().withDefaultPom().withJavaFile("Java10.java").verify().assertNoErrors();
     }
 
     @Test
     void testCrawlingIgnoresTestSources() throws VerificationException, IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectMainSrcPackage.resolve("Java10.java"));
-        Files.copy(EXAMPLES_PATH.resolve("DuplicateErrorCode.java"),
-                this.projectTestSrcPackage.resolve("DuplicateErrorCode.java"));
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        verifier.verifyErrorFreeLog();
+        getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("Java10.java") //
+                .withTestFile("DuplicateErrorCode.java") //
+                .verify() //
+                .assertNoErrors();
     }
 
     @Test
     void testCrawlingWithTestsAndModuleInfo() throws VerificationException, IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectMainSrcPackage.resolve("Java10.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectTestSrcPackage.resolve("Test1.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        writeEmptyModuleInfoFile();
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        verifier.verifyErrorFreeLog();
+        getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("Java10.java") //
+                .withTestFile("Test1.java") //
+                .withEmptyModulesFile() //
+                .verify() //
+                .assertNoErrors();
     }
 
     @Disabled("Blocked by https://github.com/INRIA/spoon/issues/5324")
     @Test
     void testCrawlingWithModuleInfo() throws VerificationException, IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Java10.java"), this.projectMainSrcPackage.resolve("Java10.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        writeDefaultModuleInfoFile();
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        verifier.verifyErrorFreeLog();
+        getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("Java10.java") //
+                .withDefaultModuleInfoFile() //
+                .verify() //
+                .assertNoErrors();
     }
 
     @Test
-    void testMissingErrorConfig() throws IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectMainSrcPackage.resolve("Test1.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        Files.delete(this.projectDir.resolve(CONFIG_NAME));
-        final Verifier verifier = getVerifier();
-        final VerificationException exception = assertThrows(VerificationException.class,
-                () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(), containsString("E-ECM-9: Could not find " + CONFIG_NAME
-                + " in the current project. Please create the file. You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
+    void testMissingErrorConfig() throws Exception {
+        getVerifier().withDefaultPom() //
+                .withJavaFile("Test1.java") //
+                .withoutConfiguration() //
+                .withDefaultModuleInfoFile() //
+                .verifyException(containsString("E-ECM-9: Could not find " + CONFIG_NAME
+                        + " in the current project. Please create the file."
+                        + " You can find a reference at: https://github.com/exasol/error-code-crawler-maven-plugin."));
     }
 
     @Test
     // [itest->dsn~error-identifier-belongs-to-package-validator~1]
     void testWrongPackageErrorConfig() throws IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectMainSrcPackage.resolve("Test1.java"),
-                StandardCopyOption.REPLACE_EXISTING);
-        Files.copy(
-                Objects.requireNonNull(getClass().getClassLoader()
-                        .getResourceAsStream("testProject/wrong_package_error_code_config.yml")),
-                this.projectDir.resolve(CONFIG_NAME), StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        final VerificationException exception = assertThrows(VerificationException.class,
-                () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(), containsString("[ERROR] E-ECM-13: According to this project's " + CONFIG_NAME
-                + ", the error tag 'TEST' is not allowed for the package 'com.exasol.errorcodecrawlermavenplugin.examples'. The config allows the tag 'TEST' for the following packages: ['com.other']."));
+        getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("Test1.java") //
+                .withConfiguration("testProject/wrong_package_error_code_config.yml") //
+                .verifyException(containsString("[ERROR] E-ECM-13: According to this project's " + CONFIG_NAME
+                        + ", the error tag 'TEST' is not allowed for the package 'com.exasol.errorcodecrawlermavenplugin.examples'."
+                        + " The config allows the tag 'TEST' for the following packages: ['com.other']."));
     }
 
     @ParameterizedTest
@@ -191,58 +141,46 @@ class ErrorCodeCrawlerMojoIT {
             "InvalidErrorCodeSyntax.java, E-ECMOJ-2", // [itest->dsn~identifier-validator~2]
     })
     // [itest->dsn~validator~1]
-    void testValidations(final String testFile, final String expectedString) throws IOException {
-        writeDefaultPom();
-        Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectMainSrcPackage.resolve(testFile),
-                StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        final VerificationException exception = assertThrows(VerificationException.class,
-                () -> verifier.executeGoal("error-code-crawler:verify"));
-        assertThat(exception.getMessage(), containsString(expectedString));
+    void testValidationFindings(final String testFile, final String expectedString) throws IOException {
+        getVerifier() //
+                .withDefaultPom()//
+                .withJavaFile(testFile) //
+                .verifyException(containsString(expectedString));
     }
 
     // [itest->dsn~skip-execution~1]
     @Test
     void testSkip() throws IOException {
-        writeDefaultPom();
-        final String testFile = "DuplicateErrorCode.java";
-        Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectMainSrcPackage.resolve(testFile),
-                StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        verifier.setSystemProperty("error-code-crawler.skip", "true");
-        assertDoesNotThrow(() -> verifier.executeGoal("error-code-crawler:verify"));
+        getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("DuplicateErrorCode.java") //
+                .withSystemProperty("error-code-crawler.skip", "true") //
+                .verifyNoException();
     }
 
     @Test
     void testSkipWithConfiguration() throws IOException {
-        new TestMavenModel(new ErrorCodeCrawlerPluginDefinition(CURRENT_VERSION, null, "true"))
-                .writeAsPomToProject(this.projectDir);
-        final String testFile = "DuplicateErrorCode.java";
-        Files.copy(EXAMPLES_PATH.resolve(testFile), this.projectMainSrcPackage.resolve(testFile),
-                StandardCopyOption.REPLACE_EXISTING);
-        final Verifier verifier = getVerifier();
-        assertDoesNotThrow(() -> verifier.executeGoal("error-code-crawler:verify"));
+        getVerifier() //
+                .withPom(mavenModel(CURRENT_VERSION, null, "true")) //
+                .withJavaFile("DuplicateErrorCode.java") //
+                .verifyNoException();
     }
 
     @Test
     // [impl->dsn~src-directory-override]
     // [utest->dsn~no-src-location-in-report-for-custom-source-path~1]
     void testDifferentSourcePath() throws IOException, VerificationException, ErrorCodeReportReader.ReadException {
-        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), this.projectMainSrcPackage.resolve("Test1.java"),
-                StandardCopyOption.REPLACE_EXISTING);
         final String alternateSrcPath = "generated-sources/";
-        new TestMavenModel(
-                new ErrorCodeCrawlerPluginDefinition(CURRENT_VERSION, List.of(alternateSrcPath + "main/java")))
-                .writeAsPomToProject(this.projectDir);
-        FileUtils.moveDirectory(this.projectDir.resolve("src").toFile(),
-                this.projectDir.resolve(alternateSrcPath).toFile());
-        final Verifier verifier = getVerifier();
-        verifier.executeGoal("error-code-crawler:verify");
-        final Path reportPath = this.projectDir.resolve(Path.of("target", "error_code_report.json"));
-        final String report = Files.readString(reportPath);
-        assertThat(report, containsString("E-TEST-1"));
-        final ErrorCodeReport parsedReport = new ErrorCodeReportReader().readReport(reportPath);
-        final ErrorMessageDeclaration firstDeclaration = parsedReport.getErrorMessageDeclarations().get(0);
+        final TestMavenModel model = mavenModel(CURRENT_VERSION, List.of(alternateSrcPath + "main/java"), null);
+        final ITVerifier verifier = getVerifier() //
+                .withPom(model) //
+                .withJavaFile("Test1.java") //
+                .moveSourcesTo(alternateSrcPath) //
+                .verify() //
+                .assertReport(containsString("E-TEST-1"));
+
+        final ErrorCodeReport report = new ErrorCodeReportReader().readReport(verifier.getErrorCodeReportPath());
+        final ErrorMessageDeclaration firstDeclaration = report.getErrorMessageDeclarations().get(0);
         assertAll(//
                 () -> assertThat(firstDeclaration.getIdentifier(), equalTo("E-TEST-1")),
                 () -> assertThat(firstDeclaration.getSourceFile(), equalTo("")),
@@ -250,7 +188,130 @@ class ErrorCodeCrawlerMojoIT {
         );
     }
 
-    private Verifier getVerifier() {
-        return testEnvironment.getVerifier(this.projectDir);
+    private ITVerifier getVerifier() throws IOException {
+        return new ITVerifier(ErrorCodeCrawlerMojoIT.testEnvironment, this.projectDir);
+    }
+
+    static TestMavenModel mavenModel(final String version, final List<String> sourcePaths, final String skip) {
+        return new TestMavenModel(new ErrorCodeCrawlerPluginDefinition(version, sourcePaths, skip));
+    }
+
+    static class ITVerifier {
+        private final MavenIntegrationTestEnvironment testEnvironment;
+        private final Path projectDir;
+        private final Path projectMainSrcJava;
+        private final Path projectMainSrcPackage;
+        private final Path projectTestSrcPackage;
+        private final Properties properties = new Properties();
+        private Verifier mavenVerifier = null;
+
+        ITVerifier(final MavenIntegrationTestEnvironment testEnvironment, final Path projectDir) throws IOException {
+            this.testEnvironment = testEnvironment;
+            this.projectDir = projectDir;
+            this.projectMainSrcJava = this.projectDir.resolve(Path.of("src", "main", "java"));
+            this.projectMainSrcPackage = this.projectMainSrcJava
+                    .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+            this.projectTestSrcPackage = this.projectDir.resolve(
+                    Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+            if (!(this.projectMainSrcPackage.toFile().mkdirs() && this.projectTestSrcPackage.toFile().mkdirs())) {
+                throw new IllegalStateException("Failed to create test projects src folder.");
+            }
+            withConfiguration("testProject/" + CONFIG_NAME);
+        }
+
+        ITVerifier withConfiguration(final String resourcePath) throws IOException {
+            final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream(resourcePath);
+            Files.copy(Objects.requireNonNull(stream), //
+                    this.projectDir.resolve(CONFIG_NAME), //
+                    StandardCopyOption.REPLACE_EXISTING);
+            return this;
+        }
+
+        ITVerifier verifyException(final Matcher<String> matcher) {
+            final VerificationException exception = assertThrows(VerificationException.class, () -> verify());
+            assertThat(exception.getMessage(), matcher);
+            return this;
+        }
+
+        ITVerifier moveSourcesTo(final String target) throws IOException {
+            FileUtils.moveDirectory(this.projectDir.resolve("src").toFile(), //
+                    this.projectDir.resolve(target).toFile());
+            return this;
+        }
+
+        ITVerifier verifyNoException() {
+            assertDoesNotThrow(() -> verify());
+            return this;
+        }
+
+        ITVerifier withSystemProperty(final String key, final String value) {
+            this.properties.put(key, value);
+            return this;
+        }
+
+        ITVerifier withoutConfiguration() throws IOException {
+            Files.delete(this.projectDir.resolve(CONFIG_NAME));
+            return this;
+        }
+
+        ITVerifier withEmptyModulesFile() throws IOException {
+            return withModulesFile("");
+        }
+
+        ITVerifier withDefaultPom() throws IOException {
+            return withPom(mavenModel(CURRENT_VERSION, null, null));
+        }
+
+        ITVerifier withPom(final TestMavenModel model) throws IOException {
+            model.writeAsPomToProject(this.projectDir);
+            return this;
+        }
+
+        ITVerifier withJavaFile(final String name) throws IOException {
+            return withFile(name, this.projectMainSrcPackage);
+        }
+
+        ITVerifier withTestFile(final String name) throws IOException {
+            return withFile(name, this.projectTestSrcPackage);
+        }
+
+        ITVerifier withFile(final String name, final Path packagePath) throws IOException {
+            Files.copy(EXAMPLES_PATH.resolve(name), //
+                    packagePath.resolve(name), //
+                    StandardCopyOption.REPLACE_EXISTING);
+            return this;
+        }
+
+        ITVerifier withModulesFile(final String content) throws IOException {
+            Files.writeString(this.projectMainSrcJava.resolve("module-info.java"),
+                    "module dummy.module {" + content + "}");
+            return this;
+        }
+
+        ITVerifier withDefaultModuleInfoFile() throws IOException {
+            return withModulesFile("requires error.reporting.java;");
+        }
+
+        ITVerifier verify() throws VerificationException {
+            this.mavenVerifier = this.testEnvironment.getVerifier(this.projectDir);
+            this.mavenVerifier.setSystemProperties(this.properties);
+            this.mavenVerifier.executeGoal("error-code-crawler:verify");
+            return this;
+        }
+
+        ITVerifier assertNoErrors() throws VerificationException {
+            this.mavenVerifier.verifyErrorFreeLog();
+            return this;
+        }
+
+        Path getErrorCodeReportPath() {
+            return this.projectDir.resolve(Path.of("target", "error_code_report.json"));
+        }
+
+        ITVerifier assertReport(final Matcher<String> matcher) throws IOException, VerificationException {
+            final String report = Files.readString(getErrorCodeReportPath());
+            assertThat(report, matcher);
+            return this;
+        }
     }
 }
