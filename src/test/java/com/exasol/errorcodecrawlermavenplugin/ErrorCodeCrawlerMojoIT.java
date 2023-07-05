@@ -81,7 +81,7 @@ class ErrorCodeCrawlerMojoIT {
 
     private void writeDefaultModuleInfoFile() throws IOException {
         Files.writeString(projectMainSrcJava.resolve("module-info.java"),
-                "module dummy.module {requires error.code.model.java;}");
+                "module dummy.module {requires error.reporting.java;}");
     }
 
     @Test

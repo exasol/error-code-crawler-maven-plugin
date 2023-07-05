@@ -19,7 +19,7 @@ public class TestMavenModel extends Model {
         this.setArtifactId("project-to-test");
         this.setGroupId("com.example");
         this.setModelVersion("4.0.0");
-        this.addDependency("error-reporting-java", "com.exasol", "", "1.0.1");
+        this.addDependency("error-reporting-java", "com.exasol", "compile", "1.0.1");
         addCompilerPlugin();
         addErrorCodeCrawlerPlugin(errorCodeCrawlerPluginDefinition);
     }

@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -85,7 +84,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         if (isEnabled()) {
             final var projectDir = this.project.getBasedir().toPath();
             final ErrorCodeConfig config = readConfig(projectDir);
-            final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
+            final String[] classpath = getClasspath();
+            getLog().debug("Using classpath " + Arrays.toString(classpath));
+            final var crawler = new ErrorMessageDeclarationCrawler(projectDir, classpath, getJavaSourceVersion(),
                     Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
             final Path[] absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).toArray(Path[]::new);
             getLog().debug(
@@ -171,16 +172,14 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     /**
      * Get the class path of project under test.
      * 
-     * @implNote We skip the first entry of the compile classpath and the first two of the test class path since these
-     *           are the built classes and test-classes.
+     * @implNote We skip the first entry of the compile classpath since this are the built classes.
      * 
      * @return the class path
      */
     private String[] getClasspath() {
         try {
             final List<String> compileClasspath = this.project.getCompileClasspathElements();
-            final List<String> testClasspath = this.project.getTestClasspathElements();
-            return Stream.concat(compileClasspath.stream().skip(1), testClasspath.stream().skip(2))
+            return compileClasspath.stream().skip(1) //
                     .toArray(String[]::new);
         } catch (final DependencyResolutionRequiredException exception) {
             throw new IllegalStateException(
