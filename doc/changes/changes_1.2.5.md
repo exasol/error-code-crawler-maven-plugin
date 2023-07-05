@@ -4,11 +4,11 @@ Code name: Crawl projects with a Java module
 
 ## Summary
 
-This release fixes crawling projects that contain a `module-info.java` file. Please note that this currently only works when the module info file contains no dependencies, i.e. `requires` entries.
+This release fixes crawling projects that contain a `module-info.java` file by excluding the `src/test/java/` folder. Please note that this currently only works when the module info file contains no dependencies, i.e. no `requires` entries. This issue must be investigated/fixed [upstream](https://github.com/INRIA/spoon/issues/5324).
 
 ## Bugfixes
 
-* #85: Removed test sources from build
+* #85: Excluded test sources from crawling
 
 ## Dependency Updates
 
