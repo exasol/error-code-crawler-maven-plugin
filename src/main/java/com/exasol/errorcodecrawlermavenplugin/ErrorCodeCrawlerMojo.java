@@ -1,5 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,11 +50,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     // [impl->dsn~src-directory-override]
     private List<Path> getSourcePaths() {
         if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
-            return List.of(Path.of("src", "main", "java"));
+            return List.of(Path.of("src/main/java"));
         } else {
-            final String separator = System.getProperty("file.separator");
-            return this.sourcePaths.stream().map(path -> Path.of(path.replace("/", separator)))
-                    .collect(Collectors.toList());
+            return this.sourcePaths.stream().map(Path::of).collect(toList());
         }
     }
 
