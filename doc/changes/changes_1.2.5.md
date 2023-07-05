@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 1.2.5, released 2023-??-??
+# Error Code Crawler Maven Plugin 1.2.5, released 2023-07-05
 
 Code name: Crawl projects with a Java module
 
