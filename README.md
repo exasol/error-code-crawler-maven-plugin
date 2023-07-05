@@ -114,21 +114,29 @@ You can also invoke this plugin manually using `mvn error-code-crawler:verify`.
 
 You can skip the execution of this plugin by either 
 
-**a)** adding `-Derror-code-crawler.skip=true` to your Maven command
+* adding `-Derror-code-crawler.skip=true` to your Maven command
+* setting the property in your `pom.xml` (recommended):
+    ```xml
+    <error-code-crawler.skip>true</error-code-crawler.skip>
+    ````
+* specifying the following configuration in `pom.xml`:
+    ```xml
+    <configuration>
+        <skip>true</skip>
+    </configuration>
+    ```
 
-**b)** setting the property in your `pom.xml` (recommended):
+## Known Limitations
 
-```xml
-<error-code-crawler.skip>true</error-code-crawler.skip>
-````
+### Java Modules
 
-**c)** specifying the following configuration in `pom.xml`:
+Crawling a project with a `module-info.java` file will fail with the following exception if the file contains a `requires` directive:
 
-```xml
-<configuration>
-    <skip>true</skip>
-</configuration>
 ```
+spoon.compiler.ModelBuildingException: error.reporting.java cannot be resolved to a module at /path/to/project/src/main/java/module-info.java:1
+```
+
+This is a known issue that must be [solved in the Spoon library](https://github.com/INRIA/spoon/issues/5324).
 
 ## Additional Information
 

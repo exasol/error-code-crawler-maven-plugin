@@ -19,7 +19,7 @@ public class TestMavenModel extends Model {
         this.setArtifactId("project-to-test");
         this.setGroupId("com.example");
         this.setModelVersion("4.0.0");
-        this.addDependency("error-reporting-java", "com.exasol", "", "0.4.0");
+        this.addDependency("error-reporting-java", "com.exasol", "compile", "1.0.1");
         addCompilerPlugin();
         addErrorCodeCrawlerPlugin(errorCodeCrawlerPluginDefinition);
     }
@@ -67,7 +67,7 @@ public class TestMavenModel extends Model {
     }
 
     private void addSkip(final ErrorCodeCrawlerPluginDefinition declaration, final Xpp3Dom configuration) {
-        if (declaration.getSkip() != null) {;
+        if (declaration.getSkip() != null) {
             final Xpp3Dom skipXmlElement = new Xpp3Dom("skip");
             skipXmlElement.setValue(declaration.getSkip());
             configuration.addChild(skipXmlElement);

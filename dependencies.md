@@ -41,10 +41,10 @@
 | [Apache Maven Compiler Plugin][30]                      | [Apache-2.0][1]                                |
 | [Apache Maven Enforcer Plugin][31]                      | [Apache-2.0][1]                                |
 | [Maven Flatten Plugin][32]                              | [Apache Software Licenese][1]                  |
-| [OpenFastTrace Maven Plugin][33]                        | [GNU General Public License v3.0][34]          |
-| [org.sonatype.ossindex.maven:ossindex-maven-plugin][35] | [ASL2][12]                                     |
-| [Maven Surefire Plugin][36]                             | [Apache-2.0][1]                                |
-| [Versions Maven Plugin][37]                             | [Apache License, Version 2.0][1]               |
+| [org.sonatype.ossindex.maven:ossindex-maven-plugin][33] | [ASL2][12]                                     |
+| [Maven Surefire Plugin][34]                             | [Apache-2.0][1]                                |
+| [Versions Maven Plugin][35]                             | [Apache License, Version 2.0][1]               |
+| [OpenFastTrace Maven Plugin][36]                        | [GNU General Public License v3.0][37]          |
 | [duplicate-finder-maven-plugin Maven Mojo][38]          | [Apache License 2.0][39]                       |
 | [Apache Maven Deploy Plugin][40]                        | [Apache-2.0][1]                                |
 | [Apache Maven GPG Plugin][41]                           | [Apache License, Version 2.0][1]               |
@@ -96,11 +96,11 @@
 [30]: https://maven.apache.org/plugins/maven-compiler-plugin/
 [31]: https://maven.apache.org/enforcer/maven-enforcer-plugin/
 [32]: https://www.mojohaus.org/flatten-maven-plugin/
-[33]: https://github.com/itsallcode/openfasttrace-maven-plugin
-[34]: https://www.gnu.org/licenses/gpl-3.0.html
-[35]: https://sonatype.github.io/ossindex-maven/maven-plugin/
-[36]: https://maven.apache.org/surefire/maven-surefire-plugin/
-[37]: https://www.mojohaus.org/versions/versions-maven-plugin/
+[33]: https://sonatype.github.io/ossindex-maven/maven-plugin/
+[34]: https://maven.apache.org/surefire/maven-surefire-plugin/
+[35]: https://www.mojohaus.org/versions/versions-maven-plugin/
+[36]: https://github.com/itsallcode/openfasttrace-maven-plugin
+[37]: https://www.gnu.org/licenses/gpl-3.0.html
 [38]: https://github.com/basepom/duplicate-finder-maven-plugin
 [39]: http://www.apache.org/licenses/LICENSE-2.0.html
 [40]: https://maven.apache.org/plugins/maven-deploy-plugin/

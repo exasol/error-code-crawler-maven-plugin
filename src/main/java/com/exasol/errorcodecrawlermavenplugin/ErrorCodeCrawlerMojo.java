@@ -1,11 +1,12 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
+import static java.util.stream.Collectors.toList;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -24,7 +25,7 @@ import com.exsol.errorcodemodel.*;
 /**
  * This class is the entry point of the plugin.
  */
-//[impl->dsn~mvn-verify-goal~1]
+// [impl->dsn~mvn-verify-goal~1]
 @Mojo(name = "verify", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorCodeCrawlerMojo extends AbstractMojo {
     private static final Path REPORT_PATH = Path.of("target", "error_code_report.json");
@@ -49,11 +50,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     // [impl->dsn~src-directory-override]
     private List<Path> getSourcePaths() {
         if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
-            return List.of(Path.of("src", "main", "java"), Path.of("src", "test", "java"));
+            return List.of(Path.of("src/main/java"));
         } else {
-            final String separator = System.getProperty("file.separator");
-            return this.sourcePaths.stream().map(string -> Path.of(string.replace("/", separator)))
-                    .collect(Collectors.toList());
+            return this.sourcePaths.stream().map(Path::of).collect(toList());
         }
     }
 
@@ -85,9 +84,13 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         if (isEnabled()) {
             final var projectDir = this.project.getBasedir().toPath();
             final ErrorCodeConfig config = readConfig(projectDir);
-            final var crawler = new ErrorMessageDeclarationCrawler(projectDir, getClasspath(), getJavaSourceVersion(),
+            final String[] classpath = getClasspath();
+            getLog().debug("Using classpath " + Arrays.toString(classpath));
+            final var crawler = new ErrorMessageDeclarationCrawler(projectDir, classpath, getJavaSourceVersion(),
                     Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
             final Path[] absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).toArray(Path[]::new);
+            getLog().debug(
+                    "Crawling " + absoluteSourcePaths.length + " paths: " + Arrays.toString(absoluteSourcePaths));
             final var crawlResult = crawler.crawl(absoluteSourcePaths);
             final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
             createTargetDirIfNotExists();
@@ -169,16 +172,14 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     /**
      * Get the class path of project under test.
      * 
-     * @implNote We skip the first entry of the compile classpath and the first two of the test class path since these
-     *           are the built classes and test-classes.
+     * @implNote We skip the first entry of the compile classpath since this are the built classes.
      * 
      * @return the class path
      */
     private String[] getClasspath() {
         try {
             final List<String> compileClasspath = this.project.getCompileClasspathElements();
-            final List<String> testClasspath = this.project.getTestClasspathElements();
-            return Stream.concat(compileClasspath.stream().skip(1), testClasspath.stream().skip(2))
+            return compileClasspath.stream().skip(1) //
                     .toArray(String[]::new);
         } catch (final DependencyResolutionRequiredException exception) {
             throw new IllegalStateException(
