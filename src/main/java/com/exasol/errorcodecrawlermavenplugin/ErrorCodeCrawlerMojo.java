@@ -84,13 +84,12 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         if (isEnabled()) {
             final var projectDir = this.project.getBasedir().toPath();
             final ErrorCodeConfig config = readConfig(projectDir);
-            final String[] classpath = getClasspath();
-            getLog().debug("Using classpath " + Arrays.toString(classpath));
+            final List<Path> classpath = getClasspath();
+            getLog().debug("Using classpath " + classpath);
             final var crawler = new ErrorMessageDeclarationCrawler(projectDir, classpath, getJavaSourceVersion(),
                     Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-            final Path[] absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).toArray(Path[]::new);
-            getLog().debug(
-                    "Crawling " + absoluteSourcePaths.length + " paths: " + Arrays.toString(absoluteSourcePaths));
+            final List<Path> absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).collect(toList());
+            getLog().debug("Crawling " + absoluteSourcePaths.size() + " paths: " + absoluteSourcePaths);
             final var crawlResult = crawler.crawl(absoluteSourcePaths);
             final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
             createTargetDirIfNotExists();
@@ -176,11 +175,12 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
      * 
      * @return the class path
      */
-    private String[] getClasspath() {
+    private List<Path> getClasspath() {
         try {
             final List<String> compileClasspath = this.project.getCompileClasspathElements();
             return compileClasspath.stream().skip(1) //
-                    .toArray(String[]::new);
+                    .map(Path::of) //
+                    .collect(toList());
         } catch (final DependencyResolutionRequiredException exception) {
             throw new IllegalStateException(
                     ExaError.messageBuilder("E-ECM-6").message("Failed to extract project's class path.").toString(),

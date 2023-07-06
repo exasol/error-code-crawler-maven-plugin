@@ -99,7 +99,6 @@ class ErrorCodeCrawlerMojoIT {
                 .assertNoErrors();
     }
 
-    @Disabled("Blocked by https://github.com/INRIA/spoon/issues/5324")
     @Test
     void testCrawlingWithModuleInfo() throws VerificationException, IOException {
         getVerifier() //
