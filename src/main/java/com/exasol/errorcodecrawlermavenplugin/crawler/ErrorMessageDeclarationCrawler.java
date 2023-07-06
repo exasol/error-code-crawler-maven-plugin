@@ -1,5 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin.crawler;
 
+import static java.util.Collections.emptyList;
+
 import java.io.File;
 import java.nio.file.*;
 import java.util.*;
@@ -79,12 +81,22 @@ public class ErrorMessageDeclarationCrawler {
     }
 
     private CtModel buildModel(final List<Path> pathsToCrawl) {
+        final boolean projectUsesModules = moduleInfoFileExists(pathsToCrawl);
         final SpoonParser parser = SpoonParser.builder() //
                 .javaSourceVersion(this.javaSourceVersion) //
-                .modulePath(this.classPath) //
+                .classPath(projectUsesModules ? emptyList() : this.classPath) //
+                .modulePath(projectUsesModules ? this.classPath : emptyList()) //
                 .sourcePath(pathsToCrawl) //
                 .build();
         return parser.buildModel();
+    }
+
+    private boolean moduleInfoFileExists(final List<Path> pathsToCrawl) {
+        return pathsToCrawl.stream().anyMatch(this::containsModuleInfo);
+    }
+
+    private boolean containsModuleInfo(final Path path) {
+        return Files.isDirectory(path) && Files.exists(path.resolve("module-info.java"));
     }
 
     /**

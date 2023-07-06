@@ -32,6 +32,8 @@ class SpoonParser {
     private Launcher configureSpoon() {
         final Launcher spoon = new Launcher();
         final var environment = spoon.getEnvironment();
+        final String[] classPath = config.classPath.stream().map(Path::toString).toArray(String[]::new);
+        environment.setSourceClasspath(classPath);
         environment.setNoClasspath(false);
         environment.setComplianceLevel(config.javaSourceVersion);
         for (final Path path : config.sourcePath) {
@@ -87,6 +89,7 @@ class SpoonParser {
     static class Builder {
         private int javaSourceVersion;
         private List<Path> sourcePath = emptyList();
+        private List<Path> classPath = emptyList();
         private List<Path> modulePath = emptyList();
 
         Builder javaSourceVersion(final int javaSourceVersion) {
@@ -96,6 +99,11 @@ class SpoonParser {
 
         Builder sourcePath(final List<Path> sourcePath) {
             this.sourcePath = sourcePath;
+            return this;
+        }
+
+        Builder classPath(final List<Path> classPath) {
+            this.classPath = classPath;
             return this;
         }
 
