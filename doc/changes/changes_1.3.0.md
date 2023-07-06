@@ -4,7 +4,7 @@ Code name: Support Java modules
 
 ## Summary
 
-This release adds full support for crawling projects that use Java modules.
+This release adds full support for crawling projects that use Java modules, see [JPMS](https://www.oracle.com/corporate/features/understanding-java-9-modules.html).
 
 ## Features
 
