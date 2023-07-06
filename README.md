@@ -126,18 +126,6 @@ You can skip the execution of this plugin by either
     </configuration>
     ```
 
-## Known Limitations
-
-### Java Modules
-
-Crawling a project with a `module-info.java` file will fail with the following exception if the file contains a `requires` directive:
-
-```
-spoon.compiler.ModelBuildingException: error.reporting.java cannot be resolved to a module at /path/to/project/src/main/java/module-info.java:1
-```
-
-This is a known issue that must be [solved in the Spoon library](https://github.com/INRIA/spoon/issues/5324).
-
 ## Additional Information
 
 * [Changelog](doc/changes/changelog.md)
