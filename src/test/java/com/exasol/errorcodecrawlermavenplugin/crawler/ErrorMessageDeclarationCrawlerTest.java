@@ -1,5 +1,6 @@
 package com.exasol.errorcodecrawlermavenplugin.crawler;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,13 +25,13 @@ import com.exsol.errorcodemodel.NamedParameter;
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
     private static final ErrorMessageDeclarationCrawler DECLARATION_CRAWLER = new ErrorMessageDeclarationCrawler(
-            PROJECT_DIRECTORY, new String[] {}, 11, Collections.emptyList());
+            PROJECT_DIRECTORY, emptyList(), 11, Collections.emptyList());
     private static final String TEST_DIR = "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/";
 
     @Test
     void testCrawlValidCode() {
         final Path path = Path.of(TEST_DIR, "Test1.java");
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER.crawl(path.toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(path);
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
@@ -51,8 +52,7 @@ class ErrorMessageDeclarationCrawlerTest {
             "TestWithMultiplePartConcatenatedMessage.java, concatenated message 2", //
             "TestWithMessageFromConstant.java, message from constant" })
     void testCrawlMessage(final String testFile, final String expectedMessage) {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, testFile).toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(Path.of(TEST_DIR, testFile));
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
@@ -63,8 +63,8 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testCrawlMessageWithDirectParameters() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "TestWithMessageAndDirectParameter.java").toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(
+                Path.of(TEST_DIR, "TestWithMessageAndDirectParameter.java"));
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
@@ -77,8 +77,7 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testCrawlMitigations() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "TestWithMitigations.java").toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(Path.of(TEST_DIR, "TestWithMitigations.java"));
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertThat(first.getMitigations(), contains("That's how to fix it.", "One more hint."));
@@ -86,8 +85,8 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testCrawlMitigationWithDirectParameters() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "TestWithMitigationAndDirectParameter.java").toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(
+                Path.of(TEST_DIR, "TestWithMitigationAndDirectParameter.java"));
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertAll(//
@@ -102,8 +101,7 @@ class ErrorMessageDeclarationCrawlerTest {
             "TestWithNamedParameterWithDescription.java,just a parameter", //
     })
     void testCrawlNamedParameter(final String testFile, final String expectedDescription) {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, testFile).toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(Path.of(TEST_DIR, testFile));
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
         assertThat(first.getNamedParameters(), contains(new NamedParameter("test", expectedDescription)));
@@ -111,8 +109,8 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testIllegalErrorCodeFromFunction() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java"));
+        final ErrorMessageDeclarationCrawler.Result result = crawl(
+                Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java"));
         final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
                 .collect(Collectors.toList());
         assertThat(messages, containsInAnyOrder(
@@ -121,8 +119,7 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testLanguageLevel() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "Java10.java").toAbsolutePath());
+        final ErrorMessageDeclarationCrawler.Result result = crawl(Path.of(TEST_DIR, "Java10.java"));
         assertDoesNotThrow(result::getErrorMessageDeclarations);
     }
 
@@ -130,9 +127,9 @@ class ErrorMessageDeclarationCrawlerTest {
     @EnabledOnJre({ JRE.JAVA_17 })
     void testLanguageLevelJava17() {
         final Path path = Path.of("src/test/resources/java17/").toAbsolutePath();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, new String[] {}, 17,
-                Collections.emptyList());
-        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(path);
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, emptyList(), 17,
+                emptyList());
+        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
         assertDoesNotThrow(result::getErrorMessageDeclarations);
     }
 
@@ -142,19 +139,23 @@ class ErrorMessageDeclarationCrawlerTest {
             "**/IllegalErrorCodeFromFunction.java", "src/test/java/com/exasol/errorcodecrawlermavenplugin/**" })
     void testIgnoredFiled(final String excludeGlob) {
         final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(PROJECT_DIRECTORY,
-                new String[] {}, 11, List.of(excludeGlob));
+                emptyList(), 11, List.of(excludeGlob));
         final ErrorMessageDeclarationCrawler.Result result = crawler
-                .crawl(Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java"));
+                .crawl(List.of(Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java")));
         assertTrue(result.getFindings().isEmpty());
     }
 
     @Test
     void testIllegalAssigningOfBuilderToVariable() {
-        final ErrorMessageDeclarationCrawler.Result result = DECLARATION_CRAWLER
-                .crawl(Path.of(TEST_DIR, "TestWithBuilderAssignedToVariable.java"));
+        final ErrorMessageDeclarationCrawler.Result result = crawl(
+                Path.of(TEST_DIR, "TestWithBuilderAssignedToVariable.java"));
         final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
                 .collect(Collectors.toList());
         assertThat(messages, containsInAnyOrder(
                 startsWith("E-ECM-31: Invalid incomplete builder call at TestWithBuilderAssignedToVariable.java:")));
+    }
+
+    private ErrorMessageDeclarationCrawler.Result crawl(final Path path) {
+        return DECLARATION_CRAWLER.crawl(List.of(path.toAbsolutePath()));
     }
 }

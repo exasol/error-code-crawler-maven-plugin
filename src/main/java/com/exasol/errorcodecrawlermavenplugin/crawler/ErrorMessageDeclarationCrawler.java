@@ -10,8 +10,7 @@ import com.exasol.errorreporting.ErrorMessageBuilder;
 import com.exasol.errorreporting.ExaError;
 import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
-import spoon.Launcher;
-import spoon.SpoonAPI;
+import spoon.reflect.CtModel;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
 import spoon.reflect.declaration.CtElement;
@@ -29,7 +28,7 @@ public class ErrorMessageDeclarationCrawler {
     private static final List<MessageBuilderStepReader> STEP_READERS = List.of(new ExaErrorStepReader(),
             new ParameterStepReader(), new MessageStepReader(), new MitigationStepReader());
     private final Path projectDirectory;
-    private final String[] classPath;
+    private final List<Path> classPath;
     private final int javaSourceVersion;
     private final List<PathMatcher> excludedFilesMatchers;
 
@@ -43,7 +42,7 @@ public class ErrorMessageDeclarationCrawler {
      * @param javaSourceVersion java source version / language level of the project
      * @param excludedFiles     list of glob expressions for files to exclude from validation
      */
-    public ErrorMessageDeclarationCrawler(final Path projectDirectory, final String[] classPath,
+    public ErrorMessageDeclarationCrawler(final Path projectDirectory, final List<Path> classPath,
             final int javaSourceVersion, final List<String> excludedFiles) {
         this.projectDirectory = projectDirectory;
         this.classPath = classPath;
@@ -59,13 +58,13 @@ public class ErrorMessageDeclarationCrawler {
      * @param pathsToCrawl file(s) / folder(s) to crawl.
      * @return {@link Result} with found error codes and findings
      */
-    public Result crawl(final Path... pathsToCrawl) {
+    public Result crawl(final List<Path> pathsToCrawl) {
         try {
+            final CtModel model = buildModel(pathsToCrawl);
+            final List<CtInvocation<?>> methodInvocations = model.getRootPackage()
+                    .getElements(new TypeFilter<>(CtInvocation.class));
             final List<Finding> findings = new LinkedList<>();
             final List<ErrorMessageDeclaration> errorMessageDeclarations = new ArrayList<>();
-            final SpoonAPI spoon = initSpoon(pathsToCrawl);
-            final List<CtInvocation<?>> methodInvocations = spoon.getModel().getRootPackage()
-                    .getElements(new TypeFilter<>(CtInvocation.class));
             for (final CtInvocation<?> methodInvocation : methodInvocations) {
                 crawl(methodInvocation, findings, errorMessageDeclarations);
             }
@@ -79,18 +78,13 @@ public class ErrorMessageDeclarationCrawler {
         }
     }
 
-    private SpoonAPI initSpoon(final Path... pathsToCrawl) {
-        final SpoonAPI spoon = new Launcher();
-        final var environment = spoon.getEnvironment();
-        environment.setSourceClasspath(this.classPath);
-        environment.setNoClasspath(false);
-        environment.setComplianceLevel(this.javaSourceVersion);
-        for (final Path path : pathsToCrawl) {
-            spoon.addInputResource(path.toString());
-        }
-        spoon.buildModel();
-        spoon.getFactory();
-        return spoon;
+    private CtModel buildModel(final List<Path> pathsToCrawl) {
+        final SpoonParser parser = SpoonParser.builder() //
+                .javaSourceVersion(this.javaSourceVersion) //
+                .modulePath(this.classPath) //
+                .sourcePath(pathsToCrawl) //
+                .build();
+        return parser.buildModel();
     }
 
     /**
@@ -202,7 +196,7 @@ public class ErrorMessageDeclarationCrawler {
     }
 
     /**
-     * Result of {@link ErrorMessageDeclarationCrawler#crawl(Path...)}
+     * Result of {@link ErrorMessageDeclarationCrawler#crawl(List)}
      */
     public static class Result {
         private final List<ErrorMessageDeclaration> errorMessageDeclarations;
