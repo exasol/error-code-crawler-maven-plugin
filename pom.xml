@@ -76,6 +76,7 @@
             <version>2.1.2</version>
         </dependency>
         <dependency>
+            <!-- Upgrade transitive dependency of fr.inria.gforge.spoon:spoon-core to fix CVE-2023-42503 -->
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.24.0</version>
