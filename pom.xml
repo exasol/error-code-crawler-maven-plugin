@@ -8,13 +8,13 @@
     <url>https://github.com/exasol/error-code-crawler-maven-plugin/</url>
     <packaging>maven-plugin</packaging>
     <properties>
-        <maven.version>3.8.8</maven.version>
+        <maven.version>3.9.4</maven.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.8.2</version>
+            <version>3.9.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -46,7 +46,7 @@
         <dependency>
             <groupId>fr.inria.gforge.spoon</groupId>
             <artifactId>spoon-core</artifactId>
-            <version>10.3.0</version>
+            <version>10.4.1</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -57,7 +57,7 @@
             <!-- org.apache.maven:maven-core uses org.slf4j:slf4j-api:jar:1.7.36 -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.36</version>
+            <version>2.0.9</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -90,13 +90,13 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.14.3</version>
+            <version>3.15.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.3</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -129,7 +129,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.9.0</version>
             </plugin>
             <plugin>
                 <groupId>com.exasol</groupId>
@@ -163,7 +163,7 @@
             <plugin>
                 <groupId>org.itsallcode</groupId>
                 <artifactId>openfasttrace-maven-plugin</artifactId>
-                <version>1.6.1</version>
+                <version>1.6.2</version>
                 <executions>
                     <execution>
                         <id>trace-requirements</id>
@@ -180,6 +180,7 @@
                     <ignoredResourcePatterns>
                         <ignoredResourcePattern>about.html</ignoredResourcePattern>
                         <ignoredResourcePattern>plugin.xml</ignoredResourcePattern>
+                        <ignoredResourcePattern>.api_description</ignoredResourcePattern>
                     </ignoredResourcePatterns>
                 </configuration>
             </plugin>

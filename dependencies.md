@@ -6,16 +6,16 @@
 | Dependency                               | License                                        |
 | ---------------------------------------- | ---------------------------------------------- |
 | [Maven Plugin Tools Java Annotations][0] | [Apache-2.0][1]                                |
-| [Maven Plugin API][2]                    | [Apache License, Version 2.0][1]               |
-| [Maven Model][3]                         | [Apache License, Version 2.0][1]               |
-| [Maven Core][4]                          | [Apache License, Version 2.0][1]               |
+| [Maven Plugin API][2]                    | [Apache-2.0][1]                                |
+| [Maven Model][3]                         | [Apache-2.0][1]                                |
+| [Maven Core][4]                          | [Apache-2.0][1]                                |
 | [Spoon Core][5]                          | [CeCILL-C][6]; [MIT][7]                        |
 | [error-reporting-java][8]                | [MIT License][9]                               |
 | [Jackson-dataformat-YAML][10]            | [The Apache Software License, Version 2.0][1]  |
 | [Jackson datatype: JSR310][11]           | [The Apache Software License, Version 2.0][12] |
 | [Error Code Model Java][13]              | [MIT License][14]                              |
 | [Apache Commons Compress][15]            | [Apache-2.0][1]                                |
-| [Maven Artifact][16]                     | [Apache License, Version 2.0][1]               |
+| [Maven Artifact][16]                     | [Apache-2.0][1]                                |
 
 ## Test Dependencies
 
@@ -30,9 +30,9 @@
 
 ## Runtime Dependencies
 
-| Dependency                | License           |
-| ------------------------- | ----------------- |
-| [SLF4J JDK14 Binding][27] | [MIT License][28] |
+| Dependency                 | License           |
+| -------------------------- | ----------------- |
+| [SLF4J JDK14 Provider][27] | [MIT License][28] |
 
 ## Plugin Dependencies
 
@@ -66,9 +66,9 @@
 
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[2]: https://maven.apache.org/ref/3.8.8/maven-plugin-api/
-[3]: https://maven.apache.org/ref/3.8.8/maven-model/
-[4]: https://maven.apache.org/ref/3.8.8/maven-core/
+[2]: https://maven.apache.org/ref/3.9.4/maven-plugin-api/
+[3]: https://maven.apache.org/ref/3.9.4/maven-model/
+[4]: https://maven.apache.org/ref/3.9.4/maven-core/
 [5]: http://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
@@ -80,7 +80,7 @@
 [13]: https://github.com/exasol/error-code-model-java/
 [14]: https://github.com/exasol/error-code-model-java/blob/main/LICENSE
 [15]: https://commons.apache.org/proper/commons-compress/
-[16]: https://maven.apache.org/ref/3.8.8/maven-artifact/
+[16]: https://maven.apache.org/ref/3.9.4/maven-artifact/
 [17]: http://hamcrest.org/JavaHamcrest/
 [18]: http://opensource.org/licenses/BSD-3-Clause
 [19]: https://www.jqno.nl/equalsverifier
