@@ -6,7 +6,7 @@ Code name: Fix commons-compress CVE
 
 This release fixes org.apache.commons:commons-compress CVE-2023-42503
 
-## Features
+## Security
 
 * 93: Fix CVE-2023-42503 in org.apache.commons:commons-compress
 
