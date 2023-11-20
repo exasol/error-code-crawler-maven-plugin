@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 1.3.2, released 2023-11-20
+# Error Code Crawler Maven Plugin 1.3.2, released 2023-??-??
 
 Code name: Fix CVE-2023-4218 and CVE-2023-4043 in dependencies
 
