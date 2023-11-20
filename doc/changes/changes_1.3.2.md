@@ -16,6 +16,7 @@ This release fixes the following vulnerabilities in the following runtime depend
 
 ### Compile Dependency Updates
 
+* Updated `com.exasol:error-code-model-java:2.1.2` to `2.1.3`
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.2` to `2.16.0`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2` to `2.16.0`
 * Updated `fr.inria.gforge.spoon:spoon-core:10.4.1` to `10.4.2`
@@ -33,6 +34,7 @@ This release fixes the following vulnerabilities in the following runtime depend
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.4.0` to `3.4.1`
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.1.2` to `3.2.2`
 * Updated `org.apache.maven.plugins:maven-javadoc-plugin:3.5.0` to `3.6.2`
+* Updated `org.apache.maven.plugins:maven-plugin-plugin:3.9.0` to `3.10.2`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.1.2` to `3.2.2`
 * Updated `org.codehaus.mojo:versions-maven-plugin:2.16.0` to `2.16.1`
 * Updated `org.jacoco:jacoco-maven-plugin:0.8.10` to `0.8.11`
