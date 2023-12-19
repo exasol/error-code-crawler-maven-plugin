@@ -1,5 +1,4 @@
 name: CI Build
-
 on:
   push:
     branches:
@@ -14,15 +13,17 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
+      - name: Set up JDKs
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: 11
-          cache: 'maven'
+          distribution: "temurin"
+          java-version: |
+            11
+            17
+          cache: "maven"
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -32,7 +33,10 @@ jobs:
       - name: Enable testcontainer reuse
         run: echo 'testcontainers.reuse.enable=true' > "$HOME/.testcontainers.properties"
       - name: Run tests and build with Maven
-        run: mvn --batch-mode --update-snapshots clean install -DtrimStackTrace=false
+        run: |
+          mvn --batch-mode clean verify install \
+              -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+              -DtrimStackTrace=false
       - name: Publish Test Report
         uses: scacap/action-surefire-report@v1
         if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' }}
@@ -44,9 +48,7 @@ jobs:
           mvn --batch-mode org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
               -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
               -DtrimStackTrace=false \
-              -Dsonar.organization=exasol \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=$SONAR_TOKEN
+              -Dsonar.token=$SONAR_TOKEN
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
