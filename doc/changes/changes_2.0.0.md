@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 1.3.2, released 2023-??-??
+# Error Code Crawler Maven Plugin 2.0.0, released 2023-12-20
 
 Code name: Fix CVE-2023-4218 and CVE-2023-4043 in dependencies
 
@@ -7,6 +7,8 @@ Code name: Fix CVE-2023-4218 and CVE-2023-4043 in dependencies
 This release fixes the following vulnerabilities in the following runtime dependencies:
 * CVE-2023-4218 in `org.eclipse.jdt:org.eclipse.jdt.core`
 * CVE-2023-4043 in `org.eclipse.parsson:parsson`
+
+Please note that starting with this release, Error Code Crawler requires Java 17 to run.
 
 ## Security
 
@@ -34,7 +36,7 @@ This release fixes the following vulnerabilities in the following runtime depend
 
 ### Plugin Dependency Updates
 
-* Updated `com.exasol:error-code-crawler-maven-plugin:1.3.1` to `1.3.2`
+* Updated `com.exasol:error-code-crawler-maven-plugin:1.3.1` to `2.0.0`
 * Updated `com.exasol:project-keeper-maven-plugin:2.9.12` to `3.0.0`
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.4.0` to `3.4.1`
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.1.2` to `3.2.3`
