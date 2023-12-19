@@ -25,6 +25,7 @@ This release fixes the following vulnerabilities in the following runtime depend
 ### Runtime Dependency Updates
 
 * Added `org.eclipse.jdt:org.eclipse.jdt.core:3.36.0`
+* Updated `org.slf4j:slf4j-jdk14:2.0.9` to `1.7.36`
 
 ### Test Dependency Updates
 
@@ -34,12 +35,13 @@ This release fixes the following vulnerabilities in the following runtime depend
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:1.3.1` to `1.3.2`
-* Updated `com.exasol:project-keeper-maven-plugin:2.9.12` to `2.9.17`
+* Updated `com.exasol:project-keeper-maven-plugin:2.9.12` to `3.0.0`
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.4.0` to `3.4.1`
-* Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.1.2` to `3.2.2`
-* Updated `org.apache.maven.plugins:maven-javadoc-plugin:3.5.0` to `3.6.2`
+* Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.1.2` to `3.2.3`
+* Updated `org.apache.maven.plugins:maven-javadoc-plugin:3.5.0` to `3.6.3`
 * Updated `org.apache.maven.plugins:maven-plugin-plugin:3.9.0` to `3.10.2`
-* Updated `org.apache.maven.plugins:maven-surefire-plugin:3.1.2` to `3.2.2`
+* Updated `org.apache.maven.plugins:maven-surefire-plugin:3.1.2` to `3.2.3`
+* Added `org.apache.maven.plugins:maven-toolchains-plugin:3.1.0`
 * Updated `org.codehaus.mojo:versions-maven-plugin:2.16.0` to `2.16.2`
 * Updated `org.jacoco:jacoco-maven-plugin:0.8.10` to `0.8.11`
 * Updated `org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184` to `3.10.0.2594`
