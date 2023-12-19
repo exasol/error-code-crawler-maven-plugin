@@ -181,9 +181,13 @@
                 <artifactId>duplicate-finder-maven-plugin</artifactId>
                 <configuration>
                     <ignoredResourcePatterns>
+                        <!-- Duplicate resources from org.eclipse.jdt -->
                         <ignoredResourcePattern>about.html</ignoredResourcePattern>
-                        <ignoredResourcePattern>plugin.xml</ignoredResourcePattern>
                         <ignoredResourcePattern>.api_description</ignoredResourcePattern>
+                        <ignoredResourcePattern>about_files/LICENSE-2.0.txt</ignoredResourcePattern>
+                        <ignoredResourcePattern>.options</ignoredResourcePattern>
+                        <ignoredResourcePattern>plugin.xml</ignoredResourcePattern>
+                        <ignoredResourcePattern>plugin.properties</ignoredResourcePattern>
                     </ignoredResourcePatterns>
                 </configuration>
             </plugin>
