@@ -32,7 +32,7 @@
 | Dependency                        | License                              |
 | --------------------------------- | ------------------------------------ |
 | [Java Development Tools Core][26] | [Eclipse Public License - v 2.0][27] |
-| [SLF4J JDK14 Binding][28]         | [MIT License][29]                    |
+| [SLF4J JDK14 Provider][28]        | [MIT License][29]                    |
 
 ## Plugin Dependencies
 
