@@ -36,3 +36,4 @@ This release fixes CVE-2024-25710 and CVE-2024-26308 in compile dependency `org.
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.2.3` to `3.2.5`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.2.3` to `3.2.5`
 * Updated `org.codehaus.mojo:flatten-maven-plugin:1.5.0` to `1.6.0`
+* Updated `org.itsallcode:openfasttrace-maven-plugin:1.6.2` to `1.8.0`
