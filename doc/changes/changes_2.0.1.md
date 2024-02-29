@@ -20,6 +20,7 @@ This release fixes CVE-2024-25710 and CVE-2024-26308 in compile dependency `org.
 
 ### Runtime Dependency Updates
 
+* Added `org.apache.commons:commons-compress:1.26.0`
 * Updated `org.slf4j:slf4j-jdk14:1.7.36` to `2.0.12`
 
 ### Test Dependency Updates
