@@ -195,6 +195,19 @@ Covers:
 
 Needs: impl, itest, utest
 
+
+## Create Target Directory if it does not exist
+
+`dsn~create-target-directory~1`
+
+ECM should create project `target` directory if it does not exist
+
+Covers:
+
+* `req~create-target-directory~1`
+
+Needs: impl, itest, utest
+
 ### Default Source Directories
 
 `dsn~src-directories-1`

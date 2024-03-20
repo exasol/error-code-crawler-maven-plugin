@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
@@ -21,7 +22,6 @@ import com.exsol.errorcodemodel.*;
  */
 @Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorReportAggregatorMojo extends AbstractMojo {
-    private static final String DESTINATION_PATH = "target/error_code_report.json";
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     MavenProject project;
 
@@ -35,22 +35,7 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
                 .flatMap(readReport -> readReport.getReport().getErrorMessageDeclarations().stream())
                 .collect(Collectors.toList());
         final ErrorCodeReport mergedReport = new ErrorCodeReport(null, null, allErrorDeclarations);
-        final Path targetPath = projectDir.resolve(DESTINATION_PATH);
-        createTargetDirIfNotExists(targetPath);
-        new ErrorCodeReportWriter().writeReport(mergedReport, targetPath);
-    }
-
-    private void createTargetDirIfNotExists(final Path targetPath) {
-        final Path targetDir = targetPath.getParent();
-        if (!Files.exists(targetDir)) {
-            try {
-                Files.createDirectories(targetDir);
-            } catch (final IOException exception) {
-                throw new IllegalStateException(ExaError.messageBuilder("E-ECM-36")
-                        .message("Failed to create directory {{path}} for merged report.", targetDir).toString(),
-                        exception);
-            }
-        }
+        new ProjectReportWriter(projectDir).writeReport(mergedReport);
     }
 
     private void validateNoOverlappingTags(final List<ReadReport> reports, final Path projectDir) {
@@ -102,7 +87,7 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
     private List<Path> findReportsOfNestedProjects(final Path projectDir) {
         try (final Stream<Path> dirStream = Files.walk(projectDir);) {
             return dirStream.filter(path -> path.endsWith(Path.of("error_code_report.json"))
-                    && !path.equals(projectDir.resolve(DESTINATION_PATH))).collect(Collectors.toList());
+                    && !path.equals(projectDir.resolve(ProjectReportWriter.REPORT_PATH))).collect(Collectors.toList());
         } catch (final IOException exception) {
             throw new UncheckedIOException(ExaError.messageBuilder("E-ECM-32")
                     .message("Exception while scanning project for nested reports.").toString(), exception);

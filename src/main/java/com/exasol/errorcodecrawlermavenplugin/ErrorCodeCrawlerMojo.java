@@ -1,26 +1,33 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
-import static java.util.stream.Collectors.toList;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
-
-import com.exasol.errorcodecrawlermavenplugin.config.*;
+import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
+import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigException;
+import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
 import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
+import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
 import com.exasol.errorreporting.ExaError;
-import com.exsol.errorcodemodel.*;
+import com.exsol.errorcodemodel.ErrorCodeReport;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * This class is the entry point of the plugin.
@@ -28,7 +35,6 @@ import com.exsol.errorcodemodel.*;
 // [impl->dsn~mvn-verify-goal~1]
 @Mojo(name = "verify", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY)
 public class ErrorCodeCrawlerMojo extends AbstractMojo {
-    private static final Path REPORT_PATH = Path.of("target", "error_code_report.json");
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
@@ -92,35 +98,20 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             getLog().debug("Crawling " + absoluteSourcePaths.size() + " paths: " + absoluteSourcePaths);
             final var crawlResult = crawler.crawl(absoluteSourcePaths);
             final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
-            createTargetDirIfNotExists();
             List<ErrorMessageDeclaration> errorMessageDeclarations = crawlResult.getErrorMessageDeclarations();
             if (hasCustomSourcePath()) {
                 // [impl->dsn~no-src-location-in-report-for-custom-source-path~1]
                 errorMessageDeclarations = removeSourcePositions(errorMessageDeclarations);
             }
             // [impl->dsn~report-writer~1]
-            new ErrorCodeReportWriter().writeReport(new ErrorCodeReport(this.project.getArtifactId(),
-                    this.project.getVersion(), errorMessageDeclarations), projectDir.resolve(REPORT_PATH));
+            new ProjectReportWriter(projectDir).writeReport(new ErrorCodeReport(this.project.getArtifactId(),
+                    this.project.getVersion(), errorMessageDeclarations));
             reportResult(errorMessageDeclarations.size(), findings);
         }
     }
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
         return declarations.stream().map(ErrorMessageDeclaration::withoutSourcePosition).collect(Collectors.toList());
-    }
-
-    private void createTargetDirIfNotExists() {
-        final Path targetDir = REPORT_PATH.getParent();
-        if (!Files.exists(targetDir)) {
-            try {
-                Files.createDirectories(targetDir);
-            } catch (final IOException exception) {
-                throw new IllegalStateException(
-                        ExaError.messageBuilder("E-ECM-24")
-                                .message("Failed to create 'target/' directory for error-code-report.").toString(),
-                        exception);
-            }
-        }
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {
