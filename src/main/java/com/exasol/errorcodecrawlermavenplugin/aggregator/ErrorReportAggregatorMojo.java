@@ -35,7 +35,8 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
                 .flatMap(readReport -> readReport.getReport().getErrorMessageDeclarations().stream())
                 .collect(Collectors.toList());
         final ErrorCodeReport mergedReport = new ErrorCodeReport(null, null, allErrorDeclarations);
-        new ProjectReportWriter(projectDir).writeReport(mergedReport);
+        final ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDir);
+        projectReportWriter.writeReport(mergedReport);
     }
 
     private void validateNoOverlappingTags(final List<ReadReport> reports, final Path projectDir) {
@@ -87,7 +88,7 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
     private List<Path> findReportsOfNestedProjects(final Path projectDir) {
         try (final Stream<Path> dirStream = Files.walk(projectDir);) {
             return dirStream.filter(path -> path.endsWith(Path.of("error_code_report.json"))
-                    && !path.equals(projectDir.resolve(ProjectReportWriter.REPORT_PATH))).collect(Collectors.toList());
+                    && !path.equals(projectDir.resolve(ProjectReportWriter.REPORT_PATH))).toList();
         } catch (final IOException exception) {
             throw new UncheckedIOException(ExaError.messageBuilder("E-ECM-32")
                     .message("Exception while scanning project for nested reports.").toString(), exception);

@@ -103,8 +103,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
                 // [impl->dsn~no-src-location-in-report-for-custom-source-path~1]
                 errorMessageDeclarations = removeSourcePositions(errorMessageDeclarations);
             }
+            final ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDir);
             // [impl->dsn~report-writer~1]
-            new ProjectReportWriter(projectDir).writeReport(new ErrorCodeReport(this.project.getArtifactId(),
+            projectReportWriter.writeReport(new ErrorCodeReport(this.project.getArtifactId(),
                     this.project.getVersion(), errorMessageDeclarations));
             reportResult(errorMessageDeclarations.size(), findings);
         }

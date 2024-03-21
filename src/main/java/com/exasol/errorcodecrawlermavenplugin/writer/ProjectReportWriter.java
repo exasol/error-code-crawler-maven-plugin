@@ -51,7 +51,7 @@ public class ProjectReportWriter {
                 Files.createDirectories(targetDir);
             } catch (final IOException exception) {
                 throw new IllegalStateException(ExaError.messageBuilder("E-ECM-36")
-                        .message("Failed to create directory {{path}} for merged report.", targetDir).toString(),
+                        .message("Failed to create directory {{path}} for report.", targetDir).toString(),
                         exception);
             }
         }

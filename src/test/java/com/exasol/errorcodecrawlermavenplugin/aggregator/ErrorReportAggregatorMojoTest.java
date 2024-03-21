@@ -26,7 +26,7 @@ class ErrorReportAggregatorMojoTest {
     @TempDir
     Path tempDir;
 
-    private static ErrorCodeReport createReportWith(final ErrorMessageDeclaration... errorMessageDeclarations) {
+    public static ErrorCodeReport createReportWith(final ErrorMessageDeclaration... errorMessageDeclarations) {
         return new ErrorCodeReport(null, null, List.of(errorMessageDeclarations));
     }
 
