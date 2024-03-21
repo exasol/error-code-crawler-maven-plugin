@@ -195,6 +195,19 @@ Covers:
 
 Needs: impl, itest, utest
 
+
+## Create Target Directory if it does not exist
+
+`dsn~create-target-directory~1`
+
+ECM error code report writer creates the project `target` directory if it does not exist (see `ProjectReportWriter`).
+
+Covers:
+
+* `feat~create-error-code-report~1`
+
+Needs: impl, utest
+
 ### Default Source Directories
 
 `dsn~src-directories-1`

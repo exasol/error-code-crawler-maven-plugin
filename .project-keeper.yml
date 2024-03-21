@@ -7,5 +7,8 @@ sources:
 linkReplacements:
   - "https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/"
 excludes:
+  # Running error-code-crawler in its own repo requires customizing the ci-build (first install, then run plugin)
   - "E-PK-CORE-18: Outdated content: '.github/workflows/ci-build.yml'"
   - "E-PK-CORE-18: Outdated content: '.github/workflows/release_droid_upload_github_release_assets.yml'"
+  # It was decided to postpone the project-keeper update, because it requires too many cascading changes not related to this issue
+  - "W-PK-CORE-153: Project-keeper version 4.1.0 is outdated. Please update project-keeper to latest version 4.2.0."
