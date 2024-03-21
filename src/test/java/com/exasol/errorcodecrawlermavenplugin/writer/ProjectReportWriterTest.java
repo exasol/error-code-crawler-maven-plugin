@@ -48,7 +48,8 @@ class ProjectReportWriterTest {
     void testErrorReportFailed() {
         projectDirectory.toFile().setWritable(false);
         ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDirectory);
-        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> projectReportWriter.writeReport(new ErrorCodeReport(null, null, List.of(ERROR_TEST_1))));
+        ErrorCodeReport errorCodeReport = new ErrorCodeReport(null, null, List.of(ERROR_TEST_1));
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> projectReportWriter.writeReport(errorCodeReport));
         assertTrue(exception.getMessage().startsWith("E-ECM-36: Failed to create directory"));
     }
 
