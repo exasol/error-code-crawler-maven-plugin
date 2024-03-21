@@ -1,8 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin.writer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +42,14 @@ class ProjectReportWriterTest {
         final ErrorCodeReport result = new ErrorCodeReportReader()
                 .readReport(this.projectDirectory.resolve("target/error_code_report.json"));
         assertThat(result.getErrorMessageDeclarations(), Matchers.containsInAnyOrder(ERROR_TEST_1));
+    }
+
+    @Test
+    void testErrorReportFailed() {
+        projectDirectory.toFile().setWritable(false);
+        ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDirectory);
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> projectReportWriter.writeReport(new ErrorCodeReport(null, null, List.of(ERROR_TEST_1))));
+        assertTrue(exception.getMessage().startsWith("E-ECM-36: Failed to create directory"));
     }
 
 
