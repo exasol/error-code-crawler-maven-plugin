@@ -8,7 +8,7 @@ This release fixes writing error report failure when target directory does not e
 
 ## Bugfixes
 
-* #100: Fixed writing error report failure when target directory does not exist
+* #100: Fixed writing error report when the target directory does not exist
 
 ## Dependency Updates
 
