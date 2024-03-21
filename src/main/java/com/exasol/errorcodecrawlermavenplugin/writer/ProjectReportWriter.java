@@ -38,6 +38,7 @@ public class ProjectReportWriter {
      * 
      * @param report {@link ErrorCodeReport}
      */
+    // [impl->dsn~create-target-directory~1]
     public void writeReport(ErrorCodeReport report) {
         createTargetDirIfNotExists(reportPath);
         writer.writeReport(report, reportPath);
