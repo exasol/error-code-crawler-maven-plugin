@@ -9,6 +9,7 @@ This release fixes writing error report failure when target directory does not e
 ## Bugfixes
 
 * #100: Fixed writing error report when the target directory does not exist
+* #103: Marked error code crawler plugin as thread-safe to prevent WARNING messages and support multi-threading
 
 ## Dependency Updates
 
