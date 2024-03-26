@@ -249,8 +249,7 @@ Needs: impl, utest
 
 `dsn~mvn-plugin-thread-safe~1`
 
-In order to support parallel execution of the maven plugin and remove WARNING messages during parallel execution,
-maven plugin should be marked as thread-safe
+In order to support parallel execution of the maven plugin and remove WARNING messages during parallel execution, maven plugin should be marked as thread-safe
 
 Covers:
 
