@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.toList;
  * This class is the entry point of the plugin.
  */
 // [impl->dsn~mvn-verify-goal~1]
-@Mojo(name = "verify", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY)
+@Mojo(name = "verify", requiresDependencyResolution = ResolutionScope.TEST, defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)

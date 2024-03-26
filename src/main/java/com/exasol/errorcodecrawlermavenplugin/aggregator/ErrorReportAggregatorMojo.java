@@ -20,7 +20,7 @@ import com.exsol.errorcodemodel.*;
  * This class is the entrypoint for the aggregate phase. It collects the reports from multiple submodules and merges
  * them into one.
  */
-@Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY)
+@Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class ErrorReportAggregatorMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     MavenProject project;
