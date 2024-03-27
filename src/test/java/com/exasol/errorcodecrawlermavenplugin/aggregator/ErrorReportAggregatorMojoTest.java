@@ -6,10 +6,17 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.exasol.errorcodecrawlermavenplugin.helper.ErrorMessageDeclarationHelper;
+import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
+import com.exasol.errorreporting.ExaError;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.hamcrest.Matchers;
@@ -23,6 +30,12 @@ class ErrorReportAggregatorMojoTest {
             .prependMessage("My message").setPosition("test.java", 1).build();
     private static final ErrorMessageDeclaration ERROR_OTHER_1 = ErrorMessageDeclaration.builder()
             .identifier("E-OTHER-1").prependMessage("My message").setPosition("other.java", 1).build();
+
+
+    private static final ErrorMessageDeclaration SRC_TEST_1 = ErrorMessageDeclaration.builder().identifier("E-TEST-1")
+            .prependMessage("My message").setPosition("src/main/java/test.java", 1).build();
+    private static final ErrorMessageDeclaration SRC_OTHER_1 = ErrorMessageDeclaration.builder()
+            .identifier("E-OTHER-1").prependMessage("My message").setPosition("src/main/java/other.java", 1).build();
     @TempDir
     Path tempDir;
 
@@ -37,7 +50,21 @@ class ErrorReportAggregatorMojoTest {
         runAggregatorMojo();
         final ErrorCodeReport result = new ErrorCodeReportReader()
                 .readReport(this.tempDir.resolve("target/error_code_report.json"));
-        assertThat(result.getErrorMessageDeclarations(), Matchers.containsInAnyOrder(ERROR_TEST_1, ERROR_OTHER_1));
+        assertThat(result.getErrorMessageDeclarations(), Matchers.containsInAnyOrder(
+                ErrorMessageDeclarationHelper.copy("nested1", ERROR_TEST_1),
+                ErrorMessageDeclarationHelper.copy("nested2", ERROR_OTHER_1)));
+    }
+
+    @Test
+    void testNestedSourceFiles() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
+        writeReport(Path.of("nested1/target"), SRC_TEST_1);
+        writeReport(Path.of("nested2/target"), SRC_OTHER_1);
+        runAggregatorMojo();
+        final ErrorCodeReport result = new ErrorCodeReportReader()
+                .readReport(this.tempDir.resolve("target/error_code_report.json"));
+        assertThat(result.getErrorMessageDeclarations(), Matchers.containsInAnyOrder(
+                ErrorMessageDeclarationHelper.copy("nested1", SRC_TEST_1),
+                ErrorMessageDeclarationHelper.copy("nested2", SRC_OTHER_1)));
     }
 
     @Test

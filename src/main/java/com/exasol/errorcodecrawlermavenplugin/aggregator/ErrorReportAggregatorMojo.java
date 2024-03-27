@@ -8,7 +8,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.exasol.errorcodecrawlermavenplugin.helper.ErrorMessageDeclarationHelper;
 import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
@@ -28,11 +30,12 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
     @Override
     public void execute() {
         final Path projectDir = this.project.getBasedir().toPath();
-        final List<Path> reportPaths = findReportsOfNestedProjects(projectDir);
-        final List<ReadReport> reports = readReports(reportPaths);
-        validateNoOverlappingTags(reports, projectDir);
+        final List<Pair<String, Path>> reportPaths = findReportsOfNestedProjects(projectDir);
+        final List<Pair<String, ReadReport>> reports = readReports(reportPaths);
+        validateNoOverlappingTags(reports.stream().map(r -> r.getRight()).toList(), projectDir);
         final List<ErrorMessageDeclaration> allErrorDeclarations = reports.stream()
-                .flatMap(readReport -> readReport.getReport().getErrorMessageDeclarations().stream())
+                .flatMap(readReport -> readReport.getRight().getReport().getErrorMessageDeclarations().stream()
+                        .map(r -> ErrorMessageDeclarationHelper.copy(readReport.getLeft(), r)))
                 .collect(Collectors.toList());
         final ErrorCodeReport mergedReport = new ErrorCodeReport(null, null, allErrorDeclarations);
         final ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDir);
@@ -58,8 +61,9 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
         }
     }
 
-    private List<ReadReport> readReports(final List<Path> reportPaths) {
-        return reportPaths.stream().map(reportPath -> new ReadReport(reportPath, readReport(reportPath)))
+    private List<Pair<String, ReadReport>> readReports(final List<Pair<String, Path>> reportPaths) {
+        return reportPaths.stream().map(reportPath -> Pair.of(reportPath.getLeft(),
+                        new ReadReport(reportPath.getRight(), readReport(reportPath.getRight()))))
                 .collect(Collectors.toList());
     }
 
@@ -85,10 +89,14 @@ public class ErrorReportAggregatorMojo extends AbstractMojo {
         }
     }
 
-    private List<Path> findReportsOfNestedProjects(final Path projectDir) {
+    private List<Pair<String, Path>> findReportsOfNestedProjects(final Path projectDir) {
         try (final Stream<Path> dirStream = Files.walk(projectDir);) {
             return dirStream.filter(path -> path.endsWith(Path.of("error_code_report.json"))
-                    && !path.equals(projectDir.resolve(ProjectReportWriter.REPORT_PATH))).toList();
+                    && !path.equals(projectDir.resolve(ProjectReportWriter.REPORT_PATH)))
+                    .map(p -> {
+                        final String prefix = projectDir.relativize(p).getName(0).toString();
+                        return Pair.of(prefix, p);
+                    }).toList();
         } catch (final IOException exception) {
             throw new UncheckedIOException(ExaError.messageBuilder("E-ECM-32")
                     .message("Exception while scanning project for nested reports.").toString(), exception);
