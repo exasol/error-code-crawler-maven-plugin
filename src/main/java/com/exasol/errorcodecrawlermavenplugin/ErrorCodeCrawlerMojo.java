@@ -124,7 +124,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     }
 
     private List<ErrorMessageDeclaration> addPrefixToSourcePositions(String prefix, final List<ErrorMessageDeclaration> declarations) {
-        return declarations.stream().map(e -> ErrorMessageDeclarationHelper.copy(prefix, e)).collect(Collectors.toList());
+        return declarations.stream().map(e -> ErrorMessageDeclarationHelper.copy(prefix, e)).toList();
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {

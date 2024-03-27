@@ -1,6 +1,5 @@
 package com.exasol.errorcodecrawlermavenplugin.helper;
 
-import com.exsol.errorcodemodel.ErrorCodeReportWriter;
 import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 import com.exsol.errorcodemodel.NamedParameter;
 
@@ -35,6 +34,10 @@ public class ErrorMessageDeclarationHelper {
             builder.addParameter(parameter.getName(), parameter.getDescription());
         }
         return builder.build();
+    }
+
+    private ErrorMessageDeclarationHelper() {
+
     }
 
 
