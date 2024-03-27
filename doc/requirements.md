@@ -199,4 +199,16 @@ In some projects we don't want to crawl the sources directly but the generated s
 
 Needs: dsn
 
+### Maven Plugin Parallel execution
+
+`feat~mvn-plugin-parallel-execution~1`
+
+Users can run parallel execution of the maven plugin, with predefined threads count by specifying Maven command line parameter `-T 1C`.
+
+Rationale:
+
+Parallel execution improves Continuous Integration, by speeding up the build time.
+
+Needs: dsn
+
 
