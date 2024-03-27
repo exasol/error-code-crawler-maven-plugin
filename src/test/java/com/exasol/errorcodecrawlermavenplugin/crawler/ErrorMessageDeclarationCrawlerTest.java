@@ -25,7 +25,7 @@ import com.exsol.errorcodemodel.NamedParameter;
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
     private static final ErrorMessageDeclarationCrawler DECLARATION_CRAWLER = new ErrorMessageDeclarationCrawler(
-            PROJECT_DIRECTORY, emptyList(), 11, Collections.emptyList());
+            PROJECT_DIRECTORY, PROJECT_DIRECTORY, emptyList(), 11, Collections.emptyList());
     private static final String TEST_DIR = "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/";
 
     @Test
@@ -127,7 +127,7 @@ class ErrorMessageDeclarationCrawlerTest {
     @EnabledOnJre({ JRE.JAVA_17 })
     void testLanguageLevelJava17() {
         final Path path = Path.of("src/test/resources/java17/").toAbsolutePath();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, emptyList(), 17,
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 17,
                 emptyList());
         final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
         assertDoesNotThrow(result::getErrorMessageDeclarations);
@@ -138,7 +138,7 @@ class ErrorMessageDeclarationCrawlerTest {
             "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/IllegalErrorCodeFromFunction.java",
             "**/IllegalErrorCodeFromFunction.java", "src/test/java/com/exasol/errorcodecrawlermavenplugin/**" })
     void testIgnoredFiled(final String excludeGlob) {
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(PROJECT_DIRECTORY,
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(PROJECT_DIRECTORY, PROJECT_DIRECTORY,
                 emptyList(), 11, List.of(excludeGlob));
         final ErrorMessageDeclarationCrawler.Result result = crawler
                 .crawl(List.of(Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java")));

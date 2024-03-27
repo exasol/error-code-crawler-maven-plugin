@@ -1,16 +1,14 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
-import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
-import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigException;
-import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
-import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
-import com.exasol.errorcodecrawlermavenplugin.helper.ErrorMessageDeclarationHelper;
-import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
-import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
-import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
-import com.exasol.errorreporting.ExaError;
-import com.exsol.errorcodemodel.ErrorCodeReport;
-import com.exsol.errorcodemodel.ErrorMessageDeclaration;
+import static java.util.stream.Collectors.toList;
+
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -21,14 +19,16 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
+import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
+import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigException;
+import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
+import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
+import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
+import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
+import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
+import com.exasol.errorreporting.ExaError;
+import com.exsol.errorcodemodel.ErrorCodeReport;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * This class is the entry point of the plugin.
@@ -58,7 +58,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     // [impl->dsn~src-directory-override]
     private List<Path> getSourcePaths() {
         if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
-            return List.of(Path.of("src/main/java"));
+            final var projectDir = this.project.getBasedir().toPath();
+            final var rootProjectDir = this.project.getParent() == null ? projectDir : this.project.getParent().getBasedir().toPath();
+            return List.of(Path.of(rootProjectDir.relativize(projectDir).toString(), "src", "main", "java"));
         } else {
             return this.sourcePaths.stream().map(Path::of).collect(toList());
         }
@@ -91,10 +93,11 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     public void execute() throws MojoFailureException {
         if (isEnabled()) {
             final var projectDir = this.project.getBasedir().toPath();
+            final var rootProjectDir = this.project.getParent() == null ? projectDir : projectDir.getParent();
             final ErrorCodeConfig config = readConfig(projectDir);
             final List<Path> classpath = getClasspath();
             getLog().debug("Using classpath " + classpath);
-            final var crawler = new ErrorMessageDeclarationCrawler(projectDir, classpath, getJavaSourceVersion(),
+            final var crawler = new ErrorMessageDeclarationCrawler(rootProjectDir, projectDir, classpath, getJavaSourceVersion(),
                     Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
             final List<Path> absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).collect(toList());
             getLog().debug("Crawling " + absoluteSourcePaths.size() + " paths: " + absoluteSourcePaths);
@@ -104,12 +107,6 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             if (hasCustomSourcePath()) {
                 // [impl->dsn~no-src-location-in-report-for-custom-source-path~1]
                 errorMessageDeclarations = removeSourcePositions(errorMessageDeclarations);
-            } else {
-                final boolean isSubProject = this.project.hasParent();
-                if (isSubProject) {
-                    String prefix = projectDir.toFile().getName();
-                    errorMessageDeclarations = addPrefixToSourcePositions(prefix, errorMessageDeclarations);
-                }
             }
             final ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDir);
             // [impl->dsn~report-writer~1]
@@ -121,10 +118,6 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
         return declarations.stream().map(ErrorMessageDeclaration::withoutSourcePosition).collect(Collectors.toList());
-    }
-
-    private List<ErrorMessageDeclaration> addPrefixToSourcePositions(String prefix, final List<ErrorMessageDeclaration> declarations) {
-        return declarations.stream().map(e -> ErrorMessageDeclarationHelper.copy(prefix, e)).toList();
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {
