@@ -250,6 +250,13 @@ Needs: impl, utest
 `dsn~mvn-plugin-thread-safe~1`
 
 In order to support parallel execution of the maven plugin and remove WARNING messages during parallel execution, maven plugin should be marked as thread-safe
+The following checklist was used to make sure that plugin is thread-safe:
+* Checked that all static fields/variables in plugin/plugin code are not subject to threading problems.
+* For example, special attention was paid to find mutable static member variables of not thread-safe classes
+* No mutable static member variables of not thread-safe classes was found
+* Checked thread safety of any other third party libraries and made sure that they don't have mutable static member variables of not thread-safe classes
+* Checked any plexus components.xml; if the components defined are singletons they need to be thread-safe. (Nothing was found)
+* Checked for presence of known tainted libraries (Nothing was found)
 
 Covers:
 
