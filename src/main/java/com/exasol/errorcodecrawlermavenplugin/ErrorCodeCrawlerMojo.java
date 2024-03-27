@@ -4,6 +4,7 @@ import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigException;
 import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
 import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
+import com.exasol.errorcodecrawlermavenplugin.helper.ErrorMessageDeclarationHelper;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
 import com.exasol.errorcodecrawlermavenplugin.writer.ProjectReportWriter;
@@ -103,6 +104,12 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             if (hasCustomSourcePath()) {
                 // [impl->dsn~no-src-location-in-report-for-custom-source-path~1]
                 errorMessageDeclarations = removeSourcePositions(errorMessageDeclarations);
+            } else {
+                final boolean isSubProject = this.project.hasParent();
+                if (isSubProject) {
+                    String prefix = projectDir.toFile().getName();
+                    errorMessageDeclarations = addPrefixToSourcePositions(prefix, errorMessageDeclarations);
+                }
             }
             final ProjectReportWriter projectReportWriter = new ProjectReportWriter(projectDir);
             // [impl->dsn~report-writer~1]
@@ -114,6 +121,10 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
         return declarations.stream().map(ErrorMessageDeclaration::withoutSourcePosition).collect(Collectors.toList());
+    }
+
+    private List<ErrorMessageDeclaration> addPrefixToSourcePositions(String prefix, final List<ErrorMessageDeclaration> declarations) {
+        return declarations.stream().map(e -> ErrorMessageDeclarationHelper.copy(prefix, e)).collect(Collectors.toList());
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {
