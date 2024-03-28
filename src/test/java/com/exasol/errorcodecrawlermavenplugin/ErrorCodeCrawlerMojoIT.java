@@ -405,13 +405,6 @@ class ErrorCodeCrawlerMojoIT {
             return this;
         }
 
-        ITVerifier subProjectVerify() throws VerificationException {
-            this.mavenVerifier = this.testEnvironment.getVerifier(this.subProjectDir);
-            this.mavenVerifier.setSystemProperties(this.properties);
-            this.mavenVerifier.executeGoal("error-code-crawler:verify");
-            return this;
-        }
-
         ITVerifier assertNoErrors() throws VerificationException {
             this.mavenVerifier.verifyErrorFreeLog();
             return this;
