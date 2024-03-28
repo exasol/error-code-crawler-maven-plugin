@@ -64,7 +64,7 @@ class ErrorMessageDeclarationCrawlerTest {
         ErrorMessageDeclarationCrawler subProjectDeclarationCrawler = new ErrorMessageDeclarationCrawler(
                 subProjectDir.getParent(), subProjectDir, emptyList(), 11, Collections.emptyList());
         Files.copy(Path.of(TEST_DIR).resolve("Test1.java"), subProjectTestSrcPackage.resolve("Test1.java"), StandardCopyOption.REPLACE_EXISTING);
-        final Path path = projectDir.relativize(subProjectTestSrcPackage.resolve("Test1.java").toAbsolutePath());
+        final Path path = projectDir.relativize(subProjectTestSrcPackage.resolve("Test1.java"));
         final ErrorMessageDeclarationCrawler.Result result = subProjectDeclarationCrawler.crawl(List.of(subProjectTestSrcPackage));
         final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
         final ErrorMessageDeclaration first = errorCodes.get(0);
