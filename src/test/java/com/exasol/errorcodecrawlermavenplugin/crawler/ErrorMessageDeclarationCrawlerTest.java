@@ -5,7 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -24,9 +28,14 @@ import com.exsol.errorcodemodel.NamedParameter;
 // [utest->dsn~error-declaration-crawler~1]
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
+
     private static final ErrorMessageDeclarationCrawler DECLARATION_CRAWLER = new ErrorMessageDeclarationCrawler(
             PROJECT_DIRECTORY, PROJECT_DIRECTORY, emptyList(), 11, Collections.emptyList());
+
     private static final String TEST_DIR = "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/";
+
+    @TempDir
+    Path projectDir;
 
     @Test
     void testCrawlValidCode() {
@@ -38,6 +47,31 @@ class ErrorMessageDeclarationCrawlerTest {
                 () -> assertThat(errorCodes.size(), equalTo(1)),
                 () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
                 () -> assertThat(first.getSourceFile(), equalTo(path.toString())),
+                () -> assertThat(first.getLine(), equalTo(10)), //
+                () -> assertThat(first.getDeclaringPackage(),
+                        equalTo("com.exasol.errorcodecrawlermavenplugin.examples")), //
+                () -> assertThat(first.getMessage(), equalTo("Test message"))//
+        );
+    }
+
+    @Test
+    void testSubProjectCrawlValidCode() throws IOException {
+        Path subProjectDir = projectDir.resolve("sub-project");
+        Path subProjectTestSrcJava = subProjectDir.resolve(Path.of("src", "test", "java"));
+        Path subProjectTestSrcPackage = subProjectTestSrcJava
+                .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+        subProjectTestSrcPackage.toFile().mkdirs();
+        ErrorMessageDeclarationCrawler subProjectDeclarationCrawler = new ErrorMessageDeclarationCrawler(
+                subProjectDir.getParent(), subProjectDir, emptyList(), 11, Collections.emptyList());
+        final Path path = subProjectTestSrcPackage.resolve("Test1.java");
+        Files.copy(Path.of(TEST_DIR).resolve("Test1.java"), path, StandardCopyOption.REPLACE_EXISTING);
+        final ErrorMessageDeclarationCrawler.Result result = subProjectDeclarationCrawler.crawl(List.of(subProjectDir.getParent()));
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
+        final ErrorMessageDeclaration first = errorCodes.get(0);
+        assertAll(//
+                () -> assertThat(errorCodes.size(), equalTo(1)),
+                () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
+                () -> assertThat(first.getSourceFile(), containsString(path.toString())),
                 () -> assertThat(first.getLine(), equalTo(10)), //
                 () -> assertThat(first.getDeclaringPackage(),
                         equalTo("com.exasol.errorcodecrawlermavenplugin.examples")), //
