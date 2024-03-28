@@ -27,16 +27,21 @@ import spoon.reflect.visitor.filter.TypeFilter;
 // [impl->dsn~error-declaration-crawler~1]
 public class ErrorMessageDeclarationCrawler {
     private static final String ERRORREPORTING_PACKAGE = "com.exasol.errorreporting";
-    private static final List<MessageBuilderStepReader> STEP_READERS = List.of(new ExaErrorStepReader(),
-            new ParameterStepReader(), new MessageStepReader(), new MitigationStepReader());
+    private final Path rootProjectDirectory;
     private final Path projectDirectory;
     private final List<Path> classPath;
     private final int javaSourceVersion;
     private final List<PathMatcher> excludedFilesMatchers;
 
+    private List<MessageBuilderStepReader> getStepReaders() {
+        return List.of(new ExaErrorStepReader(rootProjectDirectory),
+                new ParameterStepReader(), new MessageStepReader(), new MitigationStepReader());
+    }
+
     /**
      * Create a new instance of {@link ErrorMessageDeclarationCrawler}.
-     * 
+     *
+     * @param rootProjectDirectory  root project directory of multimodule project to which all paths are relative (equivalent to projectDirectory for single-module project)
      * @param projectDirectory  project directory to which all paths as relative for paths in messages
      * @param classPath         classPath with the dependencies of the classes to crawl. In the unit-tests for some
      *                          reason this can be empty. Probably Spoon then picks the class path of this project. When
@@ -44,8 +49,9 @@ public class ErrorMessageDeclarationCrawler {
      * @param javaSourceVersion java source version / language level of the project
      * @param excludedFiles     list of glob expressions for files to exclude from validation
      */
-    public ErrorMessageDeclarationCrawler(final Path projectDirectory, final List<Path> classPath,
+    public ErrorMessageDeclarationCrawler(final Path rootProjectDirectory, final Path projectDirectory, final List<Path> classPath,
             final int javaSourceVersion, final List<String> excludedFiles) {
+        this.rootProjectDirectory = rootProjectDirectory;
         this.projectDirectory = projectDirectory;
         this.classPath = classPath;
         this.javaSourceVersion = javaSourceVersion;
@@ -200,7 +206,7 @@ public class ErrorMessageDeclarationCrawler {
         final CtTypeReference<?> declaringType = executable.getDeclaringType();
         final String declaringTypeName = declaringType.getSimpleName();
         final String methodSignature = executable.getSignature();
-        final Optional<MessageBuilderStepReader> reader = STEP_READERS.stream()
+        final Optional<MessageBuilderStepReader> reader = getStepReaders().stream()
                 .filter(eachReader -> eachReader.canRead(declaringTypeName, methodSignature)).findAny();
         if (reader.isPresent()) {
             reader.get().read(builderCall, errorCodeBuilder, this.projectDirectory);

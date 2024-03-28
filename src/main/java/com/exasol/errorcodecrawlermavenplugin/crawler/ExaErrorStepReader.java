@@ -16,6 +16,17 @@ import spoon.reflect.code.CtInvocation;
 public class ExaErrorStepReader implements MessageBuilderStepReader {
     private static final String SIGNATURE = "messageBuilder(java.lang.String)";
 
+    private Path rootProjectDirectory;
+
+    /**
+     * Create a new instance of {@link ExaErrorStepReader}.
+     *
+     * @param rootProjectDirectory  root project directory of multimodule project to which all paths are relative (equivalent to projectDirectory for single-module projects)
+     */
+    public ExaErrorStepReader(Path rootProjectDirectory) {
+        this.rootProjectDirectory = rootProjectDirectory;
+    }
+
     @Override
     public void read(final CtInvocation<?> builderCall, final ErrorMessageDeclaration.Builder errorCodeBuilder,
             final Path projectDirectory) throws InvalidSyntaxException {
@@ -24,7 +35,7 @@ public class ExaErrorStepReader implements MessageBuilderStepReader {
         final var errorCode = new ArgumentReader(SIGNATURE).readStringArgumentValue(arguments.get(0));
         errorCodeBuilder.identifier(errorCode);
         errorCodeBuilder.setPosition(
-                projectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
+                rootProjectDirectory.relativize(builderCall.getPosition().getFile().toPath()).toString(),
                 builderCall.getPosition().getLine());
     }
 
