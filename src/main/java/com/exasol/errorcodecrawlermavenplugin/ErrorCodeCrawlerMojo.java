@@ -2,6 +2,7 @@ package com.exasol.errorcodecrawlermavenplugin;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -39,7 +40,7 @@ import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
-    private MavenProject project;
+    MavenProject project;
 
     // [impl->dsn~skip-execution~1]
     @Parameter(property = "error-code-crawler.skip", defaultValue = "false")
@@ -56,10 +57,8 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     // [impl->dsn~src-directories]
     // [impl->dsn~src-directory-override]
-    private List<Path> getSourcePaths() {
+    private List<Path> getSourcePaths(Path rootProjectDir, Path projectDir) {
         if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
-            final var projectDir = this.project.getBasedir().toPath();
-            final var rootProjectDir = this.project.getParent() == null ? projectDir : this.project.getParent().getBasedir().toPath();
             return List.of(Path.of(rootProjectDir.relativize(projectDir).toString(), "src", "main", "java"));
         } else {
             return this.sourcePaths.stream().map(Path::of).collect(toList());
@@ -92,14 +91,14 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         if (isEnabled()) {
-            final var projectDir = this.project.getBasedir().toPath();
-            final var rootProjectDir = this.project.getParent() == null ? projectDir : projectDir.getParent();
+            final var projectDir = getProjectDir();
+            final var rootProjectDir = getRootProjectDir(projectDir);
             final ErrorCodeConfig config = readConfig(projectDir);
             final List<Path> classpath = getClasspath();
             getLog().debug("Using classpath " + classpath);
             final var crawler = new ErrorMessageDeclarationCrawler(rootProjectDir, projectDir, classpath, getJavaSourceVersion(),
                     Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-            final List<Path> absoluteSourcePaths = getSourcePaths().stream().map(projectDir::resolve).collect(toList());
+            final List<Path> absoluteSourcePaths = getSourcePaths(rootProjectDir, projectDir).stream().map(rootProjectDir::resolve).collect(toList());
             getLog().debug("Crawling " + absoluteSourcePaths.size() + " paths: " + absoluteSourcePaths);
             final var crawlResult = crawler.crawl(absoluteSourcePaths);
             final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
@@ -114,6 +113,18 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
                     this.project.getVersion(), errorMessageDeclarations));
             reportResult(errorMessageDeclarations.size(), findings);
         }
+    }
+
+    private Path getProjectDir() throws MojoFailureException {
+        try {
+            return this.project.getBasedir().getCanonicalFile().toPath();
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage());
+        }
+    }
+
+    private Path getRootProjectDir(Path projectDir) {
+        return this.project.getParent() == null ? projectDir : projectDir.getParent();
     }
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {

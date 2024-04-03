@@ -77,7 +77,7 @@ class ErrorCodeCrawlerMojoIT {
 
     @Test
     void testSubProjectErrorReport() throws VerificationException, IOException, ErrorCodeReportReader.ReadException {
-        final String path = Path.of("sub-project/src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
+        final String expectedPath = Path.of("sub-project/src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
                 .toString().replace("\\", "\\\\");
 
         final ITVerifier verifier = getVerifierWithSubProject() //
@@ -92,7 +92,7 @@ class ErrorCodeCrawlerMojoIT {
                 () -> assertThat(report.getProjectVersion(), equalTo("1.0.0")),
                 () -> assertThat(firstDeclaration.getIdentifier(), equalTo("E-TEST-1")),
                 () -> assertThat(firstDeclaration.getMessage(), equalTo("Test message")),
-                () -> assertThat(firstDeclaration.getSourceFile(), equalTo(path)),
+                () -> assertThat(firstDeclaration.getSourceFile(), equalTo(expectedPath)),
                 () -> assertThat(firstDeclaration.getLine(), equalTo(10))//
         );
     }
@@ -249,9 +249,8 @@ class ErrorCodeCrawlerMojoIT {
                     .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
             this.projectTestSrcPackage = this.projectDir.resolve(
                     Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
-            if (!(this.projectMainSrcPackage.toFile().mkdirs() && this.projectTestSrcPackage.toFile().mkdirs())) {
-                throw new IllegalStateException("Failed to create test projects src folder.");
-            }
+            Files.createDirectories(this.projectMainSrcPackage);
+            Files.createDirectories(this.projectTestSrcPackage);
             withConfiguration("testProject/" + CONFIG_NAME);
             if (withSubProject) {
                 withSubProject();
@@ -260,30 +259,24 @@ class ErrorCodeCrawlerMojoIT {
 
         ITVerifier withSubProject() throws IOException {
             this.subProjectDir = this.projectDir.resolve("sub-project");
-            if (!(this.subProjectDir.toFile().mkdirs())) {
-                throw new IllegalStateException("Failed to create sub-project folder");
-            }
+            Files.createDirectories(this.subProjectDir);
             this.subProjectMainSrcJava = this.subProjectDir.resolve(Path.of("src", "main", "java"));
             this.subProjectMainSrcPackage = this.subProjectMainSrcJava
                     .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
             this.subProjectTestSrcPackage = this.subProjectDir.resolve(
                     Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
-            if (!(this.subProjectMainSrcPackage.toFile().mkdirs() && this.subProjectTestSrcPackage.toFile().mkdirs())) {
-                throw new IllegalStateException("Failed to create test sub projects src folder.");
-            }
+            Files.createDirectories(this.subProjectMainSrcPackage);
+            Files.createDirectories(this.subProjectTestSrcPackage);
 
-            final Path parentPomPath = this.projectDir.resolve("parent-pom");
             final TestMavenModel rootModel = mavenModel(CURRENT_VERSION, null, null);
             rootModel.addModule("sub-project");
-            rootModel.addModule("parent-pom");
             rootModel.setPackaging("pom");
 
+            final Path parentPomPath = this.projectDir.resolve("parent-pom");
             final TestMavenModel parentModel = mavenModel(CURRENT_VERSION, null, null);
             parentModel.setArtifactId("parent-pom");
             parentModel.setPackaging("pom");
-            if (!(parentPomPath.toFile().mkdirs())) {
-                throw new IllegalStateException("Failed to create parent-pom folder");
-            }
+            Files.createDirectories(parentPomPath);
             final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
             Files.copy(Objects.requireNonNull(stream), //
                     parentPomPath.resolve(CONFIG_NAME), //
