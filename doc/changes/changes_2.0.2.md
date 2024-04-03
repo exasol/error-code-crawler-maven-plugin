@@ -1,6 +1,6 @@
-# Error Code Crawler Maven Plugin 2.0.2, released 2024-??-??
+# Error Code Crawler Maven Plugin 2.0.2, released 2024-04-03
 
-Code name:
+Code name: Fixed Source File Path for Multi-Module Projects
 
 ## Summary
 

@@ -58,7 +58,7 @@ class ErrorCodeCrawlerMojoTest {
 
     @Test
     void testSubProjectReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
-        Path subProjectDir = projectDir.resolve("sub-project");
+        Path subProjectDir = projectDir.toFile().getCanonicalFile().toPath().resolve("sub-project");
         Path subProjectMainSrcJava = subProjectDir.resolve(Path.of("src", "main", "java"));
         Path subProjectMainSrcPackage = subProjectMainSrcJava
                 .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));

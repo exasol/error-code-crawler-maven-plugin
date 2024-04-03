@@ -115,12 +115,8 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         }
     }
 
-    private Path getProjectDir() throws MojoFailureException {
-        try {
-            return this.project.getBasedir().getCanonicalFile().toPath();
-        } catch (IOException e) {
-            throw new MojoFailureException(e.getMessage());
-        }
+    private Path getProjectDir() {
+        return this.project.getBasedir().toPath();
     }
 
     private Path getRootProjectDir(Path projectDir) {
