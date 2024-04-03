@@ -98,7 +98,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             getLog().debug("Using classpath " + classpath);
             final var crawler = new ErrorMessageDeclarationCrawler(rootProjectDir, projectDir, classpath, getJavaSourceVersion(),
                     Objects.requireNonNullElse(this.excludes, Collections.emptyList()));
-            final List<Path> absoluteSourcePaths = getSourcePaths(rootProjectDir, projectDir).stream().map(rootProjectDir::resolve).collect(toList());
+            final List<Path> absoluteSourcePaths = getSourcePaths(rootProjectDir, projectDir).stream().map(rootProjectDir::resolve).toList();
             getLog().debug("Crawling " + absoluteSourcePaths.size() + " paths: " + absoluteSourcePaths);
             final var crawlResult = crawler.crawl(absoluteSourcePaths);
             final List<Finding> findings = validateErrorDeclarations(config, crawlResult);
