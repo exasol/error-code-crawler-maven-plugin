@@ -2,7 +2,6 @@ package com.exasol.errorcodecrawlermavenplugin;
 
 import static java.util.stream.Collectors.toList;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.LinkedList;
