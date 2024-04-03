@@ -15,6 +15,7 @@ import java.util.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
+import org.apache.maven.model.Parent;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
@@ -42,6 +43,7 @@ class ErrorCodeCrawlerMojoIT {
 
     @TempDir
     Path projectDir;
+
 
     @BeforeAll
     static void beforeAll() {
@@ -71,6 +73,28 @@ class ErrorCodeCrawlerMojoIT {
                                 + "\"messagePlaceholders\":[],\"sourceFile\":" //
                                 + "\"" + path + "\"," //
                                 + "\"sourceLine\":10,\"mitigations\":[]}]}"));
+    }
+
+    @Test
+    void testSubProjectErrorReport() throws VerificationException, IOException, ErrorCodeReportReader.ReadException {
+        final String expectedPath = Path.of("sub-project/src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
+                .toString().replace("\\", "\\\\");
+
+        final ITVerifier verifier = getVerifierWithSubProject() //
+                .withSubProjectJavaFile("Test1.java") //
+                .verify()//
+                .assertSubProjectReport(containsString("E-TEST-1"));
+
+        final ErrorCodeReport report = new ErrorCodeReportReader().readReport(verifier.getSubProjectErrorCodeReportPath());
+        final ErrorMessageDeclaration firstDeclaration = report.getErrorMessageDeclarations().get(0);
+        assertAll(//
+                () -> assertThat(report.getProjectName(), equalTo("sub-project")),
+                () -> assertThat(report.getProjectVersion(), equalTo("1.0.0")),
+                () -> assertThat(firstDeclaration.getIdentifier(), equalTo("E-TEST-1")),
+                () -> assertThat(firstDeclaration.getMessage(), equalTo("Test message")),
+                () -> assertThat(firstDeclaration.getSourceFile(), equalTo(expectedPath)),
+                () -> assertThat(firstDeclaration.getLine(), equalTo(10))//
+        );
     }
 
     @Test
@@ -191,6 +215,10 @@ class ErrorCodeCrawlerMojoIT {
         return new ITVerifier(ErrorCodeCrawlerMojoIT.testEnvironment, this.projectDir);
     }
 
+    private ITVerifier getVerifierWithSubProject() throws IOException {
+        return new ITVerifier(ErrorCodeCrawlerMojoIT.testEnvironment, this.projectDir, true);
+    }
+
     static TestMavenModel mavenModel(final String version, final List<String> sourcePaths, final String skip) {
         return new TestMavenModel(new ErrorCodeCrawlerPluginDefinition(version, sourcePaths, skip));
     }
@@ -198,13 +226,22 @@ class ErrorCodeCrawlerMojoIT {
     static class ITVerifier {
         private final MavenIntegrationTestEnvironment testEnvironment;
         private final Path projectDir;
+        private Path subProjectDir;
         private final Path projectMainSrcJava;
         private final Path projectMainSrcPackage;
+
+        private Path subProjectMainSrcJava;
+        private Path subProjectMainSrcPackage;
         private final Path projectTestSrcPackage;
+        private Path subProjectTestSrcPackage;
         private final Properties properties = new Properties();
         private Verifier mavenVerifier = null;
 
         ITVerifier(final MavenIntegrationTestEnvironment testEnvironment, final Path projectDir) throws IOException {
+            this(testEnvironment, projectDir, false);
+        }
+
+        ITVerifier(final MavenIntegrationTestEnvironment testEnvironment, final Path projectDir, boolean withSubProject) throws IOException {
             this.testEnvironment = testEnvironment;
             this.projectDir = projectDir;
             this.projectMainSrcJava = this.projectDir.resolve(Path.of("src", "main", "java"));
@@ -212,16 +249,70 @@ class ErrorCodeCrawlerMojoIT {
                     .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
             this.projectTestSrcPackage = this.projectDir.resolve(
                     Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
-            if (!(this.projectMainSrcPackage.toFile().mkdirs() && this.projectTestSrcPackage.toFile().mkdirs())) {
-                throw new IllegalStateException("Failed to create test projects src folder.");
-            }
+            Files.createDirectories(this.projectMainSrcPackage);
+            Files.createDirectories(this.projectTestSrcPackage);
             withConfiguration("testProject/" + CONFIG_NAME);
+            if (withSubProject) {
+                withSubProject();
+            }
+        }
+
+        ITVerifier withSubProject() throws IOException {
+            this.subProjectDir = this.projectDir.resolve("sub-project");
+            Files.createDirectories(this.subProjectDir);
+            this.subProjectMainSrcJava = this.subProjectDir.resolve(Path.of("src", "main", "java"));
+            this.subProjectMainSrcPackage = this.subProjectMainSrcJava
+                    .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+            this.subProjectTestSrcPackage = this.subProjectDir.resolve(
+                    Path.of("src", "test", "java", "com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+            Files.createDirectories(this.subProjectMainSrcPackage);
+            Files.createDirectories(this.subProjectTestSrcPackage);
+
+            final TestMavenModel rootModel = mavenModel(CURRENT_VERSION, null, null);
+            rootModel.addModule("sub-project");
+            rootModel.setPackaging("pom");
+
+            final Path parentPomPath = this.projectDir.resolve("parent-pom");
+            final TestMavenModel parentModel = mavenModel(CURRENT_VERSION, null, null);
+            parentModel.setArtifactId("parent-pom");
+            parentModel.setPackaging("pom");
+            Files.createDirectories(parentPomPath);
+            final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
+            Files.copy(Objects.requireNonNull(stream), //
+                    parentPomPath.resolve(CONFIG_NAME), //
+                    StandardCopyOption.REPLACE_EXISTING);
+
+            parentModel.writeAsPomToProject(parentPomPath);
+
+            Parent parent = new Parent();
+            parent.setVersion(parentModel.getVersion());
+            parent.setGroupId(parentModel.getGroupId());
+            parent.setArtifactId(parentModel.getArtifactId());
+            parent.setRelativePath("../parent-pom/pom.xml");
+
+            final TestMavenModel subProjectModel = mavenModel(CURRENT_VERSION, null, null);
+            subProjectModel.setArtifactId("sub-project");
+            subProjectModel.setParent(parent);
+            subProjectModel.setPackaging("jar");
+
+            withPom(rootModel);
+            withSubProjectPom(subProjectModel);
+            withSubProjectConfiguration("testProject/" + CONFIG_NAME);
+            return this;
         }
 
         ITVerifier withConfiguration(final String resourcePath) throws IOException {
             final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream(resourcePath);
             Files.copy(Objects.requireNonNull(stream), //
                     this.projectDir.resolve(CONFIG_NAME), //
+                    StandardCopyOption.REPLACE_EXISTING);
+            return this;
+        }
+
+        ITVerifier withSubProjectConfiguration(final String resourcePath) throws IOException {
+            final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream(resourcePath);
+            Files.copy(Objects.requireNonNull(stream), //
+                    this.subProjectDir.resolve(CONFIG_NAME), //
                     StandardCopyOption.REPLACE_EXISTING);
             return this;
         }
@@ -266,8 +357,17 @@ class ErrorCodeCrawlerMojoIT {
             return this;
         }
 
+        ITVerifier withSubProjectPom(final TestMavenModel model) throws IOException {
+            model.writeAsPomToProject(this.subProjectDir);
+            return this;
+        }
+
         ITVerifier withJavaFile(final String name) throws IOException {
             return withFile(name, this.projectMainSrcPackage);
+        }
+
+        ITVerifier withSubProjectJavaFile(final String name) throws IOException {
+            return withFile(name, this.subProjectMainSrcPackage);
         }
 
         ITVerifier withTestFile(final String name) throws IOException {
@@ -307,8 +407,18 @@ class ErrorCodeCrawlerMojoIT {
             return this.projectDir.resolve(Path.of("target", "error_code_report.json"));
         }
 
+        Path getSubProjectErrorCodeReportPath() {
+            return this.subProjectDir.resolve(Path.of("target", "error_code_report.json"));
+        }
+
         ITVerifier assertReport(final Matcher<String> matcher) throws IOException, VerificationException {
             final String report = Files.readString(getErrorCodeReportPath());
+            assertThat(report, matcher);
+            return this;
+        }
+
+        ITVerifier assertSubProjectReport(final Matcher<String> matcher) throws IOException, VerificationException {
+            final String report = Files.readString(getSubProjectErrorCodeReportPath());
             assertThat(report, matcher);
             return this;
         }

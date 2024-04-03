@@ -5,7 +5,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -24,9 +28,14 @@ import com.exsol.errorcodemodel.NamedParameter;
 // [utest->dsn~error-declaration-crawler~1]
 class ErrorMessageDeclarationCrawlerTest {
     private static final Path PROJECT_DIRECTORY = Path.of(".").toAbsolutePath();
+
     private static final ErrorMessageDeclarationCrawler DECLARATION_CRAWLER = new ErrorMessageDeclarationCrawler(
-            PROJECT_DIRECTORY, emptyList(), 11, Collections.emptyList());
+            PROJECT_DIRECTORY, PROJECT_DIRECTORY, emptyList(), 11, Collections.emptyList());
+
     private static final String TEST_DIR = "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/";
+
+    @TempDir
+    Path projectDir;
 
     @Test
     void testCrawlValidCode() {
@@ -38,6 +47,32 @@ class ErrorMessageDeclarationCrawlerTest {
                 () -> assertThat(errorCodes.size(), equalTo(1)),
                 () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
                 () -> assertThat(first.getSourceFile(), equalTo(path.toString())),
+                () -> assertThat(first.getLine(), equalTo(10)), //
+                () -> assertThat(first.getDeclaringPackage(),
+                        equalTo("com.exasol.errorcodecrawlermavenplugin.examples")), //
+                () -> assertThat(first.getMessage(), equalTo("Test message"))//
+        );
+    }
+
+    @Test
+    void testSubProjectCrawlValidCode() throws IOException {
+        Path canonicalProjectDir = projectDir.toFile().getCanonicalFile().toPath();
+        Path subProjectDir = canonicalProjectDir.resolve("sub-project");
+        Path subProjectTestSrcJava = subProjectDir.resolve("src/test/java");
+        Path subProjectTestSrcPackage = subProjectTestSrcJava
+                .resolve("com/exasol/errorcodecrawlermavenplugin/examples");
+        subProjectTestSrcPackage.toFile().mkdirs();
+        ErrorMessageDeclarationCrawler subProjectDeclarationCrawler = new ErrorMessageDeclarationCrawler(
+                subProjectDir.getParent(), subProjectDir, emptyList(), 11, Collections.emptyList());
+        Files.copy(Path.of(TEST_DIR).resolve("Test1.java"), subProjectTestSrcPackage.resolve("Test1.java"), StandardCopyOption.REPLACE_EXISTING);
+        final Path expectedPath = Path.of("sub-project/src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java");
+        final ErrorMessageDeclarationCrawler.Result result = subProjectDeclarationCrawler.crawl(List.of(subProjectTestSrcPackage));
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
+        final ErrorMessageDeclaration first = errorCodes.get(0);
+        assertAll(//
+                () -> assertThat(errorCodes.size(), equalTo(1)),
+                () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
+                () -> assertThat(first.getSourceFile(), equalTo(expectedPath.toString())),
                 () -> assertThat(first.getLine(), equalTo(10)), //
                 () -> assertThat(first.getDeclaringPackage(),
                         equalTo("com.exasol.errorcodecrawlermavenplugin.examples")), //
@@ -127,7 +162,7 @@ class ErrorMessageDeclarationCrawlerTest {
     @EnabledOnJre({ JRE.JAVA_17 })
     void testLanguageLevelJava17() {
         final Path path = Path.of("src/test/resources/java17/").toAbsolutePath();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, emptyList(), 17,
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 17,
                 emptyList());
         final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
         assertDoesNotThrow(result::getErrorMessageDeclarations);
@@ -138,7 +173,7 @@ class ErrorMessageDeclarationCrawlerTest {
             "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/IllegalErrorCodeFromFunction.java",
             "**/IllegalErrorCodeFromFunction.java", "src/test/java/com/exasol/errorcodecrawlermavenplugin/**" })
     void testIgnoredFiled(final String excludeGlob) {
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(PROJECT_DIRECTORY,
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(PROJECT_DIRECTORY, PROJECT_DIRECTORY,
                 emptyList(), 11, List.of(excludeGlob));
         final ErrorMessageDeclarationCrawler.Result result = crawler
                 .crawl(List.of(Path.of(TEST_DIR, "IllegalErrorCodeFromFunction.java")));
