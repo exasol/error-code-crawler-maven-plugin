@@ -272,28 +272,8 @@ class ErrorCodeCrawlerMojoIT {
             rootModel.addModule("sub-project");
             rootModel.setPackaging("pom");
 
-            final Path parentPomPath = this.projectDir.resolve("parent-pom");
-            final TestMavenModel parentModel = mavenModel(CURRENT_VERSION, null, null);
-            parentModel.setArtifactId("parent-pom");
-            parentModel.setPackaging("pom");
-            Files.createDirectories(parentPomPath);
-            final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
-            Files.copy(Objects.requireNonNull(stream), //
-                    parentPomPath.resolve(CONFIG_NAME), //
-                    StandardCopyOption.REPLACE_EXISTING);
-
-            parentModel.writeAsPomToProject(parentPomPath);
-
-            Parent parent = new Parent();
-            parent.setVersion(parentModel.getVersion());
-            parent.setGroupId(parentModel.getGroupId());
-            parent.setArtifactId(parentModel.getArtifactId());
-            parent.setRelativePath("../parent-pom/pom.xml");
-
             final TestMavenModel subProjectModel = mavenModel(CURRENT_VERSION, null, null);
             subProjectModel.setArtifactId("sub-project");
-            subProjectModel.setParent(parent);
-            subProjectModel.setPackaging("jar");
 
             withPom(rootModel);
             withSubProjectPom(subProjectModel);

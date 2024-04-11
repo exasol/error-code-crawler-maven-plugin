@@ -41,6 +41,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     MavenProject project;
 
+    @Parameter(property = "session.executionRootDirectory", required = true, readonly = true)
+    String executionRootDirectory;
+
     // [impl->dsn~skip-execution~1]
     @Parameter(property = "error-code-crawler.skip", defaultValue = "false")
     String skip;
@@ -119,7 +122,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     }
 
     private Path getRootProjectDir(Path projectDir) {
-        return this.project.getParent() == null ? projectDir : projectDir.getParent();
+        return executionRootDirectory == null ? projectDir : Path.of(executionRootDirectory);
     }
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
