@@ -55,7 +55,7 @@
 | [Apache Maven Javadoc Plugin][47]                       | [Apache-2.0][1]                       |
 | [Nexus Staging Maven Plugin][48]                        | [Eclipse Public License][49]          |
 | [Maven Failsafe Plugin][50]                             | [Apache-2.0][1]                       |
-| [JaCoCo :: Maven Plugin][51]                            | [Eclipse Public License 2.0][27]      |
+| [JaCoCo :: Maven Plugin][51]                            | [EPL-2.0][27]                         |
 | [Maven Plugin Plugin][52]                               | [Apache-2.0][1]                       |
 | [Project Keeper Maven plugin][53]                       | [The MIT License][54]                 |
 | [error-code-crawler-maven-plugin][55]                   | [MIT License][56]                     |
