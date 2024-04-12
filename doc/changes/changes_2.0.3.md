@@ -4,7 +4,7 @@ Code name: Fixed The Source Path for Single-Module and Multi-Module Projects
 
 ## Summary
 
-This release fixes source path for single-module and multi-module projects
+This release fixes the source path for single-module and multi-module projects
 
 ## Bugfixes
 

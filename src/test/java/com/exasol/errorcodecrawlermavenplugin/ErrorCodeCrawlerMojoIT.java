@@ -76,6 +76,52 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
+    void testProjectWithParentPomHasCorrectSourcePath() throws VerificationException, IOException, ErrorCodeReportReader.ReadException {
+        final String expectedPath = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
+                .toString().replace("\\", "\\\\");
+        ITVerifier verifier = getVerifier() //
+                .withDefaultPom() //
+                .withJavaFile("Test1.java") //
+                .verify();
+
+        addParentPom(verifier);
+
+        final ErrorCodeReport report = new ErrorCodeReportReader().readReport(verifier.getErrorCodeReportPath());
+        final ErrorMessageDeclaration firstDeclaration = report.getErrorMessageDeclarations().get(0);
+        assertAll(//
+                () -> assertThat(report.getProjectName(), equalTo("project-to-test")),
+                () -> assertThat(report.getProjectVersion(), equalTo("1.0.0")),
+                () -> assertThat(firstDeclaration.getIdentifier(), equalTo("E-TEST-1")),
+                () -> assertThat(firstDeclaration.getMessage(), equalTo("Test message")),
+                () -> assertThat(firstDeclaration.getSourceFile(), equalTo(expectedPath)),
+                () -> assertThat(firstDeclaration.getLine(), equalTo(10))//
+        );
+    }
+
+
+    private void addParentPom(ITVerifier verifier) throws IOException {
+        final Path parentPomPath = this.projectDir.resolve("parent-pom");
+        final TestMavenModel parentModel = mavenModel(CURRENT_VERSION, null, null);
+        parentModel.setArtifactId("parent-pom");
+        parentModel.setPackaging("pom");
+        Files.createDirectories(parentPomPath);
+        final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
+        Files.copy(Objects.requireNonNull(stream), //
+                parentPomPath.resolve(CONFIG_NAME), //
+                StandardCopyOption.REPLACE_EXISTING);
+
+        parentModel.writeAsPomToProject(parentPomPath);
+
+        Parent parent = new Parent();
+        parent.setVersion(parentModel.getVersion());
+        parent.setGroupId(parentModel.getGroupId());
+        parent.setArtifactId(parentModel.getArtifactId());
+        parent.setRelativePath("../parent-pom/pom.xml");
+
+        verifier.getMavenModel().setParent(parent);
+    }
+
+    @Test
     void testSubProjectErrorReport() throws VerificationException, IOException, ErrorCodeReportReader.ReadException {
         final String expectedPath = Path.of("sub-project/src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
                 .toString().replace("\\", "\\\\");
@@ -236,6 +282,7 @@ class ErrorCodeCrawlerMojoIT {
         private Path subProjectTestSrcPackage;
         private final Properties properties = new Properties();
         private Verifier mavenVerifier = null;
+        private TestMavenModel mavenModel;
 
         ITVerifier(final MavenIntegrationTestEnvironment testEnvironment, final Path projectDir) throws IOException {
             this(testEnvironment, projectDir, false);
@@ -333,6 +380,7 @@ class ErrorCodeCrawlerMojoIT {
         }
 
         ITVerifier withPom(final TestMavenModel model) throws IOException {
+            this.mavenModel = model;
             model.writeAsPomToProject(this.projectDir);
             return this;
         }
@@ -401,6 +449,10 @@ class ErrorCodeCrawlerMojoIT {
             final String report = Files.readString(getSubProjectErrorCodeReportPath());
             assertThat(report, matcher);
             return this;
+        }
+
+        TestMavenModel getMavenModel() {
+            return mavenModel;
         }
     }
 }
