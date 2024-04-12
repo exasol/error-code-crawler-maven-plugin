@@ -7,8 +7,39 @@ sources:
 linkReplacements:
   - "https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/"
 excludes:
-  # Running error-code-crawler in its own repo requires customizing the ci-build (first install, then run plugin)
-  - "E-PK-CORE-18: Outdated content: '.github/workflows/ci-build.yml'"
-  - "E-PK-CORE-18: Outdated content: '.github/workflows/release_droid_upload_github_release_assets.yml'"
-  # It was decided to postpone the project-keeper update, because it requires too many cascading changes not related to this issue
-  - "W-PK-CORE-153: Project-keeper version 4.1.0 is outdated. Please update project-keeper to latest version 4.2.0."
+  - "E-PK-CORE-17: Missing required file: 'release_config.yml'"
+
+build:
+  workflows:
+    - name: "ci-build.yml"
+      stepCustomizations:
+        - action: REPLACE
+          stepId: build-pk-verify
+          content:
+            name: Run tests and build with Maven
+            id: build-pk-verify
+            run: |
+              mvn --batch-mode clean verify install \
+                  -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+                  -DtrimStackTrace=false
+        - action: INSERT_AFTER
+          stepId: sonar-analysis
+          content:
+            id: run-error-code-crawler
+            name: Run error-code-crawler on itself
+            run: mvn --batch-mode error-code-crawler:verify
+
+    - name: "release.yml"
+      stepCustomizations:
+        - action: REPLACE
+          stepId: build
+          content:
+            name: Build Project
+            id: build
+            run: mvn --batch-mode -DskipTests clean install verify
+        - action: INSERT_AFTER
+          stepId: build
+          content:
+            id: run-error-code-crawler
+            name: Run error-code-crawler on itself
+            run: mvn --batch-mode error-code-crawler:verify

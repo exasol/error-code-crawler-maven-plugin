@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -40,6 +41,9 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     MavenProject project;
+
+    @Parameter(property = "session.executionRootDirectory", required = true, readonly = true)
+    String executionRootDirectory;
 
     // [impl->dsn~skip-execution~1]
     @Parameter(property = "error-code-crawler.skip", defaultValue = "false")
@@ -119,7 +123,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     }
 
     private Path getRootProjectDir(Path projectDir) {
-        return this.project.getParent() == null ? projectDir : projectDir.getParent();
+        return StringUtils.isBlank(executionRootDirectory) ? projectDir : Path.of(executionRootDirectory);
     }
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
