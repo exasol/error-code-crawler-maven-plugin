@@ -85,6 +85,34 @@ class ErrorCodeCrawlerMojoTest {
     }
 
     @Test
+    void testSimpleProjectPomReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
+        Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
+        final Path expectedPath = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java");
+
+        Path projectMainSrcJava = projectPath.resolve(Path.of("src", "main", "java"));
+        Path projectMainSrcPackage = projectMainSrcJava
+                .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
+        projectMainSrcPackage.toFile().mkdirs();
+        Files.copy(EXAMPLES_PATH.resolve("Test1.java"), //
+                projectMainSrcPackage.resolve("Test1.java"), //
+                StandardCopyOption.REPLACE_EXISTING);
+
+        runSimpleProjectErrorCodeCrawlerMojo(projectPath);
+
+        final ErrorCodeReport result = new ErrorCodeReportReader()
+                .readReport(projectPath.resolve("target/error_code_report.json"));
+        final List<ErrorMessageDeclaration> errorCodes = result.getErrorMessageDeclarations();
+        final ErrorMessageDeclaration first = errorCodes.get(0);
+        assertAll(//
+                () -> assertThat(errorCodes.size(), equalTo(1)),
+                () -> assertThat(first.getIdentifier(), equalTo("E-TEST-1")),
+                () -> assertThat(first.getSourceFile(), equalTo(expectedPath.toString())),
+                () -> assertThat(first.getLine(), equalTo(10)), //
+                () -> assertThat(first.getMessage(), equalTo("Test message"))//
+        );
+    }
+
+    @Test
     void testProjectWithParentPomReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
         Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
         final Path expectedPath = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java");
@@ -110,6 +138,25 @@ class ErrorCodeCrawlerMojoTest {
                 () -> assertThat(first.getLine(), equalTo(10)), //
                 () -> assertThat(first.getMessage(), equalTo("Test message"))//
         );
+    }
+
+    private void runSimpleProjectErrorCodeCrawlerMojo(Path projectPath) throws MojoFailureException, IOException {
+
+        final ErrorCodeCrawlerMojo errorCodeCrawlerMojo = new ErrorCodeCrawlerMojo();
+        final MavenProject project = new MavenProject();
+        project.setFile(projectPath.resolve("pom.xml").toFile());
+        errorCodeCrawlerMojo.project = project;
+        errorCodeCrawlerMojo.skip = "false";
+
+        //if null, then executionRootDirectory is equal to projectPath
+        errorCodeCrawlerMojo.executionRootDirectory = null;
+
+        final InputStream configStream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
+        Files.copy(Objects.requireNonNull(configStream), //
+                this.projectDir.resolve(CONFIG_NAME), //
+                StandardCopyOption.REPLACE_EXISTING);
+
+        errorCodeCrawlerMojo.execute();
     }
 
     private void runProjectWithParentPomErrorCodeCrawlerMojo(Path projectPath) throws MojoFailureException, IOException {
