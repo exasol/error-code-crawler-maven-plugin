@@ -72,7 +72,7 @@
 [2]: https://maven.apache.org/ref/3.9.6/maven-plugin-api/
 [3]: https://maven.apache.org/ref/3.9.6/maven-model/
 [4]: https://maven.apache.org/ref/3.9.6/maven-core/
-[5]: http://spoon.gforge.inria.fr/
+[5]: https://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
 [8]: https://github.com/exasol/error-reporting-java/
