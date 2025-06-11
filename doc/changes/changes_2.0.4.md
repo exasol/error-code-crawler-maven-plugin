@@ -1,12 +1,14 @@
 # Error Code Crawler Maven Plugin 2.0.4, released 2025-06-11
 
-Code name:
+Code name: Fixed The Source Path for Single-Module and Multi-Module Projects
 
 ## Summary
 
-## Features
+This release fixes the source path for single-module and multi-module projects.
 
-* ISSUE_NUMBER: description
+## Bugfixes
+
+* #109: Fixed The Source Path for Single-Module and Multi-Module Projects
 
 ## Dependency Updates
 
