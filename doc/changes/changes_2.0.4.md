@@ -6,9 +6,9 @@ Code name: Support Java 21
 
 This release supports crawling Java 21 source code by upgrading the parser library `fr.inria.gforge.spoon:spoon-core` to `11.2.1-beta-20`.
 
-## Bugfixes
+## Bug Fixes
 
-* #113: Added support for Java 21
+* #113: Crawler fails with new record patterns syntax (Java 21)
 
 ## Dependency Updates
 
