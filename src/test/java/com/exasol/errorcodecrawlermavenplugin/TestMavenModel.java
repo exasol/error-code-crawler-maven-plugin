@@ -13,15 +13,20 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 public class TestMavenModel extends Model {
     private static final long serialVersionUID = 422440090869638523L;
 
-    public TestMavenModel(final ErrorCodeCrawlerPluginDefinition errorCodeCrawlerPluginDefinition) {
-        this.setBuild(new Build());
-        this.setVersion("1.0.0");
-        this.setArtifactId("project-to-test");
-        this.setGroupId("com.example");
-        this.setModelVersion("4.0.0");
-        this.addDependency("error-reporting-java", "com.exasol", "compile", "1.0.1");
-        addCompilerPlugin();
-        addErrorCodeCrawlerPlugin(errorCodeCrawlerPluginDefinition);
+    private TestMavenModel() {
+    }
+
+    public static TestMavenModel create(ErrorCodeCrawlerPluginDefinition def) {
+        TestMavenModel model = new TestMavenModel();
+        model.setBuild(new Build());
+        model.setVersion("1.0.0");
+        model.setArtifactId("project-to-test");
+        model.setGroupId("com.example");
+        model.setModelVersion("4.0.0");
+        model.addDependency("error-reporting-java", "com.exasol", "compile", "1.0.1");
+        model.addCompilerPlugin();
+        model.addErrorCodeCrawlerPlugin(def);
+        return model;
     }
 
     public void writeAsPomToProject(final Path projectDir) throws IOException {

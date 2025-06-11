@@ -9,21 +9,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Objects;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
 import org.apache.maven.model.Parent;
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import com.exasol.mavenpluginintegrationtesting.MavenIntegrationTestEnvironment;
-import com.exsol.errorcodemodel.*;
+import com.exsol.errorcodemodel.ErrorCodeReport;
+import com.exsol.errorcodemodel.ErrorCodeReportReader;
+import com.exsol.errorcodemodel.ErrorMessageDeclaration;
 
 /**
  * This integration test tests the maven plugin in a save environment. Since we don't want to install the plugin to the
@@ -266,7 +274,7 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     static TestMavenModel mavenModel(final String version, final List<String> sourcePaths, final String skip) {
-        return new TestMavenModel(new ErrorCodeCrawlerPluginDefinition(version, sourcePaths, skip));
+        return TestMavenModel.create(new ErrorCodeCrawlerPluginDefinition(version, sourcePaths, skip));
     }
 
     static class ITVerifier {

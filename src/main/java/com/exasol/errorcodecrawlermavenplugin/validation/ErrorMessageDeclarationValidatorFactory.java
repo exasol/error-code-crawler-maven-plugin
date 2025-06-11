@@ -11,6 +11,17 @@ import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
 public class ErrorMessageDeclarationValidatorFactory {
 
     /**
+     * Creates a new instance of {@code ErrorMessageDeclarationValidatorFactory}.
+     * <p>
+     * This factory provides a configured {@link ErrorMessageDeclarationValidator}
+     * composed of individual validation strategies.
+     * </p>
+     */
+    public ErrorMessageDeclarationValidatorFactory() {
+        // Default constructor required for instantiation
+    }
+
+    /**
      * Get an {@link ErrorMessageDeclarationValidator}.
      * 
      * @return built validator

@@ -15,6 +15,7 @@ build:
       stepCustomizations:
         - action: REPLACE
           stepId: build-pk-verify
+          job: build-and-test
           content:
             name: Run tests and build with Maven
             id: build-pk-verify
@@ -24,6 +25,7 @@ build:
                   -DtrimStackTrace=false
         - action: INSERT_AFTER
           stepId: sonar-analysis
+          job: build-and-test
           content:
             id: run-error-code-crawler
             name: Run error-code-crawler on itself

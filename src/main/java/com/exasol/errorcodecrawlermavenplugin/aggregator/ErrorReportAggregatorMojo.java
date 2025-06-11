@@ -23,6 +23,17 @@ import com.exsol.errorcodemodel.*;
 // [impl->dsn~mvn-plugin-thread-safe~1]
 @Mojo(name = "aggregate", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class ErrorReportAggregatorMojo extends AbstractMojo {
+
+    /**
+     * Creates a new instance of {@code ErrorReportAggregatorMojo}.
+     * <p>
+     * Required by Maven for instantiating the Mojo class via reflection.
+     * </p>
+     */
+    public ErrorReportAggregatorMojo() {
+        // Default constructor
+    }
+
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     MavenProject project;
 

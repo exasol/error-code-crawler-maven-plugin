@@ -58,6 +58,19 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
     @Parameter(name = "sourcePaths")
     private List<String> sourcePaths;
 
+    /**
+     * Constructs a new instance of {@code ErrorCodeCrawlerMojo}.
+     * <p>
+     * This constructor is required by Maven to instantiate the Mojo during the build lifecycle. All parameter
+     * injection is handled by Maven through annotated fields, so this constructor does not perform any initialization logic.
+     * </p>
+     *
+     * Note: This constructor should remain public and parameterless to be compatible with Maven's plugin instantiation mechanism.
+     */
+    public ErrorCodeCrawlerMojo() {
+
+    }
+
     // [impl->dsn~src-directories]
     // [impl->dsn~src-directory-override]
     private List<Path> getSourcePaths(Path rootProjectDir, Path projectDir) {

@@ -85,6 +85,8 @@ public class ErrorCodeConfig {
     }
 
     /**
+     * Get packages for a specific error tag.
+     *
      * @param errorTag error tag e.g: {@code EXA-TEST}
      * @return list of packages that can declare this error code
      */
