@@ -35,6 +35,7 @@ jobs:
           mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
               -Dsonar.projectKey=com.exasol:error-code-crawler-maven-plugin \
               -Dsonar.organization=exasol \
-              -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+              -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
+              -DskipProjectKeeper=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
