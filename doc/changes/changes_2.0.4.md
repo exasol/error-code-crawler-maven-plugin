@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 2.0.4, released 2025-06-11
+# Error Code Crawler Maven Plugin 2.0.4, released 2025-06-12
 
 Code name: Support Java 21
 
