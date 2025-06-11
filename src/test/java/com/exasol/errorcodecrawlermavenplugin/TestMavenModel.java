@@ -29,6 +29,10 @@ public class TestMavenModel extends Model {
         return model;
     }
 
+    public static TestMavenModel create(final String version) {
+        return create(new ErrorCodeCrawlerPluginDefinition(version, null, "false"));
+    }
+
     public void writeAsPomToProject(final Path projectDir) throws IOException {
         try (final FileWriter fileWriter = new FileWriter(projectDir.resolve("pom.xml").toFile())) {
             new MavenXpp3Writer().write(fileWriter, this);
