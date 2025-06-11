@@ -12,12 +12,6 @@ This release fixes the source path for single-module and multi-module projects.
 
 ## Dependency Updates
 
-### Compile Dependency Updates
-
-* Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1` to `2.19.0`
-* Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1` to `2.19.0`
-* Updated `fr.inria.gforge.spoon:spoon-core:10.4.2` to `11.2.1-beta-20`
-
 ### Runtime Dependency Updates
 
 * Updated `org.eclipse.jdt:org.eclipse.jdt.core:3.36.0` to `3.41.0`
