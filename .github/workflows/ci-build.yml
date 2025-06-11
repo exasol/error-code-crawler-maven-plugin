@@ -80,7 +80,8 @@ jobs:
           mvn --batch-mode org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
               -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
               -DtrimStackTrace=false \
-              -Dsonar.token=$SONAR_TOKEN
+              -Dsonar.token=$SONAR_TOKEN \
+              -Dsonar.branch.name=main
         env: {
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}',
           SONAR_TOKEN: '${{ secrets.SONAR_TOKEN }}'
