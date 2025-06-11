@@ -1,16 +1,22 @@
-# Error Code Crawler Maven Plugin 2.0.4, released 2025-07-11
+# Error Code Crawler Maven Plugin 2.0.4, released 2025-06-11
 
-Code name: Fixed The Source Path for Single-Module and Multi-Module Projects
+Code name: Support Java 21
 
 ## Summary
 
-This release fixes the source path for single-module and multi-module projects.
+This release supports crawling Java 21 source code by upgrading the parser library `fr.inria.gforge.spoon:spoon-core` to `11.2.1-beta-20`.
 
 ## Bugfixes
 
-* #109: Fixed The Source Path for Single-Module and Multi-Module Projects
+* #113: Crawler fails with new record patterns syntax (Java 21)
 
 ## Dependency Updates
+
+### Compile Dependency Updates
+
+* Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1` to `2.19.0`
+* Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1` to `2.19.0`
+* Updated `fr.inria.gforge.spoon:spoon-core:10.4.2` to `11.2.1-beta-20`
 
 ### Runtime Dependency Updates
 
