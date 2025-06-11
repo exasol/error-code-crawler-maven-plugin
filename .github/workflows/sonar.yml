@@ -36,6 +36,6 @@ jobs:
               -Dsonar.projectKey=com.exasol:error-code-crawler-maven-plugin \
               -Dsonar.organization=exasol \
               -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
-              -DskipProjectKeeper=true
+              -Dproject-keeper.skip=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
