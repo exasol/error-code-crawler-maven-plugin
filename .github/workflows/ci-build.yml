@@ -49,11 +49,12 @@ jobs:
       - name: Set up JDKs
         id: setup-java
         uses: actions/setup-java@v4
-        with: {
-          distribution: temurin,
-          java-version: '17',
+        with:
+          distribution: temurin
+          java-version: |-
+            17
+            21
           cache: maven
-        }
       - name: Cache SonarCloud packages
         id: cache-sonar
         uses: actions/cache@v4
@@ -141,18 +142,18 @@ jobs:
         with: {
           fetch-depth: 0
         }
-      - name: Set up JDK 21
+      - name: Set up JDK 24
         id: setup-java
         uses: actions/setup-java@v4
         with: {
           distribution: temurin,
-          java-version: '21',
+          java-version: '24',
           cache: maven
         }
       - {
-        name: Run tests and build with Maven 21,
+        name: Run tests and build with Maven 24,
         id: build-next-java,
-        run: mvn --batch-mode clean package -DtrimStackTrace=false -Djava.version=21
+        run: mvn --batch-mode clean package -DtrimStackTrace=false -Djava.version=24
       }
   build:
     needs: [
@@ -181,11 +182,12 @@ jobs:
       - name: Set up JDKs
         id: setup-java
         uses: actions/setup-java@v4
-        with: {
-          distribution: temurin,
-          java-version: '17',
+        with:
+          distribution: temurin
+          java-version: |-
+            17
+            21
           cache: maven
-        }
       - name: Check if release is needed
         id: check-release
         if: ${{ github.ref == 'refs/heads/main' }}

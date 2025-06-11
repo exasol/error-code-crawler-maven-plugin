@@ -1,12 +1,14 @@
-# Error Code Crawler Maven Plugin 2.0.4, released 2025-??-??
+# Error Code Crawler Maven Plugin 2.0.4, released 2025-06-11
 
-Code name:
+Code name: Support Java 21
 
 ## Summary
 
-## Features
+This release supports crawling Java 21 source code by upgrading the parser library `fr.inria.gforge.spoon:spoon-core` to `11.2.1-beta-20`.
 
-* ISSUE_NUMBER: description
+## Bugfixes
+
+* #113: Crawler fails with new record patterns syntax (Java 21)
 
 ## Dependency Updates
 

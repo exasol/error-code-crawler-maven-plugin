@@ -8,7 +8,7 @@
     <url>https://github.com/exasol/error-code-crawler-maven-plugin/</url>
     <packaging>maven-plugin</packaging>
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <maven.version>3.9.6</maven.version>
     </properties>
     <dependencies>

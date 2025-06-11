@@ -33,11 +33,12 @@ jobs:
       - name: Set up JDKs
         id: setup-jdks
         uses: actions/setup-java@v4
-        with: {
-          distribution: temurin,
-          java-version: '17',
+        with:
+          distribution: temurin
+          java-version: |-
+            17
+            21
           cache: maven
-        }
       - name: Print issues
         id: debug-print-issues
         run: |
