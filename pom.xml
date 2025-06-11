@@ -8,7 +8,7 @@
     <url>https://github.com/exasol/error-code-crawler-maven-plugin/</url>
     <packaging>maven-plugin</packaging>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <maven.version>3.9.6</maven.version>
     </properties>
     <dependencies>
@@ -207,8 +207,8 @@
                         <arg>-Xlint:all,-processing</arg>
                         <arg>-Werror</arg>
                     </compilerArgs>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
         </plugins>
