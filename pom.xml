@@ -47,7 +47,7 @@
         <dependency>
             <groupId>fr.inria.gforge.spoon</groupId>
             <artifactId>spoon-core</artifactId>
-            <version>10.4.2</version>
+            <version>11.2.1-beta-20</version>
         </dependency>
         <dependency>
             <!-- Upgrade transitive dependency of spoon-core to fix CVE-2023-4218 -->
