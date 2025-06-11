@@ -32,11 +32,11 @@ This release supports crawling Java 21 source code by upgrading the parser libra
 * Added `org.apache.maven.plugins:maven-artifact-plugin:3.6.0`
 * Updated `org.apache.maven.plugins:maven-clean-plugin:3.2.0` to `3.4.1`
 * Updated `org.apache.maven.plugins:maven-compiler-plugin:3.13.0` to `3.14.0`
-* Updated `org.apache.maven.plugins:maven-deploy-plugin:3.1.2` to `3.1.4`
+* Updated `org.apache.maven.plugins:maven-deploy-plugin:3.1.1` to `3.1.4`
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.4.1` to `3.5.0`
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.2.5` to `3.5.3`
 * Updated `org.apache.maven.plugins:maven-gpg-plugin:3.2.2` to `3.2.7`
-* Updated `org.apache.maven.plugins:maven-install-plugin:3.1.1` to `3.1.4`
+* Updated `org.apache.maven.plugins:maven-install-plugin:3.1.2` to `3.1.4`
 * Updated `org.apache.maven.plugins:maven-javadoc-plugin:3.6.3` to `3.11.2`
 * Updated `org.apache.maven.plugins:maven-site-plugin:3.12.1` to `3.21.0`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.2.5` to `3.5.3`
