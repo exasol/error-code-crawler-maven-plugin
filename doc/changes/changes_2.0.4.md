@@ -20,7 +20,8 @@ This release supports crawling Java 21 source code by upgrading the parser libra
 
 ### Runtime Dependency Updates
 
-* Updated `org.eclipse.jdt:org.eclipse.jdt.core:3.36.0` to `3.41.0`
+* Removed `org.apache.commons:commons-compress:1.26.0`
+* Removed `org.eclipse.jdt:org.eclipse.jdt.core:3.36.0`
 
 ### Plugin Dependency Updates
 
