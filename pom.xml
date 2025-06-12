@@ -50,20 +50,6 @@
             <version>11.2.1-beta-20</version>
         </dependency>
         <dependency>
-            <!-- Upgrade transitive dependency of spoon-core to fix CVE-2023-4218 -->
-            <groupId>org.eclipse.jdt</groupId>
-            <artifactId>org.eclipse.jdt.core</artifactId>
-            <version>3.41.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <!-- Upgrade transitive dependency of spoon-core to fix CVE-2024-25710 & CVE-2024-26308 -->
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.26.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>error-reporting-java</artifactId>
             <version>1.0.1</version>
