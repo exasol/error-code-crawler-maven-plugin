@@ -353,7 +353,7 @@ class ErrorCodeCrawlerMojoIT {
         }
 
         ITVerifier verifyException(final Matcher<String> matcher) {
-            final VerificationException exception = assertThrows(VerificationException.class, () -> verify());
+            final VerificationException exception = assertThrows(VerificationException.class, this::verify);
             assertThat(exception.getMessage(), matcher);
             return this;
         }
@@ -365,7 +365,7 @@ class ErrorCodeCrawlerMojoIT {
         }
 
         ITVerifier verifyNoException() {
-            assertDoesNotThrow(() -> verify());
+            assertDoesNotThrow(this::verify);
             return this;
         }
 

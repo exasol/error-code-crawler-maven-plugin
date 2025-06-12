@@ -68,7 +68,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
      * Note: This constructor should remain public and parameterless to be compatible with Maven's plugin instantiation mechanism.
      */
     public ErrorCodeCrawlerMojo() {
-
+        // Default constructor required for instantiation
     }
 
     // [impl->dsn~src-directories]
