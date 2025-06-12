@@ -1,6 +1,7 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
 import static com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader.CONFIG_NAME;
+import static com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter.getCurrentProjectVersion;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,6 +30,8 @@ class ErrorCodeCrawlerMojoTest {
 
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
+
+    private static final String CURRENT_VERSION = getCurrentProjectVersion();
 
     @TempDir
     Path projectDir;
@@ -145,6 +148,7 @@ class ErrorCodeCrawlerMojoTest {
         final ErrorCodeCrawlerMojo errorCodeCrawlerMojo = new ErrorCodeCrawlerMojo();
         final MavenProject project = new MavenProject();
         project.setFile(projectPath.resolve("pom.xml").toFile());
+        project.setModel(TestMavenModel.create(CURRENT_VERSION));
         errorCodeCrawlerMojo.project = project;
         errorCodeCrawlerMojo.skip = "false";
 
@@ -168,6 +172,7 @@ class ErrorCodeCrawlerMojoTest {
         final MavenProject project = new MavenProject();
         project.setFile(projectPath.resolve("pom.xml").toFile());
         project.setParent(parentProject);
+        project.setModel(TestMavenModel.create(CURRENT_VERSION));
         errorCodeCrawlerMojo.project = project;
         errorCodeCrawlerMojo.skip = "false";
         errorCodeCrawlerMojo.executionRootDirectory = projectPath.toString();
@@ -192,6 +197,7 @@ class ErrorCodeCrawlerMojoTest {
         final MavenProject subProject = new MavenProject();
         subProject.setFile(subProjectPath.resolve("pom.xml").toFile());
         subProject.setParent(project);
+        subProject.setModel(TestMavenModel.create(CURRENT_VERSION));
         errorCodeCrawlerMojo.project = subProject;
         errorCodeCrawlerMojo.skip = "false";
         errorCodeCrawlerMojo.executionRootDirectory = projectPath.toString();

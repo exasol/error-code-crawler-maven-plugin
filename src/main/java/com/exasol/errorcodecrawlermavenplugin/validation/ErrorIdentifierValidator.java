@@ -11,6 +11,18 @@ import com.exsol.errorcodemodel.ErrorMessageDeclaration;
  */
 //[impl->dsn~identifier-validator~2]
 public class ErrorIdentifierValidator extends AbstractIndependentErrorMessageDeclarationValidator {
+
+    /**
+     * Creates a new instance of {@code ErrorIdentifierValidator}.
+     * <p>
+     * This validator checks whether the error identifier in a given {@link ErrorMessageDeclaration}
+     * conforms to the expected syntax. It is typically used as part of the error code validation pipeline.
+     * </p>
+     */
+    public ErrorIdentifierValidator() {
+        // Default constructor required for instantiation via reflection or service loading
+    }
+
     @Override
     protected Stream<Finding> validateSingleErrorMessageDeclaration(
             final ErrorMessageDeclaration errorMessageDeclaration) {

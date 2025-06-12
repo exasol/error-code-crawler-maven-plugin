@@ -168,6 +168,16 @@ class ErrorMessageDeclarationCrawlerTest {
         assertDoesNotThrow(result::getErrorMessageDeclarations);
     }
 
+    @Test
+    @EnabledOnJre({ JRE.JAVA_21 })
+    void testLanguageLevelJava21() {
+        final Path path = Path.of("src/test/resources/java21/").toAbsolutePath();
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 21,
+                emptyList());
+        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
+        assertDoesNotThrow(result::getErrorMessageDeclarations);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {
             "src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/IllegalErrorCodeFromFunction.java",
