@@ -16,6 +16,7 @@ This release supports crawling Java 21 source code by upgrading the parser libra
 
 * Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1` to `2.19.0`
 * Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1` to `2.19.0`
+* Updated `fr.inria.gforge.spoon:spoon-core:10.4.2` to `11.2.0`
 
 ### Runtime Dependency Updates
 
