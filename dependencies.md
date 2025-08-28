@@ -67,9 +67,9 @@
 
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[2]: https://maven.apache.org/ref/3.9.6/maven-plugin-api/
-[3]: https://maven.apache.org/ref/3.9.6/maven-model/
-[4]: https://maven.apache.org/ref/3.9.6/maven-core/
+[2]: https://maven.apache.org/ref/3.9.11/maven-plugin-api/
+[3]: https://maven.apache.org/ref/3.9.11/maven-model/
+[4]: https://maven.apache.org/ref/3.9.11/maven-core/
 [5]: https://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
@@ -80,7 +80,7 @@
 [12]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [13]: https://github.com/exasol/error-code-model-java/
 [14]: https://github.com/exasol/error-code-model-java/blob/main/LICENSE
-[15]: https://maven.apache.org/ref/3.9.6/maven-artifact/
+[15]: https://maven.apache.org/ref/3.9.11/maven-artifact/
 [16]: http://hamcrest.org/JavaHamcrest/
 [17]: http://opensource.org/licenses/BSD-3-Clause
 [18]: https://www.jqno.nl/equalsverifier
