@@ -15,5 +15,6 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "exasol",
         "projectKey": "com.exasol:error-code-crawler-maven-plugin"
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
