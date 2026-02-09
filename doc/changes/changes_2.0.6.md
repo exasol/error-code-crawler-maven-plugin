@@ -1,12 +1,15 @@
-# Error Code Crawler Maven Plugin 2.0.6, released 2026-??-??
+# Error Code Crawler Maven Plugin 2.0.6, released 2026-02-09
 
-Code name:
+Code name: Fix Java 21 switch pattern matching
 
 ## Summary
 
-## Features
+This release fixes an issue when using switch with pattern matching and sealed classes on Java 21 where the plugin
+would fail because of a missing `default` branch.
 
-* ISSUE_NUMBER: description
+## Bugfixes
+
+* #118: Error crawler fails with switch and sealed enums
 
 ## Dependency Updates
 
