@@ -10,6 +10,26 @@ Code name:
 
 ## Dependency Updates
 
+### Compile Dependency Updates
+
+* Updated `com.exasol:error-code-model-java:2.1.3` to `2.1.4`
+* Updated `com.exasol:error-reporting-java:1.0.1` to `1.0.2`
+* Updated `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.19.0` to `2.21.0`
+* Updated `com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0` to `2.21.0`
+* Updated `fr.inria.gforge.spoon:spoon-core:11.2.0` to `11.3.0`
+
+### Runtime Dependency Updates
+
+* Updated `org.slf4j:slf4j-jdk14:2.0.12` to `1.7.36`
+
+### Test Dependency Updates
+
+* Updated `com.exasol:maven-plugin-integration-testing:1.1.2` to `1.1.4`
+* Updated `com.exasol:maven-project-version-getter:1.2.0` to `1.2.2`
+* Updated `nl.jqno.equalsverifier:equalsverifier:3.15.7` to `4.3.1`
+* Updated `org.hamcrest:hamcrest:2.2` to `3.0`
+* Updated `org.junit.jupiter:junit-jupiter:5.10.2` to `6.0.2`
+
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:2.0.5` to `2.0.6`

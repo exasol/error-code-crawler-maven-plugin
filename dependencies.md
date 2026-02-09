@@ -20,7 +20,7 @@
 
 | Dependency                                 | License                           |
 | ------------------------------------------ | --------------------------------- |
-| [Hamcrest][16]                             | [BSD License 3][17]               |
+| [Hamcrest][16]                             | [BSD-3-Clause][17]                |
 | [EqualsVerifier \| release normal jar][18] | [Apache License, Version 2.0][1]  |
 | [JUnit Jupiter (Aggregator)][19]           | [Eclipse Public License v2.0][20] |
 | [Apache Maven Verifier Component][21]      | [Apache License, Version 2.0][1]  |
@@ -29,9 +29,9 @@
 
 ## Runtime Dependencies
 
-| Dependency                 | License           |
-| -------------------------- | ----------------- |
-| [SLF4J JDK14 Provider][26] | [MIT License][27] |
+| Dependency                | License           |
+| ------------------------- | ----------------- |
+| [SLF4J JDK14 Binding][26] | [MIT License][27] |
 
 ## Plugin Dependencies
 
@@ -67,9 +67,9 @@
 
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[2]: https://maven.apache.org/ref/3.9.11/maven-plugin-api/
-[3]: https://maven.apache.org/ref/3.9.11/maven-model/
-[4]: https://maven.apache.org/ref/3.9.11/maven-core/
+[2]: https://maven.apache.org/ref/3.9.12/maven-plugin-api/
+[3]: https://maven.apache.org/ref/3.9.12/maven-model/
+[4]: https://maven.apache.org/ref/3.9.12/maven-core/
 [5]: https://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
@@ -80,11 +80,11 @@
 [12]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [13]: https://github.com/exasol/error-code-model-java/
 [14]: https://github.com/exasol/error-code-model-java/blob/main/LICENSE
-[15]: https://maven.apache.org/ref/3.9.11/maven-artifact/
+[15]: https://maven.apache.org/ref/3.9.12/maven-artifact/
 [16]: http://hamcrest.org/JavaHamcrest/
-[17]: http://opensource.org/licenses/BSD-3-Clause
+[17]: https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE
 [18]: https://www.jqno.nl/equalsverifier
-[19]: https://junit.org/junit5/
+[19]: https://junit.org/
 [20]: https://www.eclipse.org/legal/epl-v20.html
 [21]: https://maven.apache.org/shared/maven-verifier/
 [22]: https://github.com/exasol/maven-project-version-getter/
