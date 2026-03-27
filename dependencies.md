@@ -29,9 +29,9 @@
 
 ## Runtime Dependencies
 
-| Dependency                | License           |
-| ------------------------- | ----------------- |
-| [SLF4J JDK14 Binding][26] | [MIT License][27] |
+| Dependency                 | License   |
+| -------------------------- | --------- |
+| [SLF4J JDK14 Provider][26] | [MIT][27] |
 
 ## Plugin Dependencies
 
@@ -67,9 +67,9 @@
 
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[2]: https://maven.apache.org/ref/3.9.12/maven-plugin-api/
-[3]: https://maven.apache.org/ref/3.9.12/maven-model/
-[4]: https://maven.apache.org/ref/3.9.12/maven-core/
+[2]: https://maven.apache.org/ref/3.9.14/maven-plugin-api/
+[3]: https://maven.apache.org/ref/3.9.14/maven-model/
+[4]: https://maven.apache.org/ref/3.9.14/maven-core/
 [5]: https://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
@@ -80,7 +80,7 @@
 [12]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [13]: https://github.com/exasol/error-code-model-java/
 [14]: https://github.com/exasol/error-code-model-java/blob/main/LICENSE
-[15]: https://maven.apache.org/ref/3.9.12/maven-artifact/
+[15]: https://maven.apache.org/ref/3.9.14/maven-artifact/
 [16]: http://hamcrest.org/JavaHamcrest/
 [17]: https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE
 [18]: https://www.jqno.nl/equalsverifier
@@ -92,7 +92,7 @@
 [24]: https://github.com/exasol/maven-plugin-integration-testing/
 [25]: https://github.com/exasol/maven-plugin-integration-testing/blob/main/LICENSE
 [26]: http://www.slf4j.org
-[27]: http://www.opensource.org/licenses/mit-license.php
+[27]: https://opensource.org/license/mit
 [28]: https://maven.apache.org/plugins/maven-clean-plugin/
 [29]: https://maven.apache.org/plugins/maven-install-plugin/
 [30]: https://maven.apache.org/plugins/maven-resources-plugin/
