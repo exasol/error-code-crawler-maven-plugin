@@ -6,9 +6,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,13 +54,13 @@ class ErrorMessageDeclarationCrawlerTest {
 
     @Test
     void testSubProjectCrawlValidCode() throws IOException {
-        Path canonicalProjectDir = projectDir.toFile().getCanonicalFile().toPath();
-        Path subProjectDir = canonicalProjectDir.resolve("sub-project");
-        Path subProjectTestSrcJava = subProjectDir.resolve("src/test/java");
-        Path subProjectTestSrcPackage = subProjectTestSrcJava
+        final Path canonicalProjectDir = projectDir.toFile().getCanonicalFile().toPath();
+        final Path subProjectDir = canonicalProjectDir.resolve("sub-project");
+        final Path subProjectTestSrcJava = subProjectDir.resolve("src/test/java");
+        final Path subProjectTestSrcPackage = subProjectTestSrcJava
                 .resolve("com/exasol/errorcodecrawlermavenplugin/examples");
         subProjectTestSrcPackage.toFile().mkdirs();
-        ErrorMessageDeclarationCrawler subProjectDeclarationCrawler = new ErrorMessageDeclarationCrawler(
+        final ErrorMessageDeclarationCrawler subProjectDeclarationCrawler = new ErrorMessageDeclarationCrawler(
                 subProjectDir.getParent(), subProjectDir, emptyList(), 11, Collections.emptyList());
         Files.copy(Path.of(TEST_DIR).resolve("Test1.java"), subProjectTestSrcPackage.resolve("Test1.java"), StandardCopyOption.REPLACE_EXISTING);
         final Path expectedPath = Path.of("sub-project/src/test/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java");
@@ -169,10 +167,20 @@ class ErrorMessageDeclarationCrawlerTest {
     }
 
     @Test
-    @EnabledOnJre({ JRE.JAVA_21 })
+    @EnabledOnJre({ JRE.JAVA_21, JRE.JAVA_25 })
     void testLanguageLevelJava21() {
         final Path path = Path.of("src/test/resources/java21/").toAbsolutePath();
         final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 21,
+                emptyList());
+        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
+        assertDoesNotThrow(result::getErrorMessageDeclarations);
+    }
+
+    @Test
+    @EnabledOnJre({ JRE.JAVA_25 })
+    void testLanguageLevelJava25() {
+        final Path path = Path.of("src/test/resources/java25/").toAbsolutePath();
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 25,
                 emptyList());
         final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
         assertDoesNotThrow(result::getErrorMessageDeclarations);
