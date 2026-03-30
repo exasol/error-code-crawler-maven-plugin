@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 2.0.7, released 2026-??-??
+# Error Code Crawler Maven Plugin 2.0.7, released 2026-03-30
 
 Code name: Fixed vulnerability CVE-2025-67030 in org.codehaus.plexus:plexus-utils:jar:3.6.0:provided
 
