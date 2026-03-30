@@ -29,9 +29,9 @@
 
 ## Runtime Dependencies
 
-| Dependency                 | License   |
-| -------------------------- | --------- |
-| [SLF4J JDK14 Provider][26] | [MIT][27] |
+| Dependency                | License           |
+| ------------------------- | ----------------- |
+| [SLF4J JDK14 Binding][26] | [MIT License][27] |
 
 ## Plugin Dependencies
 
@@ -54,7 +54,7 @@
 | [Apache Maven Artifact Plugin][45]                      | [Apache-2.0][1]                             |
 | [Apache Maven Deploy Plugin][46]                        | [Apache-2.0][1]                             |
 | [Apache Maven GPG Plugin][47]                           | [Apache-2.0][1]                             |
-| [Apache Maven Source Plugin][48]                        | [Apache License, Version 2.0][1]            |
+| [Apache Maven Source Plugin][48]                        | [Apache-2.0][1]                             |
 | [Apache Maven Javadoc Plugin][49]                       | [Apache-2.0][1]                             |
 | [Central Publishing Maven Plugin][50]                   | [The Apache License, Version 2.0][1]        |
 | [Maven Failsafe Plugin][51]                             | [Apache-2.0][1]                             |
@@ -92,7 +92,7 @@
 [24]: https://github.com/exasol/maven-plugin-integration-testing/
 [25]: https://github.com/exasol/maven-plugin-integration-testing/blob/main/LICENSE
 [26]: http://www.slf4j.org
-[27]: https://opensource.org/license/mit
+[27]: http://www.opensource.org/licenses/mit-license.php
 [28]: https://maven.apache.org/plugins/maven-clean-plugin/
 [29]: https://maven.apache.org/plugins/maven-install-plugin/
 [30]: https://maven.apache.org/plugins/maven-resources-plugin/
