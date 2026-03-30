@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -12,8 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnJre;
-import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -156,34 +155,22 @@ class ErrorMessageDeclarationCrawlerTest {
         assertDoesNotThrow(result::getErrorMessageDeclarations);
     }
 
-    @Test
-    @EnabledOnJre({ JRE.JAVA_17 })
-    void testLanguageLevelJava17() {
-        final Path path = Path.of("src/test/resources/java17/").toAbsolutePath();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 17,
+    @ParameterizedTest
+    @ValueSource(ints = { 17, 21, 25 })
+    void testLanguageLevels(final int languageLevel) {
+        assumeJavaVersionSupported(languageLevel);
+        final Path path = Path.of("src/test/resources").resolve("java" + languageLevel).toAbsolutePath();
+        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), languageLevel,
                 emptyList());
         final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
         assertDoesNotThrow(result::getErrorMessageDeclarations);
     }
 
-    @Test
-    @EnabledOnJre({ JRE.JAVA_21, JRE.JAVA_25 })
-    void testLanguageLevelJava21() {
-        final Path path = Path.of("src/test/resources/java21/").toAbsolutePath();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 21,
-                emptyList());
-        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
-        assertDoesNotThrow(result::getErrorMessageDeclarations);
-    }
-
-    @Test
-    @EnabledOnJre({ JRE.JAVA_25 })
-    void testLanguageLevelJava25() {
-        final Path path = Path.of("src/test/resources/java25/").toAbsolutePath();
-        final ErrorMessageDeclarationCrawler crawler = new ErrorMessageDeclarationCrawler(path, path, emptyList(), 25,
-                emptyList());
-        final ErrorMessageDeclarationCrawler.Result result = crawler.crawl(List.of(path));
-        assertDoesNotThrow(result::getErrorMessageDeclarations);
+    private void assumeJavaVersionSupported(final int languageLevel) {
+        final int currentFeatureVersion = Runtime.version().feature();
+        assumeTrue(currentFeatureVersion >= languageLevel,
+                "Java " + languageLevel + "+ required for language-level " + languageLevel
+                        + " parser test but was " + currentFeatureVersion);
     }
 
     @ParameterizedTest
@@ -203,7 +190,7 @@ class ErrorMessageDeclarationCrawlerTest {
         final ErrorMessageDeclarationCrawler.Result result = crawl(
                 Path.of(TEST_DIR, "TestWithBuilderAssignedToVariable.java"));
         final List<String> messages = result.getFindings().stream().map(Finding::getMessage)
-                .collect(Collectors.toList());
+                .toList();
         assertThat(messages, containsInAnyOrder(
                 startsWith("E-ECM-31: Invalid incomplete builder call at TestWithBuilderAssignedToVariable.java:")));
     }
