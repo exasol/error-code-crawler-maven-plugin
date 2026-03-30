@@ -12,7 +12,7 @@ public class Java25 {
     String classify(final double value) {
         return switch (value) {
             case final double d when Double.isNaN(d) -> "not a number";
-            case 0.0d -> "zero";
+            case final double d when d == 0.0d -> "zero";   // catches +0.0 and -0.0
             case final double d when d > 0 -> "positive";
             default -> "negative";
         };
