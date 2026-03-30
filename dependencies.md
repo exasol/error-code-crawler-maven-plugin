@@ -54,7 +54,7 @@
 | [Apache Maven Artifact Plugin][45]                      | [Apache-2.0][1]                             |
 | [Apache Maven Deploy Plugin][46]                        | [Apache-2.0][1]                             |
 | [Apache Maven GPG Plugin][47]                           | [Apache-2.0][1]                             |
-| [Apache Maven Source Plugin][48]                        | [Apache License, Version 2.0][1]            |
+| [Apache Maven Source Plugin][48]                        | [Apache-2.0][1]                             |
 | [Apache Maven Javadoc Plugin][49]                       | [Apache-2.0][1]                             |
 | [Central Publishing Maven Plugin][50]                   | [The Apache License, Version 2.0][1]        |
 | [Maven Failsafe Plugin][51]                             | [Apache-2.0][1]                             |
@@ -67,9 +67,9 @@
 
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[2]: https://maven.apache.org/ref/3.9.12/maven-plugin-api/
-[3]: https://maven.apache.org/ref/3.9.12/maven-model/
-[4]: https://maven.apache.org/ref/3.9.12/maven-core/
+[2]: https://maven.apache.org/ref/3.9.14/maven-plugin-api/
+[3]: https://maven.apache.org/ref/3.9.14/maven-model/
+[4]: https://maven.apache.org/ref/3.9.14/maven-core/
 [5]: https://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
@@ -80,7 +80,7 @@
 [12]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [13]: https://github.com/exasol/error-code-model-java/
 [14]: https://github.com/exasol/error-code-model-java/blob/main/LICENSE
-[15]: https://maven.apache.org/ref/3.9.12/maven-artifact/
+[15]: https://maven.apache.org/ref/3.9.14/maven-artifact/
 [16]: http://hamcrest.org/JavaHamcrest/
 [17]: https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE
 [18]: https://www.jqno.nl/equalsverifier
