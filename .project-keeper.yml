@@ -22,7 +22,7 @@ build:
             run: |
               mvn --batch-mode clean verify install \
                   -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                  -DtrimStackTrace=false
+                  -DossindexSkip=true -DtrimStackTrace=false
         - action: INSERT_AFTER
           stepId: sonar-analysis
           job: build-and-test
@@ -38,7 +38,7 @@ build:
           content:
             name: Build Project
             id: build
-            run: mvn --batch-mode -DskipTests clean install verify
+            run: mvn --batch-mode -DskipTests -DossindexSkip=true clean install verify
         - action: INSERT_AFTER
           stepId: build
           content:
