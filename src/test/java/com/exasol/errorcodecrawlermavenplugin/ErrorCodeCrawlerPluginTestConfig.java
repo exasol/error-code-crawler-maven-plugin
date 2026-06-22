@@ -2,6 +2,8 @@ package com.exasol.errorcodecrawlermavenplugin;
 
 import java.util.List;
 
+import com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter;
+
 class ErrorCodeCrawlerPluginTestConfig {
     private final String version;
     private final List<String> sourcePaths;
@@ -17,8 +19,8 @@ class ErrorCodeCrawlerPluginTestConfig {
         this.compilerRelease = builder.compilerRelease;
     }
 
-    public static Builder builder(final String version) {
-        return new Builder(version);
+    public static Builder builder() {
+        return new Builder(MavenProjectVersionGetter.getCurrentProjectVersion());
     }
 
     public static final class Builder {

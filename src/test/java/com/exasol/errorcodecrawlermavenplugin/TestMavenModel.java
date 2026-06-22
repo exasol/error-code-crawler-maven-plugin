@@ -29,8 +29,8 @@ public class TestMavenModel extends Model {
         return model;
     }
 
-    public static TestMavenModel create(final String version) {
-        return create(ErrorCodeCrawlerPluginTestConfig.builder(version).skip("false").build());
+    public static TestMavenModel create() {
+        return create(ErrorCodeCrawlerPluginTestConfig.builder().build());
     }
 
     public void writeAsPomToProject(final Path projectDir) throws IOException {

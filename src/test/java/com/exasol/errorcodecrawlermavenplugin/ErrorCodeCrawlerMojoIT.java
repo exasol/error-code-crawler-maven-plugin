@@ -99,7 +99,7 @@ class ErrorCodeCrawlerMojoIT {
 
     private void addParentPom(final ITVerifier verifier) throws IOException {
         final Path parentPomPath = this.projectDir.resolve("parent-pom");
-        final TestMavenModel parentModel = mavenModel(CURRENT_VERSION, null, null);
+        final TestMavenModel parentModel = mavenModel(null, null);
         parentModel.setArtifactId("parent-pom");
         parentModel.setPackaging("pom");
         Files.createDirectories(parentPomPath);
@@ -149,8 +149,7 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testCrawlingWithJava17Source() throws VerificationException, IOException {
         getVerifier()
-                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
-                        .compilerSource(17).compilerRelease(17).build()))
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder().compilerRelease(17).build()))
                 .withJavaFileFromResources("java17/Java17.java")
                 .verify()
                 .assertNoErrors();
@@ -159,8 +158,7 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testCrawlingWithJava21Source() throws VerificationException, IOException {
         getVerifier()
-                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
-                        .compilerSource(21).compilerRelease(21).build()))
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder().compilerRelease(21).build()))
                 .withJavaFileFromResources("java21/Java21.java")
                 .verify()
                 .assertNoErrors();
@@ -170,8 +168,7 @@ class ErrorCodeCrawlerMojoIT {
     @Disabled("Java 25 not yet supported, see https://github.com/exasol/error-code-crawler-maven-plugin/issues/117")
     void testCrawlingWithJava25Source() throws VerificationException, IOException {
         getVerifier()
-                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
-                        .compilerSource(25).compilerRelease(25).build()))
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder().compilerRelease(25).build()))
                 .withJavaFileFromResources("java25/Java25.java")
                 .verify()
                 .assertNoErrors();
@@ -180,8 +177,7 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testCrawlingWithCompilerRelease() throws VerificationException, IOException {
         getVerifier()
-                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
-                        .compilerSource(8).compilerRelease(11).build()))
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder().compilerSource(8).compilerRelease(11).build()))
                 .withJavaFile("Java10.java")
                 .verify()
                 .assertNoErrors();
@@ -190,8 +186,7 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testCrawlingFailsWithoutJavaVersion() throws IOException {
         getVerifier()
-                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
-                        .compilerSource(null).compilerRelease(null).build()))
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder().compilerSource(null).compilerRelease(null).build()))
                 .withJavaFile("Java10.java")
                 .verifyException(containsString(
                         "W-ECM-14: Failed to read java source version from POM file. Falling back to 5. This plugin reads the java source version from the <release> or <source> configuration of the maven-compiler-plugin"));
@@ -279,7 +274,7 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testSkipWithConfiguration() throws IOException {
         getVerifier() //
-                .withPom(mavenModel(CURRENT_VERSION, null, "true")) //
+                .withPom(mavenModel(null, "true")) //
                 .withJavaFile("DuplicateErrorCode.java") //
                 .verifyNoException();
     }
@@ -289,7 +284,7 @@ class ErrorCodeCrawlerMojoIT {
     // [utest->dsn~no-src-location-in-report-for-custom-source-path~1]
     void testDifferentSourcePath() throws IOException, VerificationException, ErrorCodeReportReader.ReadException {
         final String alternateSrcPath = "generated-sources/";
-        final TestMavenModel model = mavenModel(CURRENT_VERSION, List.of(alternateSrcPath + "main/java"), null);
+        final TestMavenModel model = mavenModel(List.of(alternateSrcPath + "main/java"), null);
         final ITVerifier verifier = getVerifier() //
                 .withPom(model) //
                 .withJavaFile("Test1.java") //
@@ -314,8 +309,8 @@ class ErrorCodeCrawlerMojoIT {
         return new ITVerifier(ErrorCodeCrawlerMojoIT.testEnvironment, this.projectDir, true);
     }
 
-    static TestMavenModel mavenModel(final String version, final List<String> sourcePaths, final String skip) {
-        return TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(version)
+    static TestMavenModel mavenModel(final List<String> sourcePaths, final String skip) {
+        return TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder()
                 .sourcePaths(sourcePaths)
                 .skip(skip)
                 .build());
@@ -367,11 +362,11 @@ class ErrorCodeCrawlerMojoIT {
             Files.createDirectories(this.subProjectMainSrcPackage);
             Files.createDirectories(this.subProjectTestSrcPackage);
 
-            final TestMavenModel rootModel = mavenModel(CURRENT_VERSION, null, null);
+            final TestMavenModel rootModel = mavenModel(null, null);
             rootModel.addModule("sub-project");
             rootModel.setPackaging("pom");
 
-            final TestMavenModel subProjectModel = mavenModel(CURRENT_VERSION, null, null);
+            final TestMavenModel subProjectModel = mavenModel(null, null);
             subProjectModel.setArtifactId("sub-project");
 
             withPom(rootModel);
@@ -428,7 +423,7 @@ class ErrorCodeCrawlerMojoIT {
         }
 
         ITVerifier withDefaultPom() throws IOException {
-            return withPom(mavenModel(CURRENT_VERSION, null, null));
+            return withPom(mavenModel(null, null));
         }
 
         ITVerifier withPom(final TestMavenModel model) throws IOException {
@@ -501,13 +496,13 @@ class ErrorCodeCrawlerMojoIT {
             return this.subProjectDir.resolve(Path.of("target", "error_code_report.json"));
         }
 
-        ITVerifier assertReport(final Matcher<String> matcher) throws IOException, VerificationException {
+        ITVerifier assertReport(final Matcher<String> matcher) throws IOException {
             final String report = Files.readString(getErrorCodeReportPath());
             assertThat(report, matcher);
             return this;
         }
 
-        ITVerifier assertSubProjectReport(final Matcher<String> matcher) throws IOException, VerificationException {
+        ITVerifier assertSubProjectReport(final Matcher<String> matcher) throws IOException {
             final String report = Files.readString(getSubProjectErrorCodeReportPath());
             assertThat(report, matcher);
             return this;
