@@ -147,6 +147,37 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
+    void testCrawlingWithJava17Source() throws VerificationException, IOException {
+        getVerifier()
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
+                        .compilerSource(17).compilerRelease(17).build()))
+                .withJavaFileFromResources("java17/Java17.java")
+                .verify()
+                .assertNoErrors();
+    }
+
+    @Test
+    void testCrawlingWithJava21Source() throws VerificationException, IOException {
+        getVerifier()
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
+                        .compilerSource(21).compilerRelease(21).build()))
+                .withJavaFileFromResources("java21/Java21.java")
+                .verify()
+                .assertNoErrors();
+    }
+
+    @Test
+    @Disabled("Java 25 not yet supported, see https://github.com/exasol/error-code-crawler-maven-plugin/issues/117")
+    void testCrawlingWithJava25Source() throws VerificationException, IOException {
+        getVerifier()
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
+                        .compilerSource(25).compilerRelease(25).build()))
+                .withJavaFileFromResources("java25/Java25.java")
+                .verify()
+                .assertNoErrors();
+    }
+
+    @Test
     void testCrawlingWithCompilerRelease() throws VerificationException, IOException {
         getVerifier()
                 .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
@@ -413,6 +444,16 @@ class ErrorCodeCrawlerMojoIT {
 
         ITVerifier withJavaFile(final String name) throws IOException {
             return withFile(name, this.projectMainSrcPackage);
+        }
+
+        ITVerifier withJavaFileFromResources(final String name) throws IOException {
+            final InputStream stream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream(name);
+            final Path target = this.projectMainSrcPackage.resolve(name);
+            Files.createDirectories(target.getParent());
+            Files.copy(Objects.requireNonNull(stream, "Resource '" + name + "' not found"), //
+                    target, //
+                    StandardCopyOption.REPLACE_EXISTING);
+            return this;
         }
 
         ITVerifier withSubProjectJavaFile(final String name) throws IOException {
