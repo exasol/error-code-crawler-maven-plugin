@@ -1,28 +1,17 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
-import static java.util.stream.Collectors.toList;
-
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.LifecyclePhase;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.plugins.annotations.*;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfig;
-import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigException;
-import com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader;
+import com.exasol.errorcodecrawlermavenplugin.config.*;
 import com.exasol.errorcodecrawlermavenplugin.crawler.ErrorMessageDeclarationCrawler;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidator;
 import com.exasol.errorcodecrawlermavenplugin.validation.ErrorMessageDeclarationValidatorFactory;
@@ -73,11 +62,11 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
 
     // [impl->dsn~src-directories]
     // [impl->dsn~src-directory-override]
-    private List<Path> getSourcePaths(Path rootProjectDir, Path projectDir) {
+    private List<Path> getSourcePaths(final Path rootProjectDir, final Path projectDir) {
         if (this.sourcePaths == null || this.sourcePaths.isEmpty()) {
             return List.of(Path.of(rootProjectDir.relativize(projectDir).toString(), "src", "main", "java"));
         } else {
-            return this.sourcePaths.stream().map(Path::of).collect(toList());
+            return this.sourcePaths.stream().map(Path::of).toList();
         }
     }
 
@@ -135,12 +124,12 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         return this.project.getBasedir().toPath();
     }
 
-    private Path getRootProjectDir(Path projectDir) {
+    private Path getRootProjectDir(final Path projectDir) {
         return StringUtils.isBlank(executionRootDirectory) ? projectDir : Path.of(executionRootDirectory);
     }
 
     private List<ErrorMessageDeclaration> removeSourcePositions(final List<ErrorMessageDeclaration> declarations) {
-        return declarations.stream().map(ErrorMessageDeclaration::withoutSourcePosition).collect(Collectors.toList());
+        return declarations.stream().map(ErrorMessageDeclaration::withoutSourcePosition).toList();
     }
 
     private void reportResult(final int numErrorDeclaration, final List<Finding> findings) throws MojoFailureException {
@@ -171,21 +160,29 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
         }
     }
 
-    private int getJavaSourceVersion() {
+    int getJavaSourceVersion() {
         try {
             final var compilerPlugin = this.project.getPlugin("org.apache.maven.plugins:maven-compiler-plugin");
             final Xpp3Dom configuration = (Xpp3Dom) compilerPlugin.getConfiguration();
-            final String value = configuration.getChild("source").getValue();
+            final String value = getCompilerSourceVersion(configuration);
             return Integer.parseInt(value);
         } catch (final Exception exception) {
             final var sourceVersion = 5;
             getLog().warn(ExaError.messageBuilder("W-ECM-14")
                     .message("Failed to read java source version from POM file. Falling back to {{version}}.")
                     .mitigation(
-                            "This plugin reads the java source version from the configuration of the maven-compiler-plugin. Check that the version is defined there correctly.")
+                            "This plugin reads the java source version from the <release> or <source> configuration of the maven-compiler-plugin. Check that the version is defined there correctly.")
                     .parameter("version", sourceVersion).toString());
             return sourceVersion;
         }
+    }
+
+    private String getCompilerSourceVersion(final Xpp3Dom configuration) {
+        final Xpp3Dom release = configuration.getChild("release");
+        if ((release != null) && StringUtils.isNotBlank(release.getValue())) {
+            return release.getValue();
+        }
+        return configuration.getChild("source").getValue();
     }
 
     /**
@@ -200,7 +197,7 @@ public class ErrorCodeCrawlerMojo extends AbstractMojo {
             final List<String> compileClasspath = this.project.getCompileClasspathElements();
             return compileClasspath.stream().skip(1) //
                     .map(Path::of) //
-                    .collect(toList());
+                    .toList();
         } catch (final DependencyResolutionRequiredException exception) {
             throw new IllegalStateException(
                     ExaError.messageBuilder("E-ECM-6").message("Failed to extract project's class path.").toString(),

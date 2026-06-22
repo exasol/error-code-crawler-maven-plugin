@@ -1,7 +1,6 @@
 package com.exasol.errorcodecrawlermavenplugin;
 
 import static com.exasol.errorcodecrawlermavenplugin.config.ErrorCodeConfigReader.CONFIG_NAME;
-import static com.exasol.mavenprojectversiongetter.MavenProjectVersionGetter.getCurrentProjectVersion;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,9 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,16 +19,12 @@ import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import com.exsol.errorcodemodel.ErrorCodeReport;
-import com.exsol.errorcodemodel.ErrorCodeReportReader;
-import com.exsol.errorcodemodel.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.*;
 
 class ErrorCodeCrawlerMojoTest {
 
     private static final Path EXAMPLES_PATH = Path.of("src", "test", "java", "com", "exasol",
             "errorcodecrawlermavenplugin", "examples");
-
-    private static final String CURRENT_VERSION = getCurrentProjectVersion();
 
     @TempDir
     Path projectDir;
@@ -60,11 +53,25 @@ class ErrorCodeCrawlerMojoTest {
     }
 
     @Test
+    void testJavaSourceVersionPrefersCompilerRelease() {
+        final MavenProject project = new MavenProject();
+        project.setModel(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder()
+                .compilerSource(8)
+                .compilerRelease(11)
+                .build()));
+
+        final ErrorCodeCrawlerMojo errorCodeCrawler = new ErrorCodeCrawlerMojo();
+        errorCodeCrawler.project = project;
+
+        assertThat(errorCodeCrawler.getJavaSourceVersion(), equalTo(11));
+    }
+
+    @Test
     void testSubProjectReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
-        Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
-        Path subProjectPath = projectPath.resolve("sub-project");
-        Path subProjectMainSrcJava = subProjectPath.resolve(Path.of("src", "main", "java"));
-        Path subProjectMainSrcPackage = subProjectMainSrcJava
+        final Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
+        final Path subProjectPath = projectPath.resolve("sub-project");
+        final Path subProjectMainSrcJava = subProjectPath.resolve(Path.of("src", "main", "java"));
+        final Path subProjectMainSrcPackage = subProjectMainSrcJava
                 .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
         subProjectMainSrcPackage.toFile().mkdirs();
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), //
@@ -89,11 +96,11 @@ class ErrorCodeCrawlerMojoTest {
 
     @Test
     void testSimpleProjectPomReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
-        Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
+        final Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
         final Path expectedPath = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java");
 
-        Path projectMainSrcJava = projectPath.resolve(Path.of("src", "main", "java"));
-        Path projectMainSrcPackage = projectMainSrcJava
+        final Path projectMainSrcJava = projectPath.resolve(Path.of("src", "main", "java"));
+        final Path projectMainSrcPackage = projectMainSrcJava
                 .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
         projectMainSrcPackage.toFile().mkdirs();
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), //
@@ -117,11 +124,11 @@ class ErrorCodeCrawlerMojoTest {
 
     @Test
     void testProjectWithParentPomReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
-        Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
+        final Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
         final Path expectedPath = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java");
 
-        Path projectMainSrcJava = projectPath.resolve(Path.of("src", "main", "java"));
-        Path projectMainSrcPackage = projectMainSrcJava
+        final Path projectMainSrcJava = projectPath.resolve(Path.of("src", "main", "java"));
+        final Path projectMainSrcPackage = projectMainSrcJava
                 .resolve(Path.of("com", "exasol", "errorcodecrawlermavenplugin", "examples"));
         projectMainSrcPackage.toFile().mkdirs();
         Files.copy(EXAMPLES_PATH.resolve("Test1.java"), //
@@ -143,16 +150,16 @@ class ErrorCodeCrawlerMojoTest {
         );
     }
 
-    private void runSimpleProjectErrorCodeCrawlerMojo(Path projectPath) throws MojoFailureException, IOException {
+    private void runSimpleProjectErrorCodeCrawlerMojo(final Path projectPath) throws MojoFailureException, IOException {
 
         final ErrorCodeCrawlerMojo errorCodeCrawlerMojo = new ErrorCodeCrawlerMojo();
         final MavenProject project = new MavenProject();
         project.setFile(projectPath.resolve("pom.xml").toFile());
-        project.setModel(TestMavenModel.create(CURRENT_VERSION));
+        project.setModel(TestMavenModel.create());
         errorCodeCrawlerMojo.project = project;
         errorCodeCrawlerMojo.skip = "false";
 
-        //if null, then executionRootDirectory is equal to projectPath
+        // if null, then executionRootDirectory is equal to projectPath
         errorCodeCrawlerMojo.executionRootDirectory = null;
 
         final InputStream configStream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
@@ -163,16 +170,16 @@ class ErrorCodeCrawlerMojoTest {
         errorCodeCrawlerMojo.execute();
     }
 
-    private void runProjectWithParentPomErrorCodeCrawlerMojo(Path projectPath) throws MojoFailureException, IOException {
+    private void runProjectWithParentPomErrorCodeCrawlerMojo(final Path projectPath) throws MojoFailureException, IOException {
         final MavenProject parentProject = new MavenProject();
-        Path parentProjectPath = this.projectDir.resolve("parent-pom");
+        final Path parentProjectPath = this.projectDir.resolve("parent-pom");
         parentProject.setFile(parentProjectPath.resolve("pom.xml").toFile());
 
         final ErrorCodeCrawlerMojo errorCodeCrawlerMojo = new ErrorCodeCrawlerMojo();
         final MavenProject project = new MavenProject();
         project.setFile(projectPath.resolve("pom.xml").toFile());
         project.setParent(parentProject);
-        project.setModel(TestMavenModel.create(CURRENT_VERSION));
+        project.setModel(TestMavenModel.create());
         errorCodeCrawlerMojo.project = project;
         errorCodeCrawlerMojo.skip = "false";
         errorCodeCrawlerMojo.executionRootDirectory = projectPath.toString();
@@ -185,7 +192,7 @@ class ErrorCodeCrawlerMojoTest {
         errorCodeCrawlerMojo.execute();
     }
 
-    private void runSubProjectErrorCodeCrawlerMojo(Path projectPath, Path subProjectPath) throws MojoFailureException, IOException {
+    private void runSubProjectErrorCodeCrawlerMojo(final Path projectPath, final Path subProjectPath) throws MojoFailureException, IOException {
         final MavenProject project = new MavenProject();
         project.setFile(this.projectDir.resolve("pom.xml").toFile());
         final InputStream configStream = ErrorCodeCrawlerMojoIT.class.getClassLoader().getResourceAsStream("testProject/" + CONFIG_NAME);
@@ -197,7 +204,7 @@ class ErrorCodeCrawlerMojoTest {
         final MavenProject subProject = new MavenProject();
         subProject.setFile(subProjectPath.resolve("pom.xml").toFile());
         subProject.setParent(project);
-        subProject.setModel(TestMavenModel.create(CURRENT_VERSION));
+        subProject.setModel(TestMavenModel.create());
         errorCodeCrawlerMojo.project = subProject;
         errorCodeCrawlerMojo.skip = "false";
         errorCodeCrawlerMojo.executionRootDirectory = projectPath.toString();

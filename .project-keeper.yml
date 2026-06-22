@@ -4,11 +4,9 @@ sources:
     modules:
       - maven_central
       - integration_tests
+      - udf_coverage # This project does not use UDFs but requires this for collecting coverage data from integration tests.
 linkReplacements:
   - "https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310|https://github.com/FasterXML/jackson-modules-java8/"
-excludes:
-  - "E-PK-CORE-17: Missing required file: 'release_config.yml'"
-
 build:
   workflows:
     - name: "ci-build.yml"
@@ -22,7 +20,7 @@ build:
             run: |
               mvn --batch-mode clean verify install \
                   -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-                  -DtrimStackTrace=false
+                  -DossindexSkip=true -DtrimStackTrace=false
         - action: INSERT_AFTER
           stepId: sonar-analysis
           job: build-and-test
@@ -38,7 +36,7 @@ build:
           content:
             name: Build Project
             id: build
-            run: mvn --batch-mode -DskipTests clean install verify
+            run: mvn --batch-mode -DskipTests -DossindexSkip=true clean install verify
         - action: INSERT_AFTER
           stepId: build
           content:

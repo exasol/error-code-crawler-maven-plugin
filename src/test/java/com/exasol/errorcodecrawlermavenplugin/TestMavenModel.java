@@ -16,21 +16,21 @@ public class TestMavenModel extends Model {
     private TestMavenModel() {
     }
 
-    public static TestMavenModel create(ErrorCodeCrawlerPluginDefinition def) {
-        TestMavenModel model = new TestMavenModel();
+    public static TestMavenModel create(final ErrorCodeCrawlerPluginTestConfig def) {
+        final TestMavenModel model = new TestMavenModel();
         model.setBuild(new Build());
         model.setVersion("1.0.0");
         model.setArtifactId("project-to-test");
         model.setGroupId("com.example");
         model.setModelVersion("4.0.0");
         model.addDependency("error-reporting-java", "com.exasol", "compile", "1.0.1");
-        model.addCompilerPlugin();
+        model.addCompilerPlugin(def);
         model.addErrorCodeCrawlerPlugin(def);
         return model;
     }
 
-    public static TestMavenModel create(final String version) {
-        return create(new ErrorCodeCrawlerPluginDefinition(version, null, "false"));
+    public static TestMavenModel create() {
+        return create(ErrorCodeCrawlerPluginTestConfig.builder().build());
     }
 
     public void writeAsPomToProject(final Path projectDir) throws IOException {
@@ -48,7 +48,7 @@ public class TestMavenModel extends Model {
         this.addDependency(dependency);
     }
 
-    private void addErrorCodeCrawlerPlugin(final ErrorCodeCrawlerPluginDefinition declaration) {
+    private void addErrorCodeCrawlerPlugin(final ErrorCodeCrawlerPluginTestConfig declaration) {
         final Plugin pluginXml = new Plugin();
         pluginXml.setGroupId("com.exasol");
         pluginXml.setArtifactId("error-code-crawler-maven-plugin");
@@ -61,21 +61,21 @@ public class TestMavenModel extends Model {
         this.getBuild().addPlugin(pluginXml);
     }
 
-    private Xpp3Dom buildConfiguration(final ErrorCodeCrawlerPluginDefinition declaration) {
+    private Xpp3Dom buildConfiguration(final ErrorCodeCrawlerPluginTestConfig declaration) {
         final Xpp3Dom configuration = new Xpp3Dom("configuration");
         addSourcePath(declaration, configuration);
         addSkip(declaration, configuration);
         return configuration;
     }
 
-    private void addSourcePath(final ErrorCodeCrawlerPluginDefinition declaration, final Xpp3Dom configuration) {
+    private void addSourcePath(final ErrorCodeCrawlerPluginTestConfig declaration, final Xpp3Dom configuration) {
         if (declaration.getSourcePaths() != null) {
             final Xpp3Dom sourcePathsXml = buildXmlList("sourcePaths", "sourcePath", declaration.getSourcePaths());
             configuration.addChild(sourcePathsXml);
         }
     }
 
-    private void addSkip(final ErrorCodeCrawlerPluginDefinition declaration, final Xpp3Dom configuration) {
+    private void addSkip(final ErrorCodeCrawlerPluginTestConfig declaration, final Xpp3Dom configuration) {
         if (declaration.getSkip() != null) {
             final Xpp3Dom skipXmlElement = new Xpp3Dom("skip");
             skipXmlElement.setValue(declaration.getSkip());
@@ -93,20 +93,24 @@ public class TestMavenModel extends Model {
         return modules;
     }
 
-    private void addCompilerPlugin() {
+    private void addCompilerPlugin(final ErrorCodeCrawlerPluginTestConfig declaration) {
         final Plugin pluginXml = new Plugin();
         pluginXml.setGroupId("org.apache.maven.plugins");
         pluginXml.setArtifactId("maven-compiler-plugin");
         pluginXml.setVersion("3.8.1");
         final Xpp3Dom configuration = new Xpp3Dom("configuration");
-        // add more
-        final Xpp3Dom sourceItem = new Xpp3Dom("source");
-        sourceItem.setValue("11");
-        configuration.addChild(sourceItem);
-        final Xpp3Dom targetItem = new Xpp3Dom("target");
-        targetItem.setValue("11");
-        configuration.addChild(targetItem);
+        addCompilerVersion(configuration, "source", declaration.getCompilerSource());
+        addCompilerVersion(configuration, "target", declaration.getCompilerSource());
+        addCompilerVersion(configuration, "release", declaration.getCompilerRelease());
         pluginXml.setConfiguration(configuration);
         this.getBuild().addPlugin(pluginXml);
+    }
+
+    private void addCompilerVersion(final Xpp3Dom configuration, final String name, final Integer value) {
+        if (value != null) {
+            final Xpp3Dom versionItem = new Xpp3Dom(name);
+            versionItem.setValue(String.valueOf(value));
+            configuration.addChild(versionItem);
+        }
     }
 }
