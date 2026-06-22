@@ -2,14 +2,14 @@ package com.exasol.errorcodecrawlermavenplugin;
 
 import java.util.List;
 
-class ErrorCodeCrawlerPluginDefinition {
+class ErrorCodeCrawlerPluginTestConfig {
     private final String version;
     private final List<String> sourcePaths;
     private final String skip;
     private final Integer compilerSource;
     private final Integer compilerRelease;
 
-    private ErrorCodeCrawlerPluginDefinition(final Builder builder) {
+    private ErrorCodeCrawlerPluginTestConfig(final Builder builder) {
         this.version = builder.version;
         this.sourcePaths = builder.sourcePaths;
         this.skip = builder.skip;
@@ -52,8 +52,8 @@ class ErrorCodeCrawlerPluginDefinition {
             return this;
         }
 
-        public ErrorCodeCrawlerPluginDefinition build() {
-            return new ErrorCodeCrawlerPluginDefinition(this);
+        public ErrorCodeCrawlerPluginTestConfig build() {
+            return new ErrorCodeCrawlerPluginTestConfig(this);
         }
     }
 

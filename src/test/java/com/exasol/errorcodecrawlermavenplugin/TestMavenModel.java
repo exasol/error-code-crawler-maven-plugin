@@ -16,8 +16,8 @@ public class TestMavenModel extends Model {
     private TestMavenModel() {
     }
 
-    public static TestMavenModel create(ErrorCodeCrawlerPluginDefinition def) {
-        TestMavenModel model = new TestMavenModel();
+    public static TestMavenModel create(final ErrorCodeCrawlerPluginTestConfig def) {
+        final TestMavenModel model = new TestMavenModel();
         model.setBuild(new Build());
         model.setVersion("1.0.0");
         model.setArtifactId("project-to-test");
@@ -30,7 +30,7 @@ public class TestMavenModel extends Model {
     }
 
     public static TestMavenModel create(final String version) {
-        return create(ErrorCodeCrawlerPluginDefinition.builder(version).skip("false").build());
+        return create(ErrorCodeCrawlerPluginTestConfig.builder(version).skip("false").build());
     }
 
     public void writeAsPomToProject(final Path projectDir) throws IOException {
@@ -48,7 +48,7 @@ public class TestMavenModel extends Model {
         this.addDependency(dependency);
     }
 
-    private void addErrorCodeCrawlerPlugin(final ErrorCodeCrawlerPluginDefinition declaration) {
+    private void addErrorCodeCrawlerPlugin(final ErrorCodeCrawlerPluginTestConfig declaration) {
         final Plugin pluginXml = new Plugin();
         pluginXml.setGroupId("com.exasol");
         pluginXml.setArtifactId("error-code-crawler-maven-plugin");
@@ -61,21 +61,21 @@ public class TestMavenModel extends Model {
         this.getBuild().addPlugin(pluginXml);
     }
 
-    private Xpp3Dom buildConfiguration(final ErrorCodeCrawlerPluginDefinition declaration) {
+    private Xpp3Dom buildConfiguration(final ErrorCodeCrawlerPluginTestConfig declaration) {
         final Xpp3Dom configuration = new Xpp3Dom("configuration");
         addSourcePath(declaration, configuration);
         addSkip(declaration, configuration);
         return configuration;
     }
 
-    private void addSourcePath(final ErrorCodeCrawlerPluginDefinition declaration, final Xpp3Dom configuration) {
+    private void addSourcePath(final ErrorCodeCrawlerPluginTestConfig declaration, final Xpp3Dom configuration) {
         if (declaration.getSourcePaths() != null) {
             final Xpp3Dom sourcePathsXml = buildXmlList("sourcePaths", "sourcePath", declaration.getSourcePaths());
             configuration.addChild(sourcePathsXml);
         }
     }
 
-    private void addSkip(final ErrorCodeCrawlerPluginDefinition declaration, final Xpp3Dom configuration) {
+    private void addSkip(final ErrorCodeCrawlerPluginTestConfig declaration, final Xpp3Dom configuration) {
         if (declaration.getSkip() != null) {
             final Xpp3Dom skipXmlElement = new Xpp3Dom("skip");
             skipXmlElement.setValue(declaration.getSkip());
@@ -93,7 +93,7 @@ public class TestMavenModel extends Model {
         return modules;
     }
 
-    private void addCompilerPlugin(final ErrorCodeCrawlerPluginDefinition declaration) {
+    private void addCompilerPlugin(final ErrorCodeCrawlerPluginTestConfig declaration) {
         final Plugin pluginXml = new Plugin();
         pluginXml.setGroupId("org.apache.maven.plugins");
         pluginXml.setArtifactId("maven-compiler-plugin");

@@ -148,12 +148,22 @@ class ErrorCodeCrawlerMojoIT {
 
     @Test
     void testCrawlingWithCompilerRelease() throws VerificationException, IOException {
-        getVerifier() //
-                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginDefinition.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
-                        .compilerSource(8).compilerRelease(11).build())) //
-                .withJavaFile("Java10.java") //
-                .verify() //
+        getVerifier()
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
+                        .compilerSource(8).compilerRelease(11).build()))
+                .withJavaFile("Java10.java")
+                .verify()
                 .assertNoErrors();
+    }
+
+    @Test
+    void testCrawlingFailsWithoutJavaVersion() throws IOException {
+        getVerifier()
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
+                        .compilerSource(null).compilerRelease(null).build()))
+                .withJavaFile("Java10.java")
+                .verifyException(containsString(
+                        "W-ECM-14: Failed to read java source version from POM file. Falling back to 5. This plugin reads the java source version from the <release> or <source> configuration of the maven-compiler-plugin"));
     }
 
     @Test
@@ -274,7 +284,7 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     static TestMavenModel mavenModel(final String version, final List<String> sourcePaths, final String skip) {
-        return TestMavenModel.create(ErrorCodeCrawlerPluginDefinition.builder(version)
+        return TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder(version)
                 .sourcePaths(sourcePaths)
                 .skip(skip)
                 .build());
