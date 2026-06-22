@@ -50,11 +50,6 @@ class ErrorCodeCrawlerMojoIT {
         testEnvironment.installPlugin(PLUGIN_JAR.toFile(), ERROR_CODE_CRAWLER_POM.toFile());
     }
 
-    @BeforeEach
-    void beforeEach(final TestInfo testInfo) {
-        System.out.println("Running test case: " + testInfo.getDisplayName());
-    }
-
     @Test
     // [itest->dsn~src-directories]
     void testValidCrawling() throws VerificationException, IOException {
