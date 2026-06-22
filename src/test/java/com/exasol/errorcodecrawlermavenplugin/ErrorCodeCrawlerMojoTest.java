@@ -60,6 +60,20 @@ class ErrorCodeCrawlerMojoTest {
     }
 
     @Test
+    void testJavaSourceVersionPrefersCompilerRelease() {
+        final MavenProject project = new MavenProject();
+        project.setModel(TestMavenModel.create(ErrorCodeCrawlerPluginDefinition.builder(CURRENT_VERSION)
+                .compilerSource(8)
+                .compilerRelease(11)
+                .build()));
+
+        final ErrorCodeCrawlerMojo errorCodeCrawler = new ErrorCodeCrawlerMojo();
+        errorCodeCrawler.project = project;
+
+        assertThat(errorCodeCrawler.getJavaSourceVersion(), equalTo(11));
+    }
+
+    @Test
     void testSubProjectReport() throws IOException, MojoFailureException, ErrorCodeReportReader.ReadException {
         Path projectPath = projectDir.toFile().getCanonicalFile().toPath();
         Path subProjectPath = projectPath.resolve("sub-project");

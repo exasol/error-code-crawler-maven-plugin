@@ -9,29 +9,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.nio.file.*;
+import java.util.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
 import org.apache.maven.model.Parent;
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import com.exasol.mavenpluginintegrationtesting.MavenIntegrationTestEnvironment;
-import com.exsol.errorcodemodel.ErrorCodeReport;
-import com.exsol.errorcodemodel.ErrorCodeReportReader;
-import com.exsol.errorcodemodel.ErrorMessageDeclaration;
+import com.exsol.errorcodemodel.*;
 
 /**
  * This integration test tests the maven plugin in a save environment. Since we don't want to install the plugin to the
@@ -51,7 +43,6 @@ class ErrorCodeCrawlerMojoIT {
 
     @TempDir
     Path projectDir;
-
 
     @BeforeAll
     static void beforeAll() {
@@ -87,7 +78,7 @@ class ErrorCodeCrawlerMojoIT {
     void testProjectWithParentPomHasCorrectSourcePath() throws VerificationException, IOException, ErrorCodeReportReader.ReadException {
         final String expectedPath = Path.of("src/main/java/com/exasol/errorcodecrawlermavenplugin/examples/Test1.java")
                 .toString().replace("\\", "\\\\");
-        ITVerifier verifier = getVerifier() //
+        final ITVerifier verifier = getVerifier() //
                 .withDefaultPom() //
                 .withJavaFile("Test1.java") //
                 .verify();
@@ -106,8 +97,7 @@ class ErrorCodeCrawlerMojoIT {
         );
     }
 
-
-    private void addParentPom(ITVerifier verifier) throws IOException {
+    private void addParentPom(final ITVerifier verifier) throws IOException {
         final Path parentPomPath = this.projectDir.resolve("parent-pom");
         final TestMavenModel parentModel = mavenModel(CURRENT_VERSION, null, null);
         parentModel.setArtifactId("parent-pom");
@@ -120,7 +110,7 @@ class ErrorCodeCrawlerMojoIT {
 
         parentModel.writeAsPomToProject(parentPomPath);
 
-        Parent parent = new Parent();
+        final Parent parent = new Parent();
         parent.setVersion(parentModel.getVersion());
         parent.setGroupId(parentModel.getGroupId());
         parent.setArtifactId(parentModel.getArtifactId());
@@ -154,6 +144,16 @@ class ErrorCodeCrawlerMojoIT {
     @Test
     void testCrawlingWithHigherJavaSourceVersion() throws VerificationException, IOException {
         getVerifier().withDefaultPom().withJavaFile("Java10.java").verify().assertNoErrors();
+    }
+
+    @Test
+    void testCrawlingWithCompilerRelease() throws VerificationException, IOException {
+        getVerifier() //
+                .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginDefinition.builder(CURRENT_VERSION).sourcePaths(null).skip(null)
+                        .compilerSource(8).compilerRelease(11).build())) //
+                .withJavaFile("Java10.java") //
+                .verify() //
+                .assertNoErrors();
     }
 
     @Test
@@ -274,7 +274,10 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     static TestMavenModel mavenModel(final String version, final List<String> sourcePaths, final String skip) {
-        return TestMavenModel.create(new ErrorCodeCrawlerPluginDefinition(version, sourcePaths, skip));
+        return TestMavenModel.create(ErrorCodeCrawlerPluginDefinition.builder(version)
+                .sourcePaths(sourcePaths)
+                .skip(skip)
+                .build());
     }
 
     static class ITVerifier {
@@ -296,7 +299,7 @@ class ErrorCodeCrawlerMojoIT {
             this(testEnvironment, projectDir, false);
         }
 
-        ITVerifier(final MavenIntegrationTestEnvironment testEnvironment, final Path projectDir, boolean withSubProject) throws IOException {
+        ITVerifier(final MavenIntegrationTestEnvironment testEnvironment, final Path projectDir, final boolean withSubProject) throws IOException {
             this.testEnvironment = testEnvironment;
             this.projectDir = projectDir;
             this.projectMainSrcJava = this.projectDir.resolve(Path.of("src", "main", "java"));

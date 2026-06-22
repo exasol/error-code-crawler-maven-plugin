@@ -24,13 +24,13 @@ public class TestMavenModel extends Model {
         model.setGroupId("com.example");
         model.setModelVersion("4.0.0");
         model.addDependency("error-reporting-java", "com.exasol", "compile", "1.0.1");
-        model.addCompilerPlugin();
+        model.addCompilerPlugin(def);
         model.addErrorCodeCrawlerPlugin(def);
         return model;
     }
 
     public static TestMavenModel create(final String version) {
-        return create(new ErrorCodeCrawlerPluginDefinition(version, null, "false"));
+        return create(ErrorCodeCrawlerPluginDefinition.builder(version).skip("false").build());
     }
 
     public void writeAsPomToProject(final Path projectDir) throws IOException {
@@ -93,20 +93,24 @@ public class TestMavenModel extends Model {
         return modules;
     }
 
-    private void addCompilerPlugin() {
+    private void addCompilerPlugin(final ErrorCodeCrawlerPluginDefinition declaration) {
         final Plugin pluginXml = new Plugin();
         pluginXml.setGroupId("org.apache.maven.plugins");
         pluginXml.setArtifactId("maven-compiler-plugin");
         pluginXml.setVersion("3.8.1");
         final Xpp3Dom configuration = new Xpp3Dom("configuration");
-        // add more
-        final Xpp3Dom sourceItem = new Xpp3Dom("source");
-        sourceItem.setValue("11");
-        configuration.addChild(sourceItem);
-        final Xpp3Dom targetItem = new Xpp3Dom("target");
-        targetItem.setValue("11");
-        configuration.addChild(targetItem);
+        addCompilerVersion(configuration, "source", declaration.getCompilerSource());
+        addCompilerVersion(configuration, "target", declaration.getCompilerSource());
+        addCompilerVersion(configuration, "release", declaration.getCompilerRelease());
         pluginXml.setConfiguration(configuration);
         this.getBuild().addPlugin(pluginXml);
+    }
+
+    private void addCompilerVersion(final Xpp3Dom configuration, final String name, final Integer value) {
+        if (value != null) {
+            final Xpp3Dom versionItem = new Xpp3Dom(name);
+            versionItem.setValue(String.valueOf(value));
+            configuration.addChild(versionItem);
+        }
     }
 }
