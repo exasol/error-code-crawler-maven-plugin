@@ -30,9 +30,9 @@
 
 ## Runtime Dependencies
 
-| Dependency                | License           |
-| ------------------------- | ----------------- |
-| [SLF4J JDK14 Binding][28] | [MIT License][29] |
+| Dependency                 | License   |
+| -------------------------- | --------- |
+| [SLF4J JDK14 Provider][28] | [MIT][29] |
 
 ## Plugin Dependencies
 
@@ -96,7 +96,7 @@
 [26]: https://www.eclemma.org/jacoco/index.html
 [27]: https://www.eclipse.org/legal/epl-2.0/
 [28]: http://www.slf4j.org
-[29]: http://www.opensource.org/licenses/mit-license.php
+[29]: https://opensource.org/license/mit
 [30]: https://docs.sonarsource.com/sonarqube-server/latest/extension-guide/developing-a-plugin/plugin-basics/sonar-scanner-maven/sonar-maven-plugin/
 [31]: http://www.gnu.org/licenses/lgpl.txt
 [32]: https://maven.apache.org/plugins/maven-toolchains-plugin/
