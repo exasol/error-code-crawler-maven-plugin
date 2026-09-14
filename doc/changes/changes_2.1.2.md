@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 2.1.2, released 2026-??-??
+# Error Code Crawler Maven Plugin 2.1.2, released 2026-09-14
 
 Code name: Fixed vulnerabilities CVE-2026-19032, CVE-2026-68497
 
@@ -35,8 +35,13 @@ jackson-databind - Allocation of Resources Without Limits or Throttling
 
 ### Test Dependency Updates
 
+* Updated `nl.jqno.equalsverifier:equalsverifier:4.5` to `4.5.2`
 * Updated `org.junit.jupiter:junit-jupiter:6.1.2` to `6.1.3`
 
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:2.1.1` to `2.1.2`
+* Updated `com.exasol:project-keeper-maven-plugin:5.7.4` to `5.7.5`
+* Updated `io.github.git-commit-id:git-commit-id-maven-plugin:10.0.0` to `10.0.1`
+* Updated `org.apache.maven.plugins:maven-toolchains-plugin:3.2.0` to `3.3.0`
+* Updated `org.codehaus.mojo:flatten-maven-plugin:1.7.3` to `1.8.0`
