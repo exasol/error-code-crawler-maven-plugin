@@ -11,7 +11,7 @@
 | [Maven Core][4]                          | [Apache-2.0][1]                                |
 | [Spoon Core][5]                          | [CeCILL-C][6]; [MIT][7]                        |
 | [error-reporting-java][8]                | [MIT License][9]                               |
-| [SLF4J JDK14 Binding][10]                | [MIT License][11]                              |
+| [SLF4J JDK14 Provider][10]               | [MIT][11]                                      |
 | [Jackson-dataformat-YAML][12]            | [The Apache Software License, Version 2.0][1]  |
 | [Jackson datatype: JSR310][13]           | [The Apache Software License, Version 2.0][14] |
 | [Error Code Model Java][15]              | [MIT License][16]                              |
@@ -19,15 +19,15 @@
 
 ## Test Dependencies
 
-| Dependency                                 | License                           |
-| ------------------------------------------ | --------------------------------- |
-| [Hamcrest][18]                             | [BSD-3-Clause][19]                |
-| [EqualsVerifier \| release normal jar][20] | [Apache License, Version 2.0][1]  |
-| [JUnit Jupiter (Aggregator)][21]           | [Eclipse Public License v2.0][22] |
-| [Apache Maven Verifier Component][23]      | [Apache License, Version 2.0][1]  |
-| [Maven Project Version Getter][24]         | [MIT License][25]                 |
-| [Maven Plugin Integration Testing][26]     | [MIT License][27]                 |
-| [JaCoCo :: Agent][28]                      | [EPL-2.0][29]                     |
+| Dependency                                      | License                           |
+| ----------------------------------------------- | --------------------------------- |
+| [Hamcrest][18]                                  | [BSD-3-Clause][19]                |
+| [EqualsVerifier \| release normal jar][20]      | [Apache License, Version 2.0][1]  |
+| [JUnit Jupiter (Aggregator)][21]                | [Eclipse Public License v2.0][22] |
+| [Apache Maven Verifier Component (RETIRED)][23] | [Apache-2.0][1]                   |
+| [Maven Project Version Getter][24]              | [MIT License][25]                 |
+| [Maven Plugin Integration Testing][26]          | [MIT License][27]                 |
+| [JaCoCo :: Agent][28]                           | [EPL-2.0][29]                     |
 
 ## Plugin Dependencies
 
@@ -65,22 +65,22 @@
 
 [0]: https://maven.apache.org/plugin-tools/maven-plugin-annotations
 [1]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[2]: https://maven.apache.org/ref/3.9.16/maven-plugin-api/
-[3]: https://maven.apache.org/ref/3.9.16/maven-model/
-[4]: https://maven.apache.org/ref/3.9.16/maven-core/
+[2]: https://maven.apache.org/ref/3.10.0/maven-plugin-api/
+[3]: https://maven.apache.org/ref/3.10.0/maven-model/
+[4]: https://maven.apache.org/ref/3.10.0/maven-core/
 [5]: https://spoon.gforge.inria.fr/
 [6]: https://cecill.info/licences/Licence_CeCILL-C_V1-en.txt
 [7]: https://opensource.org/licenses/MIT
 [8]: https://github.com/exasol/error-reporting-java/
 [9]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [10]: http://www.slf4j.org
-[11]: http://www.opensource.org/licenses/mit-license.php
+[11]: https://opensource.org/license/mit
 [12]: https://github.com/FasterXML/jackson-dataformats-text
 [13]: https://github.com/FasterXML/jackson-modules-java8/
 [14]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [15]: https://github.com/exasol/error-code-model-java/
 [16]: https://github.com/exasol/error-code-model-java/blob/main/LICENSE
-[17]: https://maven.apache.org/ref/3.9.16/maven-artifact/
+[17]: https://maven.apache.org/ref/3.10.0/maven-artifact/
 [18]: http://hamcrest.org/JavaHamcrest/
 [19]: https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE
 [20]: https://www.jqno.nl/equalsverifier
