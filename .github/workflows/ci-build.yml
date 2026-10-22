@@ -79,9 +79,8 @@ jobs:
         id: build-pk-verify
         run: |
           ./mvnw --batch-mode clean install \
-              -DossindexSkip=true \
               --no-transfer-progress \
-              -DtrimStackTrace=false
+              -DossindexSkip=true -DtrimStackTrace=false
       - name: Sonar analysis
         id: sonar-analysis
         if: ${{ env.SONAR_TOKEN != null }}
