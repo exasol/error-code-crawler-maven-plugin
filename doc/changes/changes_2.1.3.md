@@ -1,8 +1,14 @@
 # Error Code Crawler Maven Plugin 2.1.3, released 2026-??-??
 
-Code name:
+Code name: Support Java 25 and fix vulnerabilities
 
 ## Summary
+
+This release adds support for crawling projects that use Java 25. It also fixes vulnerabilities in dependencies `com.fasterxml.jackson.core:jackson-core`, `com.fasterxml.jackson.core:jackson-databind` and `org.ow2.asm:asm`.
+
+## Bugfixes
+
+* #117: Error crawler fails with Java 25
 
 ## Security
 
