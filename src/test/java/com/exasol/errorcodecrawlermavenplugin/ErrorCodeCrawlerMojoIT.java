@@ -165,7 +165,6 @@ class ErrorCodeCrawlerMojoIT {
     }
 
     @Test
-    @Disabled("Java 25 not yet supported, see https://github.com/exasol/error-code-crawler-maven-plugin/issues/117")
     void testCrawlingWithJava25Source() throws VerificationException, IOException {
         getVerifier()
                 .withPom(TestMavenModel.create(ErrorCodeCrawlerPluginTestConfig.builder().compilerRelease(25).build()))

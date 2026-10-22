@@ -12,3 +12,8 @@ SECURITY.md              linguist-generated=true
 
 .settings/org.eclipse.jdt.core.prefs    linguist-generated=true
 .settings/org.eclipse.jdt.ui.prefs      linguist-generated=true
+*.sh text eol=lf
+*.bat text eol=crlf
+/mvnw linguist-generated=true
+/mvnw.cmd linguist-generated=true
+/.mvn/wrapper/maven-wrapper.properties linguist-generated=true

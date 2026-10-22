@@ -18,8 +18,8 @@ build:
             name: Run tests and build with Maven
             id: build-pk-verify
             run: |
-              mvn --batch-mode clean verify install \
-                  -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
+              ./mvnw --batch-mode clean install \
+                  --no-transfer-progress \
                   -DossindexSkip=true -DtrimStackTrace=false
         - action: INSERT_AFTER
           stepId: sonar-analysis
@@ -27,7 +27,7 @@ build:
           content:
             id: run-error-code-crawler
             name: Run error-code-crawler on itself
-            run: mvn --batch-mode error-code-crawler:verify
+            run: ./mvnw --batch-mode error-code-crawler:verify
 
     - name: "release.yml"
       stepCustomizations:
@@ -36,10 +36,10 @@ build:
           content:
             name: Build Project
             id: build
-            run: mvn --batch-mode -DskipTests -DossindexSkip=true clean install verify
+            run: ./mvnw --batch-mode -DskipTests -DskipITs -DossindexSkip=true clean install
         - action: INSERT_AFTER
           stepId: build
           content:
             id: run-error-code-crawler
             name: Run error-code-crawler on itself
-            run: mvn --batch-mode error-code-crawler:verify
+            run: ./mvnw --batch-mode error-code-crawler:verify
