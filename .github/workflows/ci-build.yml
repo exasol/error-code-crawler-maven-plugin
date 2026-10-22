@@ -78,9 +78,10 @@ jobs:
       - name: Run tests and build with Maven
         id: build-pk-verify
         run: |
-          mvn --batch-mode clean verify install \
-              -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn \
-              -DossindexSkip=true -DtrimStackTrace=false
+          ./mvnw --batch-mode clean install \
+              -DossindexSkip=true \
+              --no-transfer-progress \
+              -DtrimStackTrace=false
       - name: Sonar analysis
         id: sonar-analysis
         if: ${{ env.SONAR_TOKEN != null }}
@@ -97,7 +98,7 @@ jobs:
       - {
         id: run-error-code-crawler,
         name: Run error-code-crawler on itself,
-        run: 'mvn --batch-mode error-code-crawler:verify'
+        run: './mvnw --batch-mode error-code-crawler:verify'
       }
       - name: Verify Release Artifacts
         id: verify-release-artifacts

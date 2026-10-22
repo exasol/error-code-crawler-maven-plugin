@@ -179,12 +179,12 @@ jobs:
       - {
         name: Build Project,
         id: build,
-        run: mvn --batch-mode -DskipTests -DossindexSkip=true clean install verify
+        run: ./mvnw --batch-mode -DskipTests -DskipITs -DossindexSkip=true clean install
       }
       - {
         id: run-error-code-crawler,
         name: Run error-code-crawler on itself,
-        run: 'mvn --batch-mode error-code-crawler:verify'
+        run: './mvnw --batch-mode error-code-crawler:verify'
       }
       - name: Publish to Central Repository
         id: deploy-maven-central
