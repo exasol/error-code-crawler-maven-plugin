@@ -1,4 +1,4 @@
-# Error Code Crawler Maven Plugin 2.1.3, released 2026-??-??
+# Error Code Crawler Maven Plugin 2.1.3, released 2026-10-22
 
 Code name: Support Java 25 and fix vulnerabilities
 
